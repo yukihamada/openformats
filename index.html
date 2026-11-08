@@ -30,6 +30,10 @@
   .grid a { display:block; padding:10px 12px; border:1px solid var(--line); border-radius:8px; font-size:14px; }
   .grid a:hover { border-color:var(--accent); text-decoration:none; }
   .grid a span { display:block; color:var(--muted); font-size:12px; }
+  .work { border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin:12px 0; }
+  .work strong { display:block; font-size:15px; }
+  .work .meta { display:block; color:var(--muted); font-size:13px; margin:2px 0 10px; }
+  .work audio { width:100%; height:40px; }
   footer { margin-top:72px; padding-top:24px; border-top:1px solid var(--line); color:var(--muted); font-size:14px; }
 </style>
 </head>
@@ -77,13 +81,26 @@ cd openformats
 python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
 .venv/bin/python tools/validate.py --all</code></pre>
 
-  <h2>本物の作品</h2>
-  <p>この仕組みで作った実作品と音源は <a href="https://github.com/yukihamada/openformats/tree/main/works">works/</a> に。JSON の <code>renditions[].sha256</code> と実音源のハッシュが一致します。</p>
-  <ul>
-    <li>AIが賢くなるほど、なぜ僕らは忙しいのか？ — 本人声ポッドキャスト</li>
-    <li>モコの、ひと息AIニュース — 週次AIニュース</li>
-    <li>ひとつ先へ — Sente テーマソング</li>
-  </ul>
+  <h2>本物の作品 — その場で聴けます</h2>
+  <p>この仕組みで作った実作品。音源の SHA-256 は JSON の <code>renditions[].sha256</code> と一致します（詳細は <a href="https://github.com/yukihamada/openformats/tree/main/works">works/</a>）。</p>
+
+  <div class="work">
+    <strong>AIが賢くなるほど、なぜ僕らは忙しいのか？</strong>
+    <span class="meta">本人声ポッドキャスト・第1回</span>
+    <audio controls preload="none" src="https://raw.githubusercontent.com/yukihamada/openformats/main/works/episode-001.mp3"></audio>
+  </div>
+
+  <div class="work">
+    <strong>モコの、ひと息AIニュース</strong>
+    <span class="meta">週次AIニュース・3本</span>
+    <audio controls preload="none" src="https://raw.githubusercontent.com/yukihamada/openformats/main/works/Moco-News.wav"></audio>
+  </div>
+
+  <div class="work">
+    <strong>ひとつ先へ</strong>
+    <span class="meta">Sente テーマソング・take1</span>
+    <audio controls preload="none" src="https://raw.githubusercontent.com/yukihamada/openformats/main/works/takes/take1_full.m4a"></audio>
+  </div>
 
   <footer>
     仕様は <a href="https://github.com/yukihamada/openformats">MIT</a>。規範文書は <a href="https://github.com/yukihamada/openformats/blob/main/SPEC.md">SPEC.md</a>、版管理は <a href="https://github.com/yukihamada/openformats/blob/main/VERSIONING.md">VERSIONING.md</a>。

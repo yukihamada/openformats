@@ -21,17 +21,25 @@ except ImportError:
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA_DIRS = ("examples", "works", "products", "events", "places")
+SKIP_DIRS = {"tools", ".git", ".venv", "venv", "node_modules", "__pycache__", ".ofstore"}
+
+
+def _skip(path):
+    """リポジトリ内でも検証対象外のディレクトリ（.venv 等）を除外する。"""
+    return any(p in SKIP_DIRS or p.startswith(".") for p in path.parts)
 
 
 def build_registry():
     """$id -> ローカルファイル を registry に登録し、$ref を解決可能にする。"""
     resources = []
     for path in ROOT.rglob("*.json"):
-        if any(p in DATA_DIRS for p in path.parts) or "tools" in path.parts:
+        if _skip(path.relative_to(ROOT)):
             continue
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
         except Exception:
+            continue
+        if not isinstance(data, dict):
             continue
         sid = data.get("$id")
         if sid:

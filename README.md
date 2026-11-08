@@ -83,7 +83,7 @@ shasum -a 256 works/episode-001.mp3
 ### JSON も検証できる
 
 ```bash
-pip install jsonschema   # 最初に一度だけ
+# 依存は「使い方」の venv 手順で導入済みならそのまま実行できる
 python3 tools/validate.py radio/v1.json works/yuki-podcast-001.radio.json
 # → OK  works/yuki-podcast-001.radio.json
 ```
