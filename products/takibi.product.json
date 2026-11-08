@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "takibi",
   "name": "焚き火 / ATSM",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "共同プロジェクトとして掲載。イネブラ単独所有・開発とは断定しない。"
+  "note": "共同プロジェクトとして掲載。イネブラ単独所有・開発とは断定しない。",
+  "content_hash": "e5059547e5aaef3bb49c099e9799eaa99e6afbad0402afd6372e76286e8ce77a"
 }

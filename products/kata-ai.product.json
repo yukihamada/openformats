@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "kata-ai",
   "name": "Kata（AI）",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "ベータ表記。建築のKATA.HOUSEとは別項目。機能動作は未確認。"
+  "note": "ベータ表記。建築のKATA.HOUSEとは別項目。機能動作は未確認。",
+  "content_hash": "43c0436936381b3c6a0714304fa24deb0cdc807b2e78ff90136ba78d2b59982c"
 }

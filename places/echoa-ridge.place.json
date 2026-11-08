@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/place/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/place/v1.json",
+  "spec_version": "1.1.0",
   "kind": "place",
   "id": "echoa-ridge",
   "title": "Echoa Ridge @ Wet'n'Wild Hawaii",
@@ -14,10 +14,22 @@
     "address": "400 Farrington Highway, Kapolei, HI 96707",
     "precision": "exact"
   },
-  "tags": ["outdoor-stage", "5000-capacity", "oahu", "kapolei", "live-music"],
+  "tags": [
+    "outdoor-stage",
+    "5000-capacity",
+    "oahu",
+    "kapolei",
+    "live-music"
+  ],
   "note": "2026年2月オープンの新設5,000人キャパ野外ステージ。Wet'n'Wild Hawaii敷地内、Metta Group運営。駐車場約700台。座標はOSM実測。",
   "provenance": {
     "human_involvement": "human",
-    "sources": [{ "ref": "https://wetnwildhawaii.com/venue/echoa-ridge/", "retrieved_at": "2026-11-08" }]
-  }
+    "sources": [
+      {
+        "ref": "https://wetnwildhawaii.com/venue/echoa-ridge/",
+        "retrieved_at": "2026-11-08"
+      }
+    ]
+  },
+  "content_hash": "9751783d566cb7b09c33b128b59a73c7ce1536ba81fcbb4aa330a9e3ad655c47"
 }

@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "news",
   "name": "news.xyz",
@@ -41,5 +41,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "既存観測の先頭番組は9/2付。最新性・常時更新を保証しない。"
+  "note": "既存観測の先頭番組は9/2付。最新性・常時更新を保証しない。",
+  "content_hash": "595a891472488d9aa659660af59a58abbbef72eaeca7cdf1acae2de5338ed17e"
 }

@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "openclaw",
   "name": "OpenClaw関連開発",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "独立した自社新製品ではなく関連開発として掲載。上流との関係・提供範囲は未確認。"
+  "note": "独立した自社新製品ではなく関連開発として掲載。上流との関係・提供範囲は未確認。",
+  "content_hash": "5d3df2b9d72fa9e99524ba9a8e3e97d4d0b6320c961c08f7aec4ff22fa2dcc74"
 }

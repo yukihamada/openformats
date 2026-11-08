@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/event/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/event/v1.json",
+  "spec_version": "1.1.0",
   "kind": "event",
   "id": "zamna-hawaii-2026",
   "title": "ZAMNA HAWAII / SOLUNA FEST",
@@ -56,5 +56,6 @@
     "platforms": []
   },
   "related_media": [],
-  "note": "2026-11-13 開催予定。会場は2026年2月オープンの5,000人キャパ野外ステージ (オアフ島カポレイ)。チケットはEventim独占。出演者・チケット価格・配信は未確定のため空。詳細は master-plan-20260813.md を正本とする。"
+  "note": "2026-11-13 開催予定。会場は2026年2月オープンの5,000人キャパ野外ステージ (オアフ島カポレイ)。チケットはEventim独占。出演者・チケット価格・配信は未確定のため空。詳細は master-plan-20260813.md を正本とする。",
+  "content_hash": "af7482ae98b5da8d7e11cd442c21471d3c1d7dc27a9c381d522341c524498bf7"
 }

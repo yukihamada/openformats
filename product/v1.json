@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openformats.dev/product/v1.json",
+  "$id": "https://yukihamada.github.io/openformats/product/v1.json",
   "title": "product.json v1 — open product / service catalog format",
   "description": "1 製品 = 1 JSON。サービス・アプリ・ブランドの公開情報を記述。稼働状態・権限は保証しない (確認時点を正直に記録)。openformats core envelope を継承。MIT。",
-  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "allOf": [{ "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json" }],
   "type": "object",
   "required": ["kind", "id", "name"],
   "properties": {

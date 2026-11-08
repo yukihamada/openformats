@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "soluna",
   "name": "SOLUNA",
@@ -40,5 +40,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "会社の旧一覧は音楽配信と説明しているが現在のページと相違。契約・所有権・利回りは未検証。音楽アプリは別項目。"
+  "note": "会社の旧一覧は音楽配信と説明しているが現在のページと相違。契約・所有権・利回りは未検証。音楽アプリは別項目。",
+  "content_hash": "6fb4b6a157c2bc2013d85430187ca184a6f8d57ac2f105066a8d31eb8118aee4"
 }

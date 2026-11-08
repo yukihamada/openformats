@@ -1,19 +1,62 @@
 {
-  "$schema": "https://openformats.dev/book/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/book/v1.json",
+  "spec_version": "1.1.0",
   "kind": "book",
   "id": "sample-book",
   "title": "サンプルの本",
   "lang": "ja",
   "license": "all-rights-reserved",
-  "metadata": { "subtitle": "最小構成", "series": "demo", "series_index": 1, "description": "book.json の最小例。" },
-  "trim": { "format": "A5", "width_mm": 148, "height_mm": 210, "bleed_mm": 3, "paper": "cream" },
+  "metadata": {
+    "subtitle": "最小構成",
+    "series": "demo",
+    "series_index": 1,
+    "description": "book.json の最小例。"
+  },
+  "trim": {
+    "format": "A5",
+    "width_mm": 148,
+    "height_mm": 210,
+    "bleed_mm": 3,
+    "paper": "cream"
+  },
   "chapters": [
-    { "id": "ch1", "title": "第一章", "number": 1, "blocks": [
-      { "type": "heading", "level": 1, "text": "はじめに" },
-      { "type": "paragraph", "text": "これは最小の本文ブロックです。" },
-      { "type": "list", "ordered": false, "items": ["一つ目", "二つ目"] }
-    ]}
+    {
+      "id": "ch1",
+      "title": "第一章",
+      "number": 1,
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 1,
+          "text": "はじめに"
+        },
+        {
+          "type": "paragraph",
+          "text": "これは最小の本文ブロックです。"
+        },
+        {
+          "type": "list",
+          "ordered": false,
+          "items": [
+            "一つ目",
+            "二つ目"
+          ]
+        }
+      ]
+    }
   ],
-  "colophon": { "author_bio": "サンプル著者", "rights": "© 2026" }
+  "colophon": {
+    "author_bio": "サンプル著者",
+    "rights": "© 2026"
+  },
+  "content_hash": "b6cd1a18a84e0b4353056f6e58a796c1a48eb88fcc3fe3181c8dcb7f2cb33882",
+  "signatures": [
+    {
+      "alg": "Ed25519",
+      "public_key": "f/NPZdENXk1dAVXqB+QWn1mIx6LUdhoJWuYWA4hnTPY=",
+      "signature": "/opkEHBdrnTF+ye4r2QSz7hRCC9+PdYRB35EO3vnAXpD9Oqbn8gpLZBOf9W+ooweABfFlypUIDq1Jhwtxd+JAg==",
+      "signer": "openformats-maintainer",
+      "signed_at": "2026-11-08T07:42:30Z"
+    }
+  ]
 }

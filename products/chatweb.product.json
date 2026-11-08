@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "chatweb",
   "name": "chatweb.ai",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "teaiとのブランド・サービスの重なりは独立利用者数に数えない。"
+  "note": "teaiとのブランド・サービスの重なりは独立利用者数に数えない。",
+  "content_hash": "c48020f7202ff538a9950b01807e65df7d7b5263a9238fb82af5a1641fdd8769"
 }

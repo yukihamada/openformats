@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openformats.dev/country/v1.json",
+  "$id": "https://yukihamada.github.io/openformats/country/v1.json",
   "title": "country.json v1 — open country / region profile format",
   "description": "1 国/地域 = 1 JSON。言語・通貨・法規制・文化・メディア配信要件を記述。世界向け設計と地域依存の分離のため。出典を必須運用。MIT。",
-  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "allOf": [{ "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json" }],
   "type": "object",
   "required": ["kind", "id", "code"],
   "properties": {

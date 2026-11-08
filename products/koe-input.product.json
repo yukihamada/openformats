@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "koe-input",
   "name": "KOE 音声入力",
@@ -41,5 +41,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "KOEの派生。9/15棚卸しで公開版と審査課題のある新版が併存。"
+  "note": "KOEの派生。9/15棚卸しで公開版と審査課題のある新版が併存。",
+  "content_hash": "f9477eb85ffb40f959923c931f4c28ea4a6ee590c4d4ee8565f5c9bae62bb448"
 }

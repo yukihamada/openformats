@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "soluna-stays",
   "name": "Soluna Stays",
@@ -40,5 +40,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "9/15棚卸しで未提出。StayFlowとの現行関係・機能は未確認。"
+  "note": "9/15棚卸しで未提出。StayFlowとの現行関係・機能は未確認。",
+  "content_hash": "82787354a9152e06d70675037c7f7689b17843ae0d65ef1ded227a1a9f78bb86"
 }

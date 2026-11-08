@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openformats.dev/book/v1.json",
+  "$id": "https://yukihamada.github.io/openformats/book/v1.json",
   "title": "book.json v1 — open book / manuscript format",
   "description": "1 冊 = 1 JSON。本文はブロック列 (Markdown 互換の最小単位) で表現し、組版・EPUB・PDF・音声化へ変換可能。openformats core envelope を継承。MIT。",
-  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "allOf": [{ "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json" }],
   "type": "object",
   "required": ["kind", "id", "metadata", "chapters"],
   "properties": {

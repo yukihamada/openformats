@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openformats.dev/movie/v1.json",
+  "$id": "https://yukihamada.github.io/openformats/movie/v1.json",
   "title": "movie.json v1 — open movie / video timeline format",
   "description": "1 本 = 1 JSON。ショット・カット・音声・字幕・トランジションを時間軸で記述し、レンダリング (ffmpeg/Remotion 等) へ変換可能。MIT。",
-  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "allOf": [{ "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json" }],
   "type": "object",
   "required": ["kind", "id", "timeline"],
   "properties": {

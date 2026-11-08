@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openformats.dev/core/envelope/v1.json",
+  "$id": "https://yukihamada.github.io/openformats/core/envelope/v1.json",
   "title": "openformats core envelope v1",
-  "description": "全 openformats 形式 (*.json) が共有する共通エンベロープ。1 作品 = 1 JSON、content-addressed、append-only、Ed25519 補助署名、MIT。bim.json v1 の設計哲学をメディア全般へ拡張したもの。",
+  "description": "全 openformats 形式 (*.json) が共有する共通エンベロープ。1 作品 = 1 JSON、content-addressed、append-only、Ed25519 補助署名、MIT。JSON を正本とし、媒体化(rendition)はハッシュで作品に紐づける。",
   "type": "object",
   "required": ["spec_version", "kind", "id"],
   "additionalProperties": true,
@@ -86,7 +86,7 @@
             "required": ["at", "action"],
             "properties": {
               "at": { "type": "string", "format": "date-time" },
-              "action": { "type": "string", "description": "create / edit / render / publish / derive 等" },
+              "action": { "type": "string", "description": "create / edit / render / publish / derive / migrate 等" },
               "by": { "type": "string" },
               "note": { "type": "string" }
             },
@@ -96,14 +96,66 @@
       },
       "additionalProperties": true
     },
+    "consent": {
+      "type": "object",
+      "description": "同意。声・肖像・土地など、本人・権利者の同意を構造として記録する。AI 生成・合成の可否もここで明示する。",
+      "properties": {
+        "subject": {
+          "type": "string",
+          "description": "同意の対象 (voice / likeness / land / performance 等)。"
+        },
+        "granted": {
+          "type": "boolean",
+          "description": "同意が有効か。未確認・不明は false ではなく省略し、status で示す。"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["granted", "pending", "revoked", "not-required", "unknown"],
+          "default": "unknown",
+          "description": "同意の状態。未確認は unknown。"
+        },
+        "scope": {
+          "type": "array",
+          "description": "許諾する利用範囲 (例: narration, commercial, derivative, ai-training)。",
+          "items": { "type": "string" }
+        },
+        "ai_generation_allowed": {
+          "type": "boolean",
+          "description": "この声・肖像から AI 生成してよいか。"
+        },
+        "granted_by": { "type": "string", "description": "同意した権利者。" },
+        "granted_at": { "type": "string", "format": "date-time" },
+        "expires_at": { "type": "string", "format": "date-time" },
+        "evidence": {
+          "type": "string",
+          "description": "同意の証跡 (文書 URL / 記録 id)。秘密・個人情報は含めない。"
+        }
+      },
+      "additionalProperties": true
+    },
+    "rights": {
+      "type": "object",
+      "description": "権利。著作権・原盤権・商標など。作品ごとに正直に記録する。",
+      "properties": {
+        "copyright_holder": { "type": "string" },
+        "copyright_year": { "type": "integer" },
+        "copyright_term": { "type": "string" },
+        "master_holder": { "type": "string", "description": "原盤権者 (音源)。" },
+        "composition_holder": { "type": "string", "description": "作曲権者。" },
+        "sample_clearance": { "type": "boolean", "description": "サンプル許諾の有無。" },
+        "trademark": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
     "content_hash": {
       "type": "string",
       "pattern": "^[a-f0-9]{64}$",
-      "description": "content-addressed ハッシュ。正規化した本体の SHA-256。同じ作品 → 同じハッシュ。"
+      "description": "content-addressed ハッシュ。JCS (RFC 8785) 正規化した本体 (renditions/署名/チェーンを除く) の SHA-256。同じ作品 → 同じハッシュ。"
     },
     "hash_chain": {
       "type": "array",
-      "description": "前リビジョンへの SHA-256 チェーン。改ざん検知と履歴の連続性。",
+      "description": "前リビジョンへの SHA-256 チェーン。改ざん検知と履歴の連続性。append-only。",
       "items": {
         "type": "object",
         "required": ["sha256"],
@@ -116,16 +168,41 @@
     },
     "signatures": {
       "type": "array",
-      "description": "Ed25519 補助署名。電子署名法 3 条認定 CA との併用が前提 (補助であり法的正本ではない)。",
+      "description": "Ed25519 補助署名。電子署名法 3 条認定 CA との併用が前提 (補助であり法的正本ではない)。content_hash に署名する。",
       "items": {
         "type": "object",
         "required": ["alg", "public_key", "signature"],
         "properties": {
           "alg": { "type": "string", "const": "Ed25519" },
           "public_key": { "type": "string", "description": "base64 の 32byte 公開鍵" },
-          "signature": { "type": "string", "description": "base64 の 64byte 署名 (content_hash 対象)" },
+          "signature": { "type": "string", "description": "base64 の 64byte 署名 (content_hash のバイト列対象)" },
           "signed_at": { "type": "string", "format": "date-time" },
           "signer": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "renditions": {
+      "type": "array",
+      "description": "媒体化した実体 (音声/動画/画像/PDF 等)。作品本体のハッシュ対象外なので、良いモデルが出たら新 rendition を足して声だけ差し替えられる。各 rendition は実ファイルの SHA-256 と生成モデルの来歴を持つ。",
+      "items": {
+        "type": "object",
+        "required": ["kind", "format", "sha256"],
+        "properties": {
+          "kind": { "type": "string", "description": "media 種別 (audio / video / image / pdf / midi / stem 等)。" },
+          "format": { "type": "string", "description": "ファイル形式 (mp3 / wav / mp4 / png / pdf 等)。" },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$", "description": "媒体ファイル実体の SHA-256。" },
+          "bytes": { "type": "integer", "minimum": 0 },
+          "path": { "type": "string", "description": "保存先 (任意)。内容アドレス保存なら content-addressed パス。" },
+          "generated_at": { "type": "string", "format": "date-time" },
+          "provider": { "type": "string", "description": "生成サービス (koe / teai / suno / mureka 等)。" },
+          "model": { "type": "string", "description": "生成モデル名。" },
+          "model_version": { "type": "string" },
+          "prompt": { "type": "string" },
+          "seed": { "type": "integer" },
+          "voice": { "type": "string", "description": "声 id (voice.json 参照)。" },
+          "source_rendition": { "type": "string", "description": "派生元 rendition の sha256。同じ作品内で声だけ差し替えた系譜を示す。" },
+          "note": { "type": "string" }
         },
         "additionalProperties": true
       }

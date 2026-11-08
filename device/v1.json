@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openformats.dev/device/v1.json",
+  "$id": "https://yukihamada.github.io/openformats/device/v1.json",
   "title": "device.json v1 — open device / hardware profile format",
   "description": "1 デバイス = 1 JSON。IoT・スマートホーム・ウェアラブル・ロボット等の能力 (capability)、接続、制御インターフェースを記述。メディア制作の入出力端末 (カメラ/マイク/照明/スピーカー) も同じ語彙で扱う。MIT。",
-  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "allOf": [{ "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json" }],
   "type": "object",
   "required": ["kind", "id", "device_class", "capabilities"],
   "properties": {

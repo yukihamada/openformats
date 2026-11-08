@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "iki",
   "name": "IKI / 息",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "ワークスペースではTestFlight、9/15棚卸しでは未提出。現行機能・一般配布は未確認。"
+  "note": "ワークスペースではTestFlight、9/15棚卸しでは未提出。現行機能・一般配布は未確認。",
+  "content_hash": "e541c628dfb55946f1cb01b2fccc6b577b5b9dca55a67488081f31bde3a25e94"
 }

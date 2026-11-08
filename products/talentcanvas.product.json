@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "talentcanvas",
   "name": "TalentCanvas",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "9/15棚卸しで未提出。同名の外部サービスとの関係・正式ブランドは未確認。公開製品とは扱わない。"
+  "note": "9/15棚卸しで未提出。同名の外部サービスとの関係・正式ブランドは未確認。公開製品とは扱わない。",
+  "content_hash": "5936d5b4933e7e987df664c80df85a3b135e5f0856d263323d178d9111df5aa0"
 }

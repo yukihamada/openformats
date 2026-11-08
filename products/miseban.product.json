@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "miseban",
   "name": "ミセバンAI",
@@ -37,5 +37,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "店舗導入・計数精度・無人運営の成立は未確認。"
+  "note": "店舗導入・計数精度・無人運営の成立は未確認。",
+  "content_hash": "c161c5addc3c3826df09afc3ec89595c125b2e30d676fc10eabc3b3d3ec9cd37"
 }

@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "soluna-rx",
   "name": "Soluna Rx for Mac",
@@ -41,5 +41,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "9/15棚卸しで未提出。機能・一般配布は未確認。"
+  "note": "9/15棚卸しで未提出。機能・一般配布は未確認。",
+  "content_hash": "164f8ac6e6b02467bb6d53f9c0651d9ddb12ddff13d48f609b23c8378da19991"
 }

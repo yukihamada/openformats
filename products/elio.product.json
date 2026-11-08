@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "elio",
   "name": "Elio / Elio Chat",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "9/15棚卸しでは公開版あり・別の新版に審査課題。モデル数・性能は未検証。"
+  "note": "9/15棚卸しでは公開版あり・別の新版に審査課題。モデル数・性能は未検証。",
+  "content_hash": "f6394f787a5fe2387447736d60768359316e66bf8fdf0801bcb86333032e8720"
 }

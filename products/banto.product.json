@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "banto",
   "name": "BANTO",
@@ -37,5 +37,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "公式一覧は開発中。iOS版の審査課題あり。"
+  "note": "公式一覧は開発中。iOS版の審査課題あり。",
+  "content_hash": "2a607cb85f378c0f46e4bd65a39d4ef475aa556d10f03b696a14087beb5d736d"
 }

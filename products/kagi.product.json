@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "kagi",
   "name": "KAGI",
@@ -40,5 +40,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "会社一覧ではベータ。実物の鍵・各機器の操作は今回未確認。"
+  "note": "会社一覧ではベータ。実物の鍵・各機器の操作は今回未確認。",
+  "content_hash": "90fb2839167aeca74ff2e43d8dd56a88e79be06981a4857122f3489ecbcfe0f0"
 }

@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "movie",
   "name": "movie.live",
@@ -41,5 +41,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "実生成・一般利用の成立は未確認。"
+  "note": "実生成・一般利用の成立は未確認。",
+  "content_hash": "0fd89c789d7b0328a9055a41e7f918c19876c04ae255d79acf62d8a23e8324a9"
 }
