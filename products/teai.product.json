@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "teai",
   "name": "teai",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "実回答は既存素材で確認。声ライブラリの新UI配信状態は別途確認が必要。"
+  "note": "実回答は既存素材で確認。声ライブラリの新UI配信状態は別途確認が必要。",
+  "content_hash": "ab1f64c7f130baef173be39645e1bf9cb0ed1ac24ea4e21c1b592c1bbfe5461f"
 }

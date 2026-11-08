@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "wisbee",
   "name": "Wisbee",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "9/15棚卸しで未提出。用途・配布先は未確認。"
+  "note": "9/15棚卸しで未提出。用途・配布先は未確認。",
+  "content_hash": "dc4e4a2f7f915de7ed1c553e2398bcbaf24eccd31cc5d994d07c049ef9bf4600"
 }

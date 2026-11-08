@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "hq",
   "name": "Enabler HQ",
@@ -37,5 +37,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "製品そのものではない。売上・調達・創業年等は今回検証していない。"
+  "note": "製品そのものではない。売上・調達・創業年等は今回検証していない。",
+  "content_hash": "4d67194ecd650b5bfe667cadee0e399ca930dad591d7cf65f96b6dd2a58182e2"
 }

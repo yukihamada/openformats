@@ -2,10 +2,11 @@
 """openformats validator — JSON Schema (Draft 2020-12) で作品 JSON を検証する。
 
 使い方:
-    python3 tools/validate.py <schema.json> <data.json> [more-data.json ...]
+    python3 tools/validate.py music/v1.json examples/sample.music.json [more.json ...]
+    python3 tools/validate.py --all          # 全サンプル・作品・カタログを kind 別に検証
 
-$ref は同一リポジトリ内の相対解決 ($id の https://openformats.dev/... を
-ローカルファイルへマップ) に対応。外部依存は jsonschema のみ。
+$ref / $schema の https://yukihamada.github.io/openformats/... を、リポジトリ内の
+実ファイルへローカル解決する (ネットワーク不要)。外部依存は jsonschema のみ。
 """
 import json
 import sys
@@ -19,13 +20,14 @@ except ImportError:
     sys.exit("jsonschema が必要です: pip install jsonschema")
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+DATA_DIRS = ("examples", "works", "products", "events", "places")
 
 
 def build_registry():
     """$id -> ローカルファイル を registry に登録し、$ref を解決可能にする。"""
     resources = []
     for path in ROOT.rglob("*.json"):
-        if "examples" in path.parts or "tools" in path.parts:
+        if any(p in DATA_DIRS for p in path.parts) or "tools" in path.parts:
             continue
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
@@ -37,26 +39,71 @@ def build_registry():
     return Registry().with_resources(resources)
 
 
+def schema_for_kind(kind: str) -> pathlib.Path:
+    return ROOT / kind / "v1.json"
+
+
+def iter_data_files():
+    for sub in DATA_DIRS:
+        d = ROOT / sub
+        if d.is_dir():
+            yield from sorted(d.rglob("*.json"))
+
+
+def _disp(path):
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
+def validate_one(validator, path):
+    data = json.loads(path.read_text(encoding="utf-8"))
+    errors = sorted(validator.iter_errors(data), key=lambda e: list(e.path))
+    if errors:
+        print(f"NG  {_disp(path)}")
+        for e in errors:
+            loc = "/".join(str(p) for p in e.path) or "(root)"
+            print(f"    - {loc}: {e.message}")
+        return 1
+    print(f"OK  {_disp(path)}")
+    return 0
+
+
 def main(argv):
+    registry = build_registry()
+
+    if len(argv) >= 2 and argv[1] == "--all":
+        failed = 0
+        cache = {}
+        for path in iter_data_files():
+            data = json.loads(path.read_text(encoding="utf-8"))
+            kind = data.get("kind")
+            if not kind:
+                print(f"NG  {_disp(path)}: kind が無い")
+                failed += 1
+                continue
+            if kind not in cache:
+                sp = schema_for_kind(kind)
+                if not sp.exists():
+                    print(f"NG  {_disp(path)}: schema {kind}/v1.json が無い")
+                    failed += 1
+                    continue
+                cache[kind] = Draft202012Validator(
+                    json.loads(sp.read_text(encoding="utf-8")), registry=registry)
+            failed += validate_one(cache[kind], path)
+        print(f"\n{'FAIL' if failed else 'PASS'}: {failed} 件の不整合")
+        return 1 if failed else 0
+
     if len(argv) < 3:
         sys.exit(__doc__)
     schema_path = pathlib.Path(argv[1])
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
-    registry = build_registry()
     validator = Draft202012Validator(schema, registry=registry)
 
     failed = 0
     for data_path in argv[2:]:
-        data = json.loads(pathlib.Path(data_path).read_text(encoding="utf-8"))
-        errors = sorted(validator.iter_errors(data), key=lambda e: list(e.path))
-        if errors:
-            failed += 1
-            print(f"NG  {data_path}")
-            for e in errors:
-                loc = "/".join(str(p) for p in e.path) or "(root)"
-                print(f"    - {loc}: {e.message}")
-        else:
-            print(f"OK  {data_path}")
+        failed += validate_one(validator, pathlib.Path(data_path))
     return 1 if failed else 0
 
 

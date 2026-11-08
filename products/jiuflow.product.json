@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "jiuflow",
   "name": "JiuFlow",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "公開講座を既存観測。購入後全編・上達効果は未検証。"
+  "note": "公開講座を既存観測。購入後全編・上達効果は未検証。",
+  "content_hash": "5e63e59951fe70a73e1cfc7b5bf268cac31b675df52fc5c03c3dbf9a0122897d"
 }

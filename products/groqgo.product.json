@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "groqgo",
   "name": "GroqGo",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "9/15棚卸しで未提出。用途・配布先は未確認。"
+  "note": "9/15棚卸しで未提出。用途・配布先は未確認。",
+  "content_hash": "dd3ac1f535f376fb5fe033cff10a9c4e67a6ed8c5d5429a59d0dfcf90af69a71"
 }

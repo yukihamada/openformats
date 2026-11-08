@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "yuka",
   "name": "Yuka",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "9/15棚卸しに公開版の記録。同名の外部製品との関係・用途・入口は未確認。"
+  "note": "9/15棚卸しに公開版の記録。同名の外部製品との関係・用途・入口は未確認。",
+  "content_hash": "7abbf77160e1f08022a9a508004cc268e4a1d8e4ca6997c15892d0f57686079f"
 }

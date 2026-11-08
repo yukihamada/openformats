@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "koe-mcp",
   "name": "声メッセンジャー MCP",
@@ -41,5 +41,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "API入口のGETは機能テストではない。KOEの関連サービス。"
+  "note": "API入口のGETは機能テストではない。KOEの関連サービス。",
+  "content_hash": "6884004098700c28e580816da8d19a59a2fbc177f63cb4b0b3dc00cbd8fdd450"
 }

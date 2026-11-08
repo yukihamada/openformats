@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "uta",
   "name": "uta.live",
@@ -41,5 +41,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "現在のページタイトルと説明を照合。旧一覧の歌の生成とは区別。採点・権利処理は未確認。"
+  "note": "現在のページタイトルと説明を照合。旧一覧の歌の生成とは区別。採点・権利処理は未確認。",
+  "content_hash": "4c4ca3fccc949b2ec87fc89f1ae36d732313ad2e4a4c32ead029e2b4610e0c45"
 }

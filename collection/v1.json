@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openformats.dev/collection/v1.json",
+  "$id": "https://yukihamada.github.io/openformats/collection/v1.json",
   "title": "collection.json v1 — open collection / album / playlist / series format",
   "description": "1 まとまり = 1 JSON。曲・動画・記事・本などを束ねる (アルバム/プレイリスト/シリーズ/展示)。各要素は他フォーマットの id を参照。MIT。",
-  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "allOf": [{ "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json" }],
   "type": "object",
   "required": ["kind", "id", "items"],
   "properties": {

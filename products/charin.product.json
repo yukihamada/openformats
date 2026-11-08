@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "charin",
   "name": "チャリン",
@@ -37,5 +37,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "9/15棚卸しでREADY_FOR_REVIEW。iOS一般公開済みとは扱わない。"
+  "note": "9/15棚卸しでREADY_FOR_REVIEW。iOS一般公開済みとは扱わない。",
+  "content_hash": "f6e64819eac7b2ebbeaeaed8e267898d00fcca4ab9eea493aaa20c71397a11cd"
 }

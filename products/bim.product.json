@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "bim",
   "name": "bim.house",
@@ -40,5 +40,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "独自XML取得済み。法適合・申請受理・竣工の実績ではない。"
+  "note": "独自XML取得済み。法適合・申請受理・竣工の実績ではない。",
+  "content_hash": "27eb820d8d07bd5e1a1ef605197978712717223954f5b08f3c55aad9e0d2f7bd"
 }

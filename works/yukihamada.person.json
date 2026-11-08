@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/person/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/person/v1.json",
+  "spec_version": "1.1.0",
   "kind": "person",
   "id": "yukihamada",
   "title": "濱田優貴",
@@ -32,5 +32,5 @@
     "public_contact": false,
     "real_identity_linked": true
   },
-  "content_hash": "e6c1c606023a47e95110115209d0bcc84f434aa05db3dc80ab66a2332d2580b1"
+  "content_hash": "7c029cb1df40d80b6f66eb2f8cee97a33e6e461616ecee8374ca2ee7f06ff89f"
 }

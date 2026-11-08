@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openformats.dev/article/v1.json",
+  "$id": "https://yukihamada.github.io/openformats/article/v1.json",
   "title": "article.json v1 — open article / post format",
   "description": "1 記事 = 1 JSON。ブログ・ニュース・ノート・SNS 長文を共通構造で表す。Web 公開・音声化・動画化へ変換可能。出典を構造で持つ。MIT。",
-  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "allOf": [{ "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json" }],
   "type": "object",
   "required": ["kind", "id", "blocks"],
   "properties": {

@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "takibi-story",
   "name": "焚き火の紙芝居",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "ベータ表記。共同活動との関係・実生成は未確認。"
+  "note": "ベータ表記。共同活動との関係・実生成は未確認。",
+  "content_hash": "b6626c4d7880ec44917a4882b54d42d97923023625d9f6efa2c45531027ff8f7"
 }

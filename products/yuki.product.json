@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "yuki",
   "name": "yukihamada.jp",
@@ -37,5 +37,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "個人の発信サイトとして掲載。ソフトウェア製品数に数えない。"
+  "note": "個人の発信サイトとして掲載。ソフトウェア製品数に数えない。",
+  "content_hash": "c1936caf4e497d7c3d4168af726e8d7ad036dc61da615f9666d0bd288a172479"
 }

@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/radio/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/radio/v1.json",
+  "spec_version": "1.1.0",
   "kind": "radio",
   "id": "moco-news-20261009",
   "title": "モコの、ひと息AIニュース",
@@ -137,13 +137,15 @@
     {
       "format": "wav",
       "path": "Moco-News.wav",
-      "sha256": "2ec98f8a9686f12ad3bee069ee12723b2f9a6778fbdcef8f4b60a7636f769c0c"
+      "sha256": "2ec98f8a9686f12ad3bee069ee12723b2f9a6778fbdcef8f4b60a7636f769c0c",
+      "kind": "audio"
     },
     {
       "format": "mp4",
       "path": "Moco-News.mp4",
-      "sha256": "810a8f25e2c027232363e047c0d421044034a1127a47359b0a65ed15c7f90780"
+      "sha256": "810a8f25e2c027232363e047c0d421044034a1127a47359b0a65ed15c7f90780",
+      "kind": "video"
     }
   ],
-  "content_hash": "3f19bb454335d9281f4f3e4b43f3ad29bde66643ac3d984717cfa324c8e4bee1"
+  "content_hash": "1415e517f39ca4548be2974a7cafff66b020641a1f9f6d712a80ede8118d0e6d"
 }

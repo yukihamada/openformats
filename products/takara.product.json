@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "takara",
   "name": "Takara Market",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "取引成立・越境配送は未確認。"
+  "note": "取引成立・越境配送は未確認。",
+  "content_hash": "332bd34e09515e0fa8fcfa2fda6909fa0e78162fae940350ca50c39edb87b217"
 }

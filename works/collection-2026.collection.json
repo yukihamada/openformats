@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/collection/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/collection/v1.json",
+  "spec_version": "1.1.0",
   "kind": "collection",
   "id": "yuki-works-2026",
   "title": "濱田優貴の作品集 2026",
@@ -28,5 +28,5 @@
       "note": "Senteテーマソング"
     }
   ],
-  "content_hash": "167c62a23a2f9b01d79021309a649a0b368a2951cc2d8a569cbe6ea1e904689f"
+  "content_hash": "2b74c6232f55c0c4e2812c1a2ddb02b476caa2bf63d42f185ff9fd1a49887303"
 }

@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "saku",
   "name": "サクッ",
@@ -37,5 +37,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "9/15棚卸しに公開版の記録。税額精度・申告受理は今回未検証。"
+  "note": "9/15棚卸しに公開版の記録。税額精度・申告受理は今回未検証。",
+  "content_hash": "c8f1aaa48aa9a7db8e157e79be899f2f9f01714575f3b7beb1db14c00702637b"
 }

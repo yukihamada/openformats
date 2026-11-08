@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "stayflow",
   "name": "StayFlow",
@@ -40,5 +40,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "既存観測39掲載/自社5。研修110万円〜税別・宿泊別。予約・講師は別途確認。"
+  "note": "既存観測39掲載/自社5。研修110万円〜税別・宿泊別。予約・講師は別途確認。",
+  "content_hash": "441b6e7f288022f6d0586364b4ee44a95130975cf60b694096ab979bcd72d759"
 }

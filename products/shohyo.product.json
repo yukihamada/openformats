@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "shohyo",
   "name": "商標まる",
@@ -37,5 +37,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "登録可能性・審査通過・法的判断は保証しない。今回は出願していない。"
+  "note": "登録可能性・審査通過・法的判断は保証しない。今回は出願していない。",
+  "content_hash": "923d17d460e8cccc464f8bae42262d87a7896c1044980436eecc5b73c3e5e91b"
 }

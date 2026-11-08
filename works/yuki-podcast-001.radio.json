@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/radio/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/radio/v1.json",
+  "spec_version": "1.1.0",
   "kind": "radio",
   "id": "yuki-podcast-001",
   "title": "AIが賢くなるほど、なぜ僕らは忙しいのか？",
@@ -158,13 +158,15 @@
     {
       "format": "mp3",
       "path": "episode-001.mp3",
-      "sha256": "cbd512aa79f9a819f38ed6a5c6d2064e451365dbd88283c96a146964652a1e4e"
+      "sha256": "cbd512aa79f9a819f38ed6a5c6d2064e451365dbd88283c96a146964652a1e4e",
+      "kind": "audio"
     },
     {
       "format": "m4a",
       "path": "episode-001.m4a",
-      "sha256": "cb72f2a5a5e7687a2e415b9947368d18b3e7fde8e0f8f6e9c683997ec8b07ef3"
+      "sha256": "cb72f2a5a5e7687a2e415b9947368d18b3e7fde8e0f8f6e9c683997ec8b07ef3",
+      "kind": "audio"
     }
   ],
-  "content_hash": "220225a4d11131a8d12de1fb1b08108e65bae810f0e44313bf5e0f555996a863"
+  "content_hash": "b1a4d4e6c5a29fffa6022790e6379d48d895ef9b4131bee61ab2c94ebbfa0c92"
 }

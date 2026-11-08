@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "soluna-radio",
   "name": "Soluna Live Radio",
@@ -41,5 +41,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "9/15棚卸しに公開版の記録。利用・再生の実測は未実施。"
+  "note": "9/15棚卸しに公開版の記録。利用・再生の実測は未実施。",
+  "content_hash": "0c1bc93b583349af41ea9651a7046d50efb6fadab4269c6b0d4a1be4d2a1f7ac"
 }
