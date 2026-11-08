@@ -125,9 +125,17 @@ python3 tools/of.py consent revoke  work.voice.json --by self --note 配布停�
 ```
 
 - 状態: `requested → granted → revoked`（`denied` も）。各遷移は `events` に追記のみ。
-- **撤回（revoked）後は合成・配布を禁止**（`can_synthesize=false`）。撤回後に再 grant は不可。
-- 用途（scope: tts / render / distribute）ごとに許諾範囲を検査。
-- 同意なきクローンは `validate` が検出し、`voice-args` が引数生成を拒否する。
+- **撤回（revoked）後は合成・配布を禁止**。撤回後に再 grant は不可。
+- この禁止は表示だけでなく**合成経路そのものに強制**する:
+  `voiceclone.consent_ok()` / `qwen_tts_args()` が撤回・拒否を検出し、
+  `voice-args` は非 0 で終了して引数を生成しない（`PermissionError`）。
+- 用途（scope: tts / render / distribute）ごとに許諾範囲を検査。`tts` が scope に
+  無ければ合成できない。
+- 同意なきクローンは `validate_clone` が検出し、`voice-args` が拒否する。
+- 同意の状態変化（grant/revoke）は `content_hash` の対象外。撤回しても作品の
+  同一性・既存署名は壊れない（同意の真正性は `events` と hash_chain で担保）。
+- 2MB 超の参照音声は実体を content-addressed ストアに保存する（`--store`）。
+  ストア無しで大きい音声を渡すと黙って捨てずにエラーにする。
 
 > 法務確認（同意書の文言・撤回の実効性・未成年の扱い）は別途必要。仕組みは用意済み。
 

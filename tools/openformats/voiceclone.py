@@ -28,11 +28,13 @@ def _sha256(data: bytes) -> str:
 
 def attach_reference(data: dict, audio_path: str, *, text: str, lang: str | None = None,
                      engine: str = "qwen-tts", embed: bool = True,
-                     max_inline_bytes: int = 2_000_000) -> dict:
+                     max_inline_bytes: int = 2_000_000, store=None) -> dict:
     """参照音声を clone.reference に取り込む。
 
     小さい音声 (既定 2MB 以下) は base64 で JSON に内包して自己完結させる。
-    大きい音声は blob 参照 (sha256) のみ記録し、実体はストアに置く。
+    大きい音声は実体を content-addressed ストアに保存し、参照 (sha256) を記録する。
+    ストアが渡されないのに内包サイズを超える場合は、実体を失わないよう
+    ValueError を投げる (黙ってバイト列を捨てない)。
     """
     p = pathlib.Path(audio_path)
     raw = p.read_bytes()
@@ -48,6 +50,14 @@ def attach_reference(data: dict, audio_path: str, *, text: str, lang: str | None
         ref["lang"] = lang
     if embed and len(raw) <= max_inline_bytes:
         ref["audio_b64"] = _b64(raw)
+    elif store is not None:
+        s, _ = store.put_bytes(raw)
+        ref["audio_sha256"] = s
+        ref["audio_store"] = "ofstore"
+    else:
+        raise ValueError(
+            f"参照音声が {max_inline_bytes} バイトを超える。実体を保持するには "
+            f"store を渡すか max_inline_bytes を増やすこと (黙って捨てない)")
 
     clone = data.get("clone", {})
     clone.setdefault("engine", engine)
@@ -57,11 +67,16 @@ def attach_reference(data: dict, audio_path: str, *, text: str, lang: str | None
     return data
 
 
-def reference_bytes(data: dict) -> bytes | None:
+def reference_bytes(data: dict, store=None) -> bytes | None:
     """clone.reference の参照音声バイト列を返す (内包 or ストアから復元)。"""
     ref = data.get("clone", {}).get("reference", {})
     if ref.get("audio_b64"):
         return base64.b64decode(ref["audio_b64"])
+    if ref.get("audio_sha256") and store is not None:
+        try:
+            return store.get_bytes(ref["audio_sha256"])
+        except FileNotFoundError:
+            return None
     return None
 
 
@@ -81,7 +96,7 @@ def attach_embedding(data: dict, vector_b64: str, *, dim: int,
     return data
 
 
-def qwen_tts_args(data: dict) -> dict:
+def qwen_tts_args(data: dict, store=None) -> dict:
     """qwen-tts (Qwen3-TTS / Qwen2.5-Omni 系) に渡すクローン引数を組み立てる。
 
     返す dict は一般的な zero-shot クローン API の kwargs 形:
@@ -89,7 +104,15 @@ def qwen_tts_args(data: dict) -> dict:
          "language": str, "params": {...}}
 
     実エンジンの引数名はラッパーで吸収する想定。ここでは意味を保った中立形。
+
+    合成は同意が有効な場合のみ許可する。撤回・拒否済みなら ValueError を投げる
+    (呼び出し側の検査漏れでも合成引数を生成しないための最終防衛線)。
     """
+    if not consent_ok(data):
+        raise PermissionError("声の同意が無効 (撤回/拒否/未同意) のため合成引数を生成できない")
+    from . import consent as _consent
+    if not _consent.scope_allows(data, "tts"):
+        raise PermissionError("同意 scope に tts が含まれないため合成できない")
     clone = data.get("clone", {})
     ref = clone.get("reference", {})
     emb = clone.get("embedding", {})
@@ -99,7 +122,7 @@ def qwen_tts_args(data: dict) -> dict:
         "language": ref.get("lang") or data.get("lang"),
         "params": clone.get("params", {}),
     }
-    rb = reference_bytes(data)
+    rb = reference_bytes(data, store=store)
     if rb is not None:
         out["ref_audio"] = rb
     elif ref.get("audio_sha256"):
@@ -115,31 +138,45 @@ def qwen_tts_args(data: dict) -> dict:
 
 
 def consent_ok(data: dict) -> bool:
-    """クローンを作ってよい同意があるか。"""
+    """クローンを作ってよい同意があるか。
+
+    clone.consent がある場合は同意状態機械 (consent モジュール) を唯一の真実とし、
+    撤回 (revoked)・拒否 (denied) を必ず拒否する。clone.consent が無い場合のみ
+    speaker.consent による後方互換チェックを行う。
+    """
+    from . import consent as _consent
+
+    c = data.get("clone", {}).get("consent", {})
+    if c.get("status"):
+        return _consent.can_synthesize(data)
+    # 後方互換: 同意ブロックが無い旧データ
     sp = data.get("speaker", {})
-    consent = sp.get("consent")
-    env = data.get("consent", {})
-    status = env.get("status")
-    if consent in ("self", "licensed", "public-domain"):
-        return True
-    if status == "granted":
-        return True
-    return False
+    return sp.get("consent") in ("self", "licensed", "public-domain")
 
 
-def validate_clone(data: dict) -> list[str]:
+def validate_clone(data: dict, store=None) -> list[str]:
     """clone ブロックの自己完結性・同意を検査し、問題のリストを返す。"""
     problems: list[str] = []
     clone = data.get("clone")
     if not clone:
         return problems
     if not consent_ok(data):
-        problems.append("clone があるのに声の同意 (speaker.consent / consent.status) が無い")
+        from . import consent as _consent
+        st = _consent.status(data)
+        if st in ("revoked", "denied"):
+            problems.append(f"声の同意が {st} のため合成できない")
+        else:
+            problems.append("clone があるのに声の同意 (speaker.consent / clone.consent) が無い")
     ref = clone.get("reference", {})
     emb = clone.get("embedding", {})
     if clone.get("method") in ("zero-shot", "hybrid"):
-        if not (ref.get("audio_b64") or ref.get("audio_sha256") or ref.get("audio_manifest")):
+        has_ref = bool(ref.get("audio_b64") or ref.get("audio_sha256")
+                       or ref.get("audio_manifest"))
+        if not has_ref:
             problems.append("zero-shot なのに参照音声 (audio_b64/sha256/manifest) が無い")
+        elif not ref.get("audio_b64") and store is not None \
+                and reference_bytes(data, store=store) is None:
+            problems.append("参照音声がストアに無く復元できない (audio_sha256 のみ)")
         if not ref.get("text") and not clone.get("params", {}).get("x_vector_only"):
             problems.append("zero-shot なのに参照テキスト (ref_text) が無い")
     if clone.get("method") in ("embedding", "hybrid"):

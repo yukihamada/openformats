@@ -121,7 +121,8 @@
       "section": "intro",
       "lines": [
         "（ピアノ、ひとつぶの音）",
-        "朝の光が、画面のむこうで待っている"
+        "朝の光が、画面のむこうで待っている",
+        "新しい一行を足した"
       ],
       "lang": "ja"
     },
@@ -213,7 +214,7 @@
       "duration_sec": 178.61
     }
   ],
-  "content_hash": "bfa6ce17b33cfb69efc241bb368a02d59d3d37e9c4202158f9f9bb3b690bac78",
+  "content_hash": "0d751f6c05ff020eea7e73411714b299a92ef96eabf5a3fe751601f1a1fbef58",
   "revisions": [
     {
       "at": "2026-11-08T08:14:23Z",
