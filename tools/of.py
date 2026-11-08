@@ -230,6 +230,74 @@ def cmd_voice_args(args):
     return 0
 
 
+def cmd_cost(args):
+    """プラン原価・粗利・損益分岐を計算する。"""
+    from openformats import cost
+    prices = {}
+    if args.storage_price is not None:
+        prices["storage_usd_per_gb_month"] = args.storage_price
+    if args.egress_price is not None:
+        prices["egress_usd_per_gb"] = args.egress_price
+    if args.usd_jpy is not None:
+        prices["usd_jpy"] = args.usd_jpy
+    store_gb = args.storage_gb
+    if store_gb is None and args.store:
+        store_gb = cost.store_usage_gb(args.store)
+    if args.plan:
+        r = cost.plan_report(args.plan, egress_gb=args.egress_gb,
+                             store_gb=store_gb, prices=prices or None)
+    else:
+        r = cost.plan_cost(storage_gb=store_gb or 0, egress_gb=args.egress_gb,
+                           price_jpy=args.price_jpy, prices=prices or None)
+    print(json.dumps(r, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_billing(args):
+    """使用量を計量し、プラン上限と照合する。"""
+    from openformats import billing
+    u = billing.measure(works_dir=args.works_dir, store_root=args.store)
+    r = billing.evaluate(u, plan=args.plan)
+    r["measured"] = u
+    if args.overage:
+        r["overage_jpy"] = billing.overage_charge_jpy(
+            storage_gb=u["storage_gb"], plan=args.plan)
+    print(json.dumps(r, ensure_ascii=False, indent=2))
+    return 0 if r["status"] != "over" else 2
+
+
+def cmd_consent(args):
+    """声クローンの同意フロー (status/request/grant/deny/revoke)。"""
+    from openformats import consent
+    data = _load(args.work)
+    if args.action == "status":
+        print(json.dumps({
+            "status": consent.status(data),
+            "can_synthesize": consent.can_synthesize(data),
+            "events": data.get("clone", {}).get("consent", {}).get("events", []),
+            "problems": consent.validate(data),
+        }, ensure_ascii=False, indent=2))
+        return 0
+    if args.action == "request":
+        consent.request(data, subject=args.subject, doc=args.doc, by=args.by, note=args.note)
+    elif args.action == "grant":
+        consent.grant(data, by=args.by or "self", scope=args.scope, doc=args.doc, note=args.note)
+    elif args.action == "deny":
+        consent.deny(data, by=args.by, note=args.note)
+    elif args.action == "revoke":
+        consent.revoke(data, by=args.by or "self", note=args.note)
+    problems = consent.validate(data)
+    if problems:
+        print(json.dumps({"problems": problems}, ensure_ascii=False, indent=2))
+        return 1
+    if args.write:
+        core.dump(data, args.work)
+        print(f"記録: {args.work} (status={consent.status(data)})", file=sys.stderr)
+    else:
+        print(json.dumps(data.get("clone", {}).get("consent"), ensure_ascii=False, indent=2))
+    return 0
+
+
 def main(argv):
     ap = argparse.ArgumentParser(prog="of", description="openformats CLI")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -246,6 +314,9 @@ def main(argv):
     p = sub.add_parser("store"); p.add_argument("file", nargs="?"); p.add_argument("--store"); p.set_defaults(fn=cmd_store)
     p = sub.add_parser("voice-attach"); p.add_argument("work"); p.add_argument("audio"); p.add_argument("--text", required=True); p.add_argument("--lang"); p.add_argument("--engine", default="qwen-tts"); p.add_argument("--write", action="store_true"); p.set_defaults(fn=cmd_voice_attach)
     p = sub.add_parser("voice-args"); p.add_argument("work"); p.set_defaults(fn=cmd_voice_args)
+    p = sub.add_parser("cost"); p.add_argument("--plan"); p.add_argument("--storage-gb", type=float); p.add_argument("--egress-gb", type=float, default=0.0); p.add_argument("--price-jpy", type=float, default=0.0); p.add_argument("--store"); p.add_argument("--storage-price", type=float); p.add_argument("--egress-price", type=float); p.add_argument("--usd-jpy", type=float); p.set_defaults(fn=cmd_cost)
+    p = sub.add_parser("billing"); p.add_argument("--plan", required=True); p.add_argument("--works-dir", default="works"); p.add_argument("--store", default=".ofstore"); p.add_argument("--overage", action="store_true"); p.set_defaults(fn=cmd_billing)
+    p = sub.add_parser("consent"); p.add_argument("action", choices=["status", "request", "grant", "deny", "revoke"]); p.add_argument("work"); p.add_argument("--subject"); p.add_argument("--doc"); p.add_argument("--by"); p.add_argument("--note"); p.add_argument("--scope", action="append"); p.add_argument("--write", action="store_true"); p.set_defaults(fn=cmd_consent)
 
     args = ap.parse_args(argv[1:])
     return args.fn(args)

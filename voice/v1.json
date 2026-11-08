@@ -121,6 +121,45 @@
           "type": "string",
           "description": "このクローンの同意根拠 (speaker.consent_doc への参照)。同意なきクローンは作らない。"
         },
+        "consent": {
+          "type": "object",
+          "description": "声クローンの同意フロー。作成・配布・撤回を状態機械で記録する。status は events から導出した現在状態。撤回 (revoked) されたら合成・配布を禁止する。",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": ["requested", "granted", "denied", "revoked"],
+              "description": "現在の同意状態。requested=依頼中, granted=許諾, denied=拒否, revoked=撤回。"
+            },
+            "subject": { "type": "string", "description": "同意した話者。" },
+            "granted_by": {
+              "type": "string",
+              "description": "同意の主体 (self=本人 / guardian=後見 / licensee=許諾者)。"
+            },
+            "scope": {
+              "type": "array",
+              "items": { "type": "string", "enum": ["tts", "render", "distribute"] },
+              "description": "許諾する用途。未指定なら tts のみ。"
+            },
+            "doc": { "type": "string", "description": "同意書の参照 (秘密は含めない)。" },
+            "events": {
+              "type": "array",
+              "description": "同意の遷移履歴。追記のみ。",
+              "items": {
+                "type": "object",
+                "required": ["at", "action"],
+                "properties": {
+                  "at": { "type": "string", "format": "date-time" },
+                  "action": { "type": "string", "enum": ["request", "grant", "deny", "revoke"] },
+                  "by": { "type": "string" },
+                  "note": { "type": "string" },
+                  "scope": { "type": "array", "items": { "type": "string" } }
+                },
+                "additionalProperties": true
+              }
+            }
+          },
+          "additionalProperties": true
+        },
         "revocable": {
           "type": "boolean",
           "default": true,

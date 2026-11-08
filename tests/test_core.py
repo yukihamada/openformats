@@ -202,6 +202,77 @@ def test_voice_clone_selfcontained_and_consent():
     assert voiceclone.validate_clone(bad), "同意なきクローンは問題として検出"
 
 
+def test_cost_plan_margin():
+    from openformats import cost
+    r = cost.plan_cost(storage_gb=20, egress_gb=20, price_jpy=500)
+    assert r["source"] == "estimate"
+    assert r["price_jpy"] == 500
+    assert 0 < r["cost_jpy"] < 500, r
+    assert r["margin_jpy"] > 0, "¥500/20GB/20GB は赤字でない"
+    assert abs(r["cost_jpy"] + r["margin_jpy"] - 500) < 0.5
+
+
+def test_cost_breakeven_positive():
+    from openformats import cost
+    be = cost.breakeven_egress_gb(storage_gb=20, price_jpy=500)
+    assert be > 0, "損益分岐の配信量が正"
+    # 損益分岐を超えると赤字
+    over = cost.plan_cost(storage_gb=20, egress_gb=be + 50, price_jpy=500)
+    assert over["margin_jpy"] < 0
+
+
+def test_billing_states():
+    from openformats import billing
+    ok = billing.evaluate({"works": 5, "storage_gb": 1}, plan="personal")
+    assert ok["status"] == "ok", ok
+    warn = billing.evaluate({"works": 9500, "storage_gb": 19}, plan="personal")
+    assert warn["status"] == "warning", warn
+    over = billing.evaluate({"works": 10001, "storage_gb": 1}, plan="personal")
+    assert over["status"] == "over", over
+    assert over["next_plan"] == "studio", over
+
+
+def test_billing_overage():
+    from openformats import billing
+    assert billing.overage_charge_jpy(storage_gb=20, plan="personal") == 0
+    assert billing.overage_charge_jpy(storage_gb=25, plan="personal") == 100
+    assert billing.overage_charge_jpy(storage_gb=35, plan="personal") == 200
+
+
+def test_consent_flow():
+    from openformats import consent
+    d = {"kind": "voice", "id": "v", "speaker": {"name": "t", "consent": "self"},
+         "clone": {"engine": "qwen-tts", "method": "zero-shot"}}
+    assert consent.status(d) is None
+    assert not consent.can_synthesize(d)
+    consent.request(d, subject="t", doc="internal:x")
+    assert consent.status(d) == "requested"
+    assert not consent.can_synthesize(d), "requested では合成不可"
+    consent.grant(d, by="self", scope=["tts", "render"])
+    assert consent.status(d) == "granted"
+    assert consent.can_synthesize(d)
+    assert consent.scope_allows(d, "render")
+    assert not consent.scope_allows(d, "distribute")
+    assert consent.validate(d) == []
+    consent.revoke(d, by="self", note="停止")
+    assert consent.status(d) == "revoked"
+    assert not consent.can_synthesize(d), "撤回後は合成不可"
+    assert consent.validate(d) == []
+
+
+def test_consent_grant_after_revoke_fails():
+    from openformats import consent
+    d = {"kind": "voice", "id": "v", "clone": {"method": "zero-shot"}}
+    consent.request(d, subject="t")
+    consent.grant(d, by="self")
+    consent.revoke(d, by="self")
+    try:
+        consent.grant(d, by="self")
+        assert False, "撤回後に grant できてはいけない"
+    except ValueError:
+        pass
+
+
 def _run():
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     failed = 0
