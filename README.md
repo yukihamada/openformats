@@ -130,9 +130,10 @@ python3 tools/validate.py radio/v1.json works/yuki-podcast-001.radio.json
 ## 使い方（3 つのツール・4 ステップ）
 
 ```bash
-# 0. 依存を入れる（最初に一度だけ。Homebrew の Python は venv 推奨）
-python3 -m venv .venv && .venv/bin/pip install jsonschema
-# 以降は .venv/bin/python で実行する（例: .venv/bin/python tools/validate.py …）
+# 0. 依存を入れる（最初に一度だけ）
+python3 -m venv .venv
+source .venv/bin/activate          # venv に入る（以降 python3 は venv の Python）
+pip install jsonschema
 
 # 1. 検証 — JSON Schema で作品をチェック
 python3 tools/validate.py music/v1.json examples/sample.music.json
@@ -149,6 +150,8 @@ python3 tools/of.py verify works/my-song.music.json
 # 4. レンダリング — JSON から媒体を作り、SHA-256 で作品に紐づける
 python3 tools/render.py examples/sample.music.json --kind audio --format wav --dry-run
 ```
+
+> `source .venv/bin/activate` を使わない場合は、各コマンドの `python3` を `.venv/bin/python` に置き換えれば同じです。
 
 使うツールはこの 3 つです。
 
