@@ -134,6 +134,7 @@ def cmd_verify(args):
     sigs = core.verify_signatures(data)
     chain = core.verify_chain(data)
     rends = _verify_renditions(data, args.work)
+    revisions = core.verify_revisions(data)
     out = {
         "work": data.get("id"),
         "content_hash_computed": h,
@@ -142,9 +143,10 @@ def cmd_verify(args):
         "signatures": sigs,
         "chain": chain,
         "renditions": rends,
+        "revisions": revisions,
     }
     ok = (stored == h) if stored else True
-    ok = ok and all(s["valid"] for s in sigs) and chain["ok"]
+    ok = ok and all(s["valid"] for s in sigs) and chain["ok"] and revisions["ok"]
     ok = ok and all(r["ok"] for r in rends)
     out["ok"] = ok
     print(json.dumps(out, ensure_ascii=False, indent=2))
@@ -154,13 +156,11 @@ def cmd_verify(args):
 def cmd_revise(args):
     data = _load(args.work)
     core.append_revision(data, args.action, by=args.by, note=args.note)
-    data["content_hash"] = core.content_hash(data)
-    print(json.dumps({"content_hash": data["content_hash"],
-                      "chain_length": len(data["hash_chain"])},
-                     ensure_ascii=False))
     if args.write:
         core.dump(data, args.work)
         print(f"書き込み: {args.work}", file=sys.stderr)
+    else:
+        print(json.dumps(data.get("hash_chain", [])[-1:], ensure_ascii=False, indent=2))
     return 0
 
 
@@ -190,17 +190,6 @@ def cmd_migrate(args):
         "note": "計画のみ。実体生成は下記コマンドで行い、sha256 を埋めてから追加する。",
         "run": cmd,
     }, ensure_ascii=False, indent=2))
-    return 0
-
-
-def cmd_revise(args):
-    data = _load(args.work)
-    core.append_revision(data, args.action, by=args.by, note=args.note)
-    if args.write:
-        core.dump(data, args.work)
-        print(f"書き込み: {args.work}", file=sys.stderr)
-    else:
-        print(json.dumps(data.get("hash_chain", [])[-1:], ensure_ascii=False, indent=2))
     return 0
 
 
@@ -249,10 +238,12 @@ def cmd_store(args):
 def cmd_voice_attach(args):
     """参照音声を voice.json の clone ブロックに取り込む (qwen-tts 用)。"""
     from openformats import voiceclone
+    from openformats.store import Store
     data = _load(args.work)
+    store = Store(args.store) if getattr(args, "store", None) else None
     voiceclone.attach_reference(data, args.audio, text=args.text, lang=args.lang,
-                                engine=args.engine)
-    problems = voiceclone.validate_clone(data)
+                                engine=args.engine, store=store)
+    problems = voiceclone.validate_clone(data, store=store)
     if problems:
         print(json.dumps({"problems": problems}, ensure_ascii=False, indent=2))
         return 1
@@ -267,12 +258,14 @@ def cmd_voice_attach(args):
 def cmd_voice_args(args):
     """qwen-tts に渡すクローン引数を出力する (自己完結性・同意を検査)。"""
     from openformats import voiceclone
+    from openformats.store import Store
     data = _load(args.work)
-    problems = voiceclone.validate_clone(data)
+    store = Store(args.store) if getattr(args, "store", None) else None
+    problems = voiceclone.validate_clone(data, store=store)
     if problems:
         print(json.dumps({"problems": problems}, ensure_ascii=False, indent=2))
         return 1
-    a = voiceclone.qwen_tts_args(data)
+    a = voiceclone.qwen_tts_args(data, store=store)
     if isinstance(a.get("ref_audio"), (bytes, bytearray)):
         a = dict(a)
         a["ref_audio"] = f"<{len(a['ref_audio'])} bytes>"
@@ -362,8 +355,8 @@ def main(argv):
     p = sub.add_parser("log"); p.add_argument("work"); p.set_defaults(fn=cmd_log)
     p = sub.add_parser("checkout"); p.add_argument("work"); p.add_argument("index", type=int); p.add_argument("--out"); p.set_defaults(fn=cmd_checkout)
     p = sub.add_parser("store"); p.add_argument("file", nargs="?"); p.add_argument("--store"); p.set_defaults(fn=cmd_store)
-    p = sub.add_parser("voice-attach"); p.add_argument("work"); p.add_argument("audio"); p.add_argument("--text", required=True); p.add_argument("--lang"); p.add_argument("--engine", default="qwen-tts"); p.add_argument("--write", action="store_true"); p.set_defaults(fn=cmd_voice_attach)
-    p = sub.add_parser("voice-args"); p.add_argument("work"); p.set_defaults(fn=cmd_voice_args)
+    p = sub.add_parser("voice-attach"); p.add_argument("work"); p.add_argument("audio"); p.add_argument("--text", required=True); p.add_argument("--lang"); p.add_argument("--engine", default="qwen-tts"); p.add_argument("--store"); p.add_argument("--write", action="store_true"); p.set_defaults(fn=cmd_voice_attach)
+    p = sub.add_parser("voice-args"); p.add_argument("work"); p.add_argument("--store"); p.set_defaults(fn=cmd_voice_args)
     p = sub.add_parser("cost"); p.add_argument("--plan"); p.add_argument("--storage-gb", type=float); p.add_argument("--egress-gb", type=float, default=0.0); p.add_argument("--price-jpy", type=float, default=0.0); p.add_argument("--store"); p.add_argument("--storage-price", type=float); p.add_argument("--egress-price", type=float); p.add_argument("--usd-jpy", type=float); p.set_defaults(fn=cmd_cost)
     p = sub.add_parser("billing"); p.add_argument("--plan", required=True); p.add_argument("--works-dir", default="works"); p.add_argument("--store", default=".ofstore"); p.add_argument("--overage", action="store_true"); p.set_defaults(fn=cmd_billing)
     p = sub.add_parser("consent"); p.add_argument("action", choices=["status", "request", "grant", "deny", "revoke"]); p.add_argument("work"); p.add_argument("--subject"); p.add_argument("--doc"); p.add_argument("--by"); p.add_argument("--note"); p.add_argument("--scope", action="append"); p.add_argument("--write", action="store_true"); p.set_defaults(fn=cmd_consent)

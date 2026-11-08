@@ -45,6 +45,23 @@ def _body(data: dict) -> dict:
     if isinstance(prov, dict) and "history" in prov:
         prov = {k: v for k, v in prov.items() if k != "history"}
         body["provenance"] = prov
+    # clone.consent は同意の運用状態 (grant/revoke) であり創作内容ではない。
+    # これをハッシュに含めると、撤回のたびに content_hash と既存署名が壊れる。
+    # 同意の真正性は clone.consent.events と hash_chain / git 履歴で担保する。
+    clone = body.get("clone")
+    if isinstance(clone, dict) and "consent" in clone:
+        clone = {k: v for k, v in clone.items() if k != "consent"}
+        body["clone"] = clone
+    # speaker.consent / consent_doc は同意の運用状態 (grant が同期する) であり
+    # 創作内容ではない。話者名など他の属性はハッシュ対象のまま。
+    speaker = body.get("speaker")
+    if isinstance(speaker, dict):
+        speaker = {k: v for k, v in speaker.items()
+                   if k not in ("consent", "consent_doc")}
+        if speaker:
+            body["speaker"] = speaker
+        else:
+            body.pop("speaker", None)
     return body
 
 
@@ -257,10 +274,15 @@ def _snapshot(data: dict) -> dict:
 
 
 def _reconstruct(revs: list[dict], upto: int) -> dict:
-    """revs[0] の base スナップショットから patch を順に適用し upto 時点を復元。"""
+    """revs[0] の base スナップショットから patch を順に適用し upto 時点を復元。
+
+    戻り値は必ず deepcopy。base snapshot を共有したまま返すと、呼び出し側が
+    復元結果を編集したときに履歴 (revisions[0].snapshot) まで書き換わる。
+    """
+    import copy
     from . import jsonpatch
 
-    body = revs[0]["snapshot"]
+    body = copy.deepcopy(revs[0]["snapshot"])
     for i in range(1, upto + 1):
         body = jsonpatch.apply_patch(body, revs[i].get("patch", []))
     return body
@@ -326,6 +348,34 @@ def checkout(data: dict, index: int) -> dict:
     if not (0 <= index < len(revs)):
         raise IndexError(f"index 範囲外: {index} (0..{len(revs) - 1})")
     return _reconstruct(revs, index)
+
+
+def verify_revisions(data: dict) -> dict:
+    """revisions と現在の本体が整合しているかを検査する。
+
+    最後の revision を復元した内容が現在の本体 (_body) と一致し、かつ記録された
+    content_hash が現在の content_hash と一致することを確認する。履歴が本体と
+    食い違ったまま (編集後に record していない等) なら problems に残す。
+    """
+    revs = data.get("revisions", [])
+    if not revs:
+        return {"ok": True, "length": 0, "problems": []}
+    problems = []
+    try:
+        restored = _reconstruct(revs, len(revs) - 1)
+    except Exception as e:
+        return {"ok": False, "length": len(revs),
+                "problems": [f"最終リビジョンを復元できない: {e}"]}
+    body = _body(data)
+    if restored != body:
+        problems.append("最終リビジョンの復元内容が現在の本体と不一致 (record 漏れの可能性)")
+    recorded = revs[-1].get("content_hash")
+    cur = content_hash(data)
+    if recorded and recorded != cur:
+        problems.append(
+            f"最終リビジョンの記録ハッシュ {recorded[:12]} が現在の content_hash "
+            f"{cur[:12]} と不一致")
+    return {"ok": not problems, "length": len(revs), "problems": problems}
 
 
 def revision_log(data: dict) -> list[dict]:

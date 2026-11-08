@@ -101,13 +101,31 @@ def apply_patch(doc: Any, patch: list[dict]) -> Any:
     return doc
 
 
+def _equal(a: Any, b: Any) -> bool:
+    """型を厳密に区別した等価判定。
+
+    Python の == は 1 == True / 1 == 1.0 を真にするため、そのまま使うと
+    「1 → true」の変更を差分ゼロと誤判定し、checkout が元の版を復元できなく
+    なる (content_hash は変わるのに patch が空になる)。型も一致することを要求する。
+    """
+    if type(a) is not type(b):
+        return False
+    if isinstance(a, dict):
+        if a.keys() != b.keys():
+            return False
+        return all(_equal(a[k], b[k]) for k in a)
+    if isinstance(a, list):
+        return len(a) == len(b) and all(_equal(x, y) for x, y in zip(a, b))
+    return a == b
+
+
 def diff(a: Any, b: Any, path: str = "") -> list[dict]:
     """a → b の差分を RFC 6902 パッチとして返す。
 
     配列はインデックス単位で比較する (音声の配列など順序が意味を持つため)。
-    辞書はキー単位。値が等しければ空リスト。
+    辞書はキー単位。値が等しければ空リスト。型は厳密に区別する (_equal)。
     """
-    if a == b:
+    if _equal(a, b):
         return []
 
     # 型が違う / スカラー → replace

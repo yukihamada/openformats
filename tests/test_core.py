@@ -273,6 +273,159 @@ def test_consent_grant_after_revoke_fails():
         pass
 
 
+def test_revocation_blocks_synthesis():
+    """#1: 撤回済みクローンは voiceclone でも合成できない (同意フローの実経路強制)。"""
+    from openformats import consent, voiceclone
+    d = {"kind": "voice", "id": "v", "lang": "ja",
+         "speaker": {"name": "t", "consent": "self"},
+         "clone": {"engine": "qwen-tts", "method": "zero-shot",
+                   "reference": {"text": "hi", "audio_b64": "AAAA"}}}
+    consent.request(d, subject="t")
+    consent.grant(d, by="self", scope=["tts"])
+    assert voiceclone.consent_ok(d)
+    assert voiceclone.validate_clone(d) == []
+    voiceclone.qwen_tts_args(d)  # 同意中は生成できる
+    consent.revoke(d, by="self")
+    assert not voiceclone.consent_ok(d), "撤回後は consent_ok が False"
+    assert voiceclone.validate_clone(d), "撤回後は validate_clone が問題を出す"
+    try:
+        voiceclone.qwen_tts_args(d)
+        assert False, "撤回後に合成引数を生成してはいけない"
+    except PermissionError:
+        pass
+
+
+def test_revocation_blocks_synthesis_cli():
+    """#1: CLI voice-args も撤回後は非0で拒否する。"""
+    import json, subprocess, tempfile, os
+    from openformats import consent, core
+    d = {"kind": "voice", "id": "v", "lang": "ja",
+         "speaker": {"name": "t", "consent": "self"},
+         "clone": {"engine": "qwen-tts", "method": "zero-shot",
+                   "reference": {"text": "hi", "audio_b64": "AAAA"}}}
+    consent.request(d, subject="t")
+    consent.grant(d, by="self", scope=["tts"])
+    consent.revoke(d, by="self")
+    p = os.path.join(tempfile.mkdtemp(), "v.json")
+    core.dump(d, p)
+    r = subprocess.run([sys.executable, str(ROOT / "tools" / "of.py"),
+                        "voice-args", p], capture_output=True, text=True)
+    assert r.returncode != 0, f"撤回後は voice-args が失敗すべき: {r.stdout}"
+
+
+def test_consent_excluded_from_hash_and_signature():
+    """#5: 同意の grant/revoke は content_hash を変えず、署名を壊さない。"""
+    from openformats import consent
+    d = _base()
+    d["clone"] = {"engine": "qwen-tts", "method": "zero-shot",
+                  "reference": {"text": "hi"}}
+    h0 = core.content_hash(d)
+    consent.request(d, subject="t")
+    consent.grant(d, by="self", scope=["tts"])
+    h1 = core.content_hash(d)
+    consent.revoke(d, by="self")
+    h2 = core.content_hash(d)
+    assert h0 == h1 == h2, "同意の状態変化で content_hash が変わってはいけない"
+    # 署名も維持される
+    sec = core.secret_to_b64(core.new_secret())
+    d["content_hash"] = core.content_hash(d)
+    core.sign_document(d, sec, signer="t")
+    assert all(s["valid"] for s in core.verify_signatures(d))
+    consent.request(d, subject="t")
+    consent.grant(d, by="self", scope=["tts"])
+    assert all(s["valid"] for s in core.verify_signatures(d)), \
+        "同意付与で署名が無効になってはいけない"
+
+
+def test_checkout_is_non_destructive():
+    """#2: checkout の戻り値を編集しても履歴 snapshot を壊さない。"""
+    d = _base()
+    core.record_revision(d, action="create")
+    d["title"] = "second"
+    core.record_revision(d, action="edit")
+    r0 = core.checkout(d, 0)
+    r0["title"] = "HACKED"
+    assert d["revisions"][0]["snapshot"]["title"] == "t", "履歴が破壊された"
+    r1 = core.checkout(d, 1)
+    r1["title"] = "HACKED2"
+    assert core.checkout(d, 1)["title"] == "second", "復元結果が共有されている"
+
+
+def test_diff_type_strict():
+    """#3: 1 -> true を差分ゼロと誤判定しない (型を厳密に区別)。"""
+    from openformats import jsonpatch
+    p = jsonpatch.diff({"x": 1}, {"x": True})
+    assert p, "1 -> true は差分あり"
+    assert jsonpatch.apply_patch({"x": 1}, p) == {"x": True}
+    # 1 -> 1.0 も型が違うので差分 (ただし content_hash は JCS で同一)
+    p2 = jsonpatch.diff({"x": 1}, {"x": 1.0})
+    assert p2, "int -> float は差分あり"
+    # 同一型・同一値は差分なし
+    assert jsonpatch.diff({"x": 1}, {"x": 1}) == []
+
+
+def test_checkout_restores_bool_true():
+    """#3: 1 -> true の改訂を checkout で正しく復元できる。"""
+    d = _base()
+    d["flag"] = 1
+    core.record_revision(d, action="create")
+    d["flag"] = True
+    core.record_revision(d, action="edit")
+    r = core.checkout(d, 1)
+    assert r["flag"] is True, f"True を復元できていない: {r['flag']!r}"
+    r0 = core.checkout(d, 0)
+    assert r0["flag"] == 1 and not isinstance(r0["flag"], bool)
+
+
+def test_verify_revisions_detects_drift():
+    """#4: 本体だけ編集して record し忘れると verify_revisions が検知する。"""
+    d = _base()
+    core.record_revision(d, action="create")
+    d["title"] = "changed without record"
+    vr = core.verify_revisions(d)
+    assert not vr["ok"], "record 漏れを検知できていない"
+    # record すれば整合
+    core.record_revision(d, action="edit")
+    assert core.verify_revisions(d)["ok"]
+
+
+def test_samples_are_self_consistent():
+    """#4: リポジトリ内の全サンプル・作品が verify を通る。"""
+    import glob, json
+    for f in sorted(glob.glob(str(ROOT / "examples" / "*.json")) +
+                    glob.glob(str(ROOT / "works" / "*.json"))):
+        d = json.load(open(f, encoding="utf-8"))
+        stored = d.get("content_hash")
+        if stored:
+            assert stored == core.content_hash(d), f"{f}: content_hash 不一致"
+        assert core.verify_revisions(d)["ok"], f"{f}: revisions 不整合"
+        assert all(s["valid"] for s in core.verify_signatures(d)), f"{f}: 署名不正"
+
+
+def test_large_reference_requires_store():
+    """#6: 大きい参照音声は実体を保持する (store) か明示エラー。黙って捨てない。"""
+    from openformats import voiceclone
+    from openformats.store import Store
+    import tempfile, os
+    d = tempfile.mkdtemp()
+    p = os.path.join(d, "big.wav")
+    open(p, "wb").write(b"\x00" * 3_000_000)  # > 2MB
+    voice = {"kind": "voice", "id": "v", "speaker": {"name": "t", "consent": "self"},
+             "clone": {}}
+    # store 無し → 明示エラー
+    try:
+        voiceclone.attach_reference(voice, p, text="hi", max_inline_bytes=2_000_000)
+        assert False, "store 無しで大きい音声を黙って捨ててはいけない"
+    except ValueError:
+        pass
+    # store 有り → 実体を保存し、復元できる
+    st = Store(os.path.join(d, "store"))
+    voiceclone.attach_reference(voice, p, text="hi", max_inline_bytes=2_000_000, store=st)
+    rb = voiceclone.reference_bytes(voice, store=st)
+    assert rb is not None and len(rb) == 3_000_000, "ストアから参照音声を復元できない"
+    assert voiceclone.validate_clone(voice, store=st) == []
+
+
 def _run():
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     failed = 0
@@ -283,6 +436,9 @@ def _run():
         except AssertionError as e:
             failed += 1
             print(f"FAIL {fn.__name__}: {e}")
+        except Exception as e:
+            failed += 1
+            print(f"ERROR {fn.__name__}: {type(e).__name__}: {e}")
     print(f"\n{'FAIL' if failed else 'PASS'}: {failed} 失敗 / {len(fns)}")
     return 1 if failed else 0
 

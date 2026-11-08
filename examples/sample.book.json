@@ -119,20 +119,6 @@
       },
       "by": "yuki",
       "note": "初版"
-    },
-    {
-      "at": "2026-11-08T08:04:41Z",
-      "action": "edit",
-      "content_hash": "db3b30e470bdfecb3b4d41b269e7eca466c1f591ccc52099fc8ee87c1b90cd49",
-      "patch": [
-        {
-          "op": "replace",
-          "path": "/chapters/0/blocks/1/text",
-          "value": "これは最小の本文ブロックです。改訂版。"
-        }
-      ],
-      "by": "yuki",
-      "note": "本文を推敲"
     }
   ]
 }

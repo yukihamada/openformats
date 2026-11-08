@@ -414,20 +414,6 @@
       },
       "by": "yuki",
       "note": "初版"
-    },
-    {
-      "at": "2026-11-08T08:14:23Z",
-      "action": "edit",
-      "content_hash": "0d751f6c05ff020eea7e73411714b299a92ef96eabf5a3fe751601f1a1fbef58",
-      "patch": [
-        {
-          "op": "add",
-          "path": "/lyrics/0/lines/-",
-          "value": "新しい一行を足した"
-        }
-      ],
-      "by": "yuki",
-      "note": "歌詞を追加"
     }
   ],
   "signatures": [
