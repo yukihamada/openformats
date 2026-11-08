@@ -32,7 +32,7 @@
         },
         {
           "type": "paragraph",
-          "text": "これは最小の本文ブロックです。改訂版。"
+          "text": "これは最小の本文ブロックです。"
         },
         {
           "type": "list",
@@ -49,12 +49,12 @@
     "author_bio": "サンプル著者",
     "rights": "© 2026"
   },
-  "content_hash": "db3b30e470bdfecb3b4d41b269e7eca466c1f591ccc52099fc8ee87c1b90cd49",
+  "content_hash": "b6cd1a18a84e0b4353056f6e58a796c1a48eb88fcc3fe3181c8dcb7f2cb33882",
   "signatures": [
     {
       "alg": "Ed25519",
       "public_key": "f/NPZdENXk1dAVXqB+QWn1mIx6LUdhoJWuYWA4hnTPY=",
-      "signature": "jVB53wUW8IT0vQySj48QhR8rBlDkYE+J1M3KHamiuvqc+g/wLSOg62IG2KsErqPFRa60Zywd7wqm2s2rBpvhAw==",
+      "signature": "/opkEHBdrnTF+ye4r2QSz7hRCC9+PdYRB35EO3vnAXpD9Oqbn8gpLZBOf9W+ooweABfFlypUIDq1Jhwtxd+JAg==",
       "signer": "openformats-maintainer",
       "signed_at": "2026-11-08T07:47:04Z"
     }
@@ -119,20 +119,6 @@
       },
       "by": "yuki",
       "note": "初版"
-    },
-    {
-      "at": "2026-11-08T08:04:41Z",
-      "action": "edit",
-      "content_hash": "db3b30e470bdfecb3b4d41b269e7eca466c1f591ccc52099fc8ee87c1b90cd49",
-      "patch": [
-        {
-          "op": "replace",
-          "path": "/chapters/0/blocks/1/text",
-          "value": "これは最小の本文ブロックです。改訂版。"
-        }
-      ],
-      "by": "yuki",
-      "note": "本文を推敲"
     }
   ]
 }

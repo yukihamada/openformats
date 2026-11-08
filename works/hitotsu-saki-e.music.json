@@ -121,8 +121,7 @@
       "section": "intro",
       "lines": [
         "（ピアノ、ひとつぶの音）",
-        "朝の光が、画面のむこうで待っている",
-        "新しい一行を足した"
+        "朝の光が、画面のむこうで待っている"
       ],
       "lang": "ja"
     },
@@ -214,7 +213,7 @@
       "duration_sec": 178.61
     }
   ],
-  "content_hash": "0d751f6c05ff020eea7e73411714b299a92ef96eabf5a3fe751601f1a1fbef58",
+  "content_hash": "bfa6ce17b33cfb69efc241bb368a02d59d3d37e9c4202158f9f9bb3b690bac78",
   "revisions": [
     {
       "at": "2026-11-08T08:14:23Z",
@@ -415,20 +414,15 @@
       },
       "by": "yuki",
       "note": "初版"
-    },
+    }
+  ],
+  "signatures": [
     {
-      "at": "2026-11-08T08:14:23Z",
-      "action": "edit",
-      "content_hash": "0d751f6c05ff020eea7e73411714b299a92ef96eabf5a3fe751601f1a1fbef58",
-      "patch": [
-        {
-          "op": "add",
-          "path": "/lyrics/0/lines/-",
-          "value": "新しい一行を足した"
-        }
-      ],
-      "by": "yuki",
-      "note": "歌詞を追加"
+      "alg": "Ed25519",
+      "public_key": "nRLFpgBPvNxWaffMaXAlaEq/fHYX3m/J8pOjOmi/gsU=",
+      "signature": "2otTORyp5vdPRlaImHwmGYpb8AItL8OPkNaBdM7RPAmQxxwq/7SwVat9pZQ2gksEe2BGPMtaFOBq1IA3GM1gBg==",
+      "signer": "yukihamada",
+      "signed_at": "2026-11-08T08:41:55Z"
     }
   ]
 }

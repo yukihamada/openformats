@@ -80,12 +80,44 @@ def cmd_sign(args):
     return 0
 
 
+def _verify_renditions(data, work_path):
+    """renditions[].path の実体が存在し、sha256 が一致するか確認する。
+
+    path は作品 JSON からの相対パスとして解決する。実体が無い/不一致でも
+    例外にせず結果に含める (欠落を検知できることが目的)。
+    """
+    import os
+    base = os.path.dirname(os.path.abspath(work_path))
+    results = []
+    for r in data.get("renditions", []):
+        rel = r.get("path")
+        want = r.get("sha256")
+        entry = {"path": rel, "expected": want, "ok": False}
+        if not rel:
+            entry["error"] = "path 未設定"
+            results.append(entry)
+            continue
+        full = rel if os.path.isabs(rel) else os.path.join(base, rel)
+        if not os.path.exists(full):
+            entry["error"] = "実体が見つからない"
+            results.append(entry)
+            continue
+        got = core.rendition_hash(full)
+        entry["actual"] = got
+        entry["ok"] = (got == want)
+        if not entry["ok"]:
+            entry["error"] = "sha256 不一致"
+        results.append(entry)
+    return results
+
+
 def cmd_verify(args):
     data = _load(args.work)
     h = core.content_hash(data)
     stored = data.get("content_hash")
     sigs = core.verify_signatures(data)
     chain = core.verify_chain(data)
+    rends = _verify_renditions(data, args.work)
     revisions = core.verify_revisions(data)
     out = {
         "work": data.get("id"),
@@ -94,10 +126,12 @@ def cmd_verify(args):
         "content_hash_match": stored == h if stored else None,
         "signatures": sigs,
         "chain": chain,
+        "renditions": rends,
         "revisions": revisions,
     }
     ok = (stored == h) if stored else True
     ok = ok and all(s["valid"] for s in sigs) and chain["ok"] and revisions["ok"]
+    ok = ok and all(r["ok"] for r in rends)
     out["ok"] = ok
     print(json.dumps(out, ensure_ascii=False, indent=2))
     return 0 if ok else 1
