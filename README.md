@@ -23,9 +23,9 @@
 }
 ```
 
-これだけ。`kind` を変えれば、ラジオにも、本にも、動画にもなります。同じ道具（検証・ハッシュ）が、ぜんぶの作品にそのまま効きます。
+これだけ。`kind` を変えれば、ラジオにも、本にも、動画にもなります。同じ道具（検証・ハッシュ・署名・レンダリング）が、ぜんぶの作品にそのまま効きます。
 
-> この README の最後に、**この仕組みで作った 3 つの本物の作品**があります。3 つのうち 1 作は YouTube で聴けます。でも、なぜこの設計なのかは、順番に読むと腹に落ちます。
+> この README の最後に、**この仕組みで作った 3 つの本物の作品**があります。音源も同梱しているので、そのまま聴けます。でも、なぜこの設計なのかは、順番に読むと腹に落ちます。
 
 ---
 
@@ -41,40 +41,50 @@
 
 ## 「作品が残る」とは、どういうことか
 
-ここは正直に言います。openformats が残すのは **作品の設計図** です。音声・映像のバイナリ本体は、このリポジトリには入れません（重く、権利も絡むため）。代わりに、こう残します。
+openformats は、作品を **2 つの層** で残します。
 
-- **メタデータ・台本・歌詞・来歴・同意** → JSON に構造として残る。これは消えない。
-- **音声・映像の本体** → あなたの手元（ローカルや自分のストレージ）に置く。JSON には `renditions[].path` と **SHA-256** を記録する。
+- **設計図（JSON）** — メタデータ・台本・歌詞・来歴・同意。軽く、テキストなので Git で永久に残る。これが正本（source of truth）。
+- **本体（音声・映像・画像）** — 実ファイル。JSON の `renditions[].path` に場所、`renditions[].sha256` に指紋を記録する。
 
-この 2 つがそろって初めて「作品が残る」と言えます。JSON だけでは鳴りません。だから復元手順まで書きます。
+このリポジトリの `works/` には、**両方**入っています。JSON と音源がそろい、SHA-256 で結びついているので、音源が改ざんされていないことも、JSON が指す音源が本物であることも、誰でも検証できます。
 
 ```bash
-# 音声を手元に戻して照合する（JSON に記録した SHA-256 と一致するか確認）
-shasum -a 256 my-song.m4a
-# → JSON の renditions[].sha256 と同じ値なら、その音源は本物
+# 音源の指紋を確認する（JSON の renditions[].sha256 と一致するか）
+shasum -a 256 works/takes/take1_full.m4a
+# → 627961020ae8f9fc416da064fd3977447a6d24d9f93a9ec5bc9afcd35e795dea
 ```
 
-実例は [works/hitotsu-saki-e.music.json](works/hitotsu-saki-e.music.json) を見てください。`renditions` に音源のパスと SHA-256 が入っています。
+大きな音源をリポジトリに入れたくない場合は、JSON だけを Git に置き、`renditions[].path` を自分のストレージ（S3・NAS・外付け）に向けることもできます。指紋さえ合えば、音源がどこにあっても「本物」と確認できます。
 
 ---
 
-## 実際の作品（この仕組みで作った）
+## 実際の作品（この仕組みで作った・音源も同梱）
 
-| 作品 | 種類 | 中身 | 状態 |
-|---|---|---|---|
-| **AIが賢くなるほど、なぜ僕らは忙しいのか？** | ラジオ | 本人声ポッドキャスト第1回・8分58秒・出典3本 | [YouTube で公開](https://youtu.be/EGPYDJIyQ4U) |
-| **モコの、ひと息AIニュース** | ラジオ | 週次AIニュース3本・5章・79秒 | 音源は非公開（JSON のみ） |
-| **ひとつ先へ** | 音楽 | Senteテーマソング・BPM104・F major・2テイク | 音源は非公開（JSON のみ） |
+3 作品とも、**音源ファイルそのもの**をこのリポジトリの `works/` に入れてあります。JSON と音源の SHA-256 は一致します。ダウンロードして、そのまま聴けます。
 
-3 作品とも、このリポジトリの `works/` に **実データの JSON** として置いてあります。JSON には音源の SHA-256 と制作履歴が入り、出典はラジオ 2 作に付いています。あわせて作者情報（[yukihamada.person.json](works/yukihamada.person.json)）と作品集（[collection-2026.collection.json](works/collection-2026.collection.json)）も同梱しています。
+| 作品 | 種類 | 中身 | 音源 | JSON |
+|---|---|---|---|---|
+| **AIが賢くなるほど、なぜ僕らは忙しいのか？** | ラジオ | 本人声ポッドキャスト第1回・8分58秒・出典3本 | [mp3](works/episode-001.mp3) / [m4a](works/episode-001.m4a) ・ [YouTube](https://youtu.be/EGPYDJIyQ4U) | [radio.json](works/yuki-podcast-001.radio.json) |
+| **モコの、ひと息AIニュース** | ラジオ | 週次AIニュース3本・5章・79秒 | [wav](works/Moco-News.wav) / [mp4](works/Moco-News.mp4) | [radio.json](works/moco-news-20261009.radio.json) |
+| **ひとつ先へ** | 音楽 | Senteテーマソング・BPM104・F major・2テイク | [take1](works/takes/take1_full.m4a) / [take2](works/takes/take2_full.m4a) | [music.json](works/hitotsu-saki-e.music.json) |
 
-- ラジオ: [yuki-podcast-001.radio.json](works/yuki-podcast-001.radio.json) ・ [moco-news-20261009.radio.json](works/moco-news-20261009.radio.json)
-- 音楽: [hitotsu-saki-e.music.json](works/hitotsu-saki-e.music.json)
-- 設計根拠: [works/RESEARCH.md](works/RESEARCH.md)
+JSON には音源の SHA-256 と制作履歴が入り、出典はラジオ 2 作に付いています。あわせて作者情報（[yukihamada.person.json](works/yukihamada.person.json)）と作品集（[collection-2026.collection.json](works/collection-2026.collection.json)）も同梱しています。設計根拠は [works/RESEARCH.md](works/RESEARCH.md)。
+
+### 音源が本物か、自分で確かめる
 
 ```bash
-# 本物の作品を検証してみる（先に pip install jsonschema が必要）
-python3 tools/validate.py radio/radio.json works/yuki-podcast-001.radio.json
+# JSON に記録した SHA-256 と、実ファイルのハッシュが一致するか
+shasum -a 256 works/episode-001.mp3
+# → cbd512aa79f9a819f38ed6a5c6d2064e451365dbd88283c96a146964652a1e4e
+```
+
+この値は [yuki-podcast-001.radio.json](works/yuki-podcast-001.radio.json) の `renditions[].sha256` と同じです。ハッシュが一致すれば、その音源は改ざんされていない本物です。
+
+### JSON も検証できる
+
+```bash
+pip install jsonschema   # 最初に一度だけ
+python3 tools/validate.py radio/v1.json works/yuki-podcast-001.radio.json
 # → OK  works/yuki-podcast-001.radio.json
 ```
 
@@ -82,34 +92,34 @@ python3 tools/validate.py radio/radio.json works/yuki-podcast-001.radio.json
 
 ## フォーマット一覧（16 種類）
 
-**まずはこの 3 つ。** 音楽なら [music.json](music/music.json)、ラジオなら [radio.json](radio/radio.json)、本なら [book.json](book/book.json)。残りは用途に応じて。
+**まずはこの 3 つ。** 音楽なら [music/v1.json](music/v1.json)、ラジオなら [radio/v1.json](radio/v1.json)、本なら [book/v1.json](book/v1.json)。残りは用途に応じて。
 
-すべて [core/envelope.json](core/envelope.json) を継承します。`kind` を変えるだけで、同じ道具が使えます。
+すべて [core/envelope/v1.json](core/envelope/v1.json) を継承します。`kind` を変えるだけで、同じ道具が使えます。
 
-| ファイル | kind | 用途 | 主な接続先 |
+| スキーマ | kind | 用途 | 主な接続先 |
 |---|---|---|---|
-| [music.json](music/music.json) | music | 楽曲・作曲 | Suno/MUREKA/DAW |
-| [radio.json](radio/radio.json) | radio | ラジオ・ポッドキャスト | KOE/teai TTS, music |
-| [book.json](book/book.json) | book | 本・原稿 (章/ブロック) | PDF/EPUB/音声化 |
-| [movie.json](movie/movie.json) | movie | 動画タイムライン | image/voice/music |
-| [voice.json](voice/voice.json) | voice | ナレーション・声 | KOE/teai TTS |
-| [image.json](image/image.json) | image | 画像・ビジュアル | 生成AI/デザイン |
-| [article.json](article/article.json) | article | 記事・投稿 | Web/X/note/Zenn |
-| [bim.json](bim/bim.json) | bim | 建築 (bim.house 互換) | bim.house/spec |
-| [device.json](device/device.json) | device | IoT・端末・入出力機器 | スマートホーム/制作機材 |
-| [land.json](land/land.json) | land | 土地・区画 | bim/event |
-| [country.json](country/country.json) | country | 国・地域プロファイル | 世界展開/規制分岐 |
-| [event.json](event/event.json) | event | イベント・興行 | land/bim/movie |
-| [collection.json](collection/collection.json) | collection | アルバム/シリーズ | music/movie/book |
-| [person.json](person/person.json) | person | 作者・話者・ペルソナ | voice/作品 |
-| [place.json](place/place.json) | place | 場所・会場・POI | land/event/media |
-| [product.json](product/product.json) | product | 製品・サービス・ブランド | カタログ/作品連携 |
+| [music/v1.json](music/v1.json) | music | 楽曲・作曲 | Suno/MUREKA/DAW |
+| [radio/v1.json](radio/v1.json) | radio | ラジオ・ポッドキャスト | KOE/teai TTS, music |
+| [book/v1.json](book/v1.json) | book | 本・原稿 (章/ブロック) | PDF/EPUB/音声化 |
+| [movie/v1.json](movie/v1.json) | movie | 動画タイムライン | image/voice/music |
+| [voice/v1.json](voice/v1.json) | voice | ナレーション・声 | KOE/teai TTS |
+| [image/v1.json](image/v1.json) | image | 画像・ビジュアル | 生成AI/デザイン |
+| [article/v1.json](article/v1.json) | article | 記事・投稿 | Web/X/note/Zenn |
+| [bim/v1.json](bim/v1.json) | bim | 建築 (bim.house 互換) | bim.house/spec |
+| [device/v1.json](device/v1.json) | device | IoT・端末・入出力機器 | スマートホーム/制作機材 |
+| [land/v1.json](land/v1.json) | land | 土地・区画 | bim/event |
+| [country/v1.json](country/v1.json) | country | 国・地域プロファイル | 世界展開/規制分岐 |
+| [event/v1.json](event/v1.json) | event | イベント・興行 | land/bim/movie |
+| [collection/v1.json](collection/v1.json) | collection | アルバム/シリーズ | music/movie/book |
+| [person/v1.json](person/v1.json) | person | 作者・話者・ペルソナ | voice/作品 |
+| [place/v1.json](place/v1.json) | place | 場所・会場・POI | land/event/media |
+| [product/v1.json](product/v1.json) | product | 製品・サービス・ブランド | カタログ/作品連携 |
 
 ---
 
 ## 収録データ
 
-- [works/](works/) — 実作品（ポッドキャスト・ラジオ・楽曲・作者・作品集）。音源の SHA-256 と制作履歴付き。
+- [works/](works/) — 実作品（ポッドキャスト・ラジオ・楽曲・作者・作品集）。**音源ファイル本体も同梱**、JSON の SHA-256 と一致。
 - [products/](products/) — Enabler の製品カタログ 61 件 (`*.product.json`)。状態は確認時点を `status` に記録し、未確認は `unknown`。
 - [events/](events/) — イベント（[zamna-hawaii-2026.event.json](events/zamna-hawaii-2026.event.json) 等）。
 - [places/](places/) — 会場・POI（[echoa-ridge.place.json](places/echoa-ridge.place.json) 等）。
@@ -117,26 +127,34 @@ python3 tools/validate.py radio/radio.json works/yuki-podcast-001.radio.json
 
 ---
 
-## 使い方（3 コマンド）
+## 使い方（3 つのツール・4 ステップ）
 
 ```bash
-# 0. 依存を入れる（最初に一度だけ）
-pip install jsonschema
+# 0. 依存を入れる（最初に一度だけ。Homebrew の Python は venv 推奨）
+python3 -m venv .venv && .venv/bin/pip install jsonschema
+# 以降は .venv/bin/python で実行する（例: .venv/bin/python tools/validate.py …）
 
-# 1. 検証 (JSON Schema でチェック)
-python3 tools/validate.py music/music.json examples/sample.music.json
+# 1. 検証 — JSON Schema で作品をチェック
+python3 tools/validate.py music/v1.json examples/sample.music.json
+python3 tools/validate.py --all          # 全サンプル・作品・カタログを一括検証
 
-# 2. 内容ハッシュを計算して content_hash を埋める
-python3 tools/hash.py examples/sample.music.json --write
+# 2. ハッシュ — 内容の SHA-256 を計算し content_hash に書き込む
+python3 tools/of.py hash examples/sample.music.json --write
 
-# 3. 自分の作品を置く
-cp examples/sample.music.json works/my-first-song.music.json
+# 3. 署名 — Ed25519 で content_hash に補助署名し、検証する
+python3 tools/of.py keygen --key-out ~/.openformats/secret.b64
+python3 tools/of.py sign works/my-song.music.json --key ~/.openformats/secret.b64 --signer yuki --write
+python3 tools/of.py verify works/my-song.music.json
+
+# 4. レンダリング — JSON から媒体を作り、SHA-256 で作品に紐づける
+python3 tools/render.py examples/sample.music.json --kind audio --format wav --dry-run
 ```
 
-使うツールはこの 2 つだけです。
+使うツールはこの 3 つです。
 
-- [tools/validate.py](tools/validate.py) — JSON Schema で作品を検証する
-- [tools/hash.py](tools/hash.py) — 内容の SHA-256 を計算し `content_hash` に書き込む
+- [tools/validate.py](tools/validate.py) — JSON Schema (Draft 2020-12) で作品を検証する。`--all` でリポジトリ全体。
+- [tools/of.py](tools/of.py) — ハッシュ・Ed25519 署名・検証・改訂（`revise`）・モデル移行（`migrate`）の CLI。`verify` は `content_hash` と署名・チェーンを検証する（音源実体の照合は下の `shasum` で行う）。
+- [tools/render.py](tools/render.py) — JSON を媒体化し、実体の SHA-256 で作品に紐づける（`--dry-run` で安全に試せる）。
 
 ---
 
@@ -159,7 +177,7 @@ cp examples/sample.music.json works/my-first-song.music.json
 
 ```json
 {
-  "$schema": "https://openformats.dev/core/envelope/v1.json",
+  "$schema": "https://yukihamada.github.io/openformats/core/envelope/v1.json",
   "spec_version": "1.0.0",
   "kind": "music",
   "id": "my-first-song",
@@ -177,15 +195,14 @@ cp examples/sample.music.json works/my-first-song.music.json
 }
 ```
 
-`signatures`（Ed25519 補助署名）は仕様で定義済み。署名ツールは今後追加予定です。
-上の `$schema` の URL は未公開ドメインです。検証はローカルの [core/](core/) を使います（下記）。
+`signatures`（Ed25519 補助署名）は仕様で定義済みで、[tools/of.py](tools/of.py) の `sign` / `verify` で実際に使えます。
 
 </details>
 
 <details>
 <summary><b>スキーマの正本はどこ？（クリックで開く）</b></summary>
 
-各スキーマの `$id` は `https://openformats.dev/...` を指しますが、このドメインは**まだ公開していません**。現時点の正本は、このリポジトリ内の [core/envelope.json](core/envelope.json) と各 `*/` ディレクトリの JSON ファイルです。バリデータは `$id` をリポジトリ内のファイルへ自動で対応づけるので、オフラインでも検証できます。
+各スキーマの `$id` は `https://yukihamada.github.io/openformats/...`（GitHub Pages）を指し、**公開されています**。バリデータはこの URL をリポジトリ内の実ファイルへローカル解決するので、ネットワークなしでも検証できます。仕様の規範文書は [SPEC.md](SPEC.md)、版管理の方針は [VERSIONING.md](VERSIONING.md)、変更履歴は [CHANGELOG.md](CHANGELOG.md) を参照してください。
 
 </details>
 
@@ -196,7 +213,7 @@ cp examples/sample.music.json works/my-first-song.music.json
 - **仕様 (このリポジトリの *.json スキーマ): MIT** — [LICENSE](LICENSE)
 - **各作品**: 作品ごとの `license` フィールドに従う (既定は作者が選ぶ)。
 
-フォーマットはオープンです。改善提案・新しい kind の追加は歓迎します。このリポジトリは実証段階であり、仕様は後方互換を保ちながら育てていきます。
+フォーマットはオープンです。改善提案・新しい kind の追加は歓迎します。このリポジトリは実証段階であり、仕様は後方互換を保ちながら育てていきます。参加方法は [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ---
 
@@ -204,6 +221,6 @@ cp examples/sample.music.json works/my-first-song.music.json
 
 最初に「あなたの作品は、あなたの手元に残るか？」と訊きました。
 
-答えは、**残せる**、です。作品を 1 つの JSON にして、あなたの Git に置けば、設計図・歌詞・来歴・同意はテキストとして残ります。音声や映像の本体は、あなたの手元に置き、JSON の SHA-256 で照合できます。アプリが消えても、サービスが終わっても、作品はあなたの手元に残ります。
+答えは、**残せる**、です。作品を 1 つの JSON にして、あなたの Git に置けば、設計図・歌詞・来歴・同意はテキストとして残ります。音声や映像の本体も、このリポジトリのように同梱するか手元に置き、JSON の SHA-256 で照合できます。アプリが消えても、サービスが終わっても、作品はあなたの手元に残ります。
 
-`works/` に並ぶ本物の作品が、その証拠です。あなたの番です。
+`works/` に並ぶ本物の作品と、その音源が、その証拠です。あなたの番です。

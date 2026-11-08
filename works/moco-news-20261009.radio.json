@@ -44,7 +44,7 @@
     ]
   },
   "access": {
-    "visibility": "private",
+    "visibility": "public",
     "embeddable": false,
     "derivatives": "ask"
   },
@@ -147,5 +147,5 @@
       "kind": "video"
     }
   ],
-  "content_hash": "1415e517f39ca4548be2974a7cafff66b020641a1f9f6d712a80ede8118d0e6d"
+  "content_hash": "43ed24b99ca0c9062a53daf8218dc64bf18175292dbde5ac16f53328706de539"
 }
