@@ -33,7 +33,7 @@
     ]
   },
   "access": {
-    "visibility": "private",
+    "visibility": "public",
     "embeddable": false,
     "derivatives": "ask"
   },
@@ -49,7 +49,8 @@
     "key": "F major",
     "time_signature": "4/4",
     "duration_sec": 130,
-    "instrumental": false
+    "instrumental": false,
+    "duration_note": "sections の編成は 130 秒。実テイクは前後の間奏・余韻を含み take1=194.77s / take2=178.61s（renditions[].duration_sec に実測値）。"
   },
   "sections": [
     {
@@ -201,21 +202,23 @@
       "format": "m4a",
       "path": "takes/take1_full.m4a",
       "sha256": "627961020ae8f9fc416da064fd3977447a6d24d9f93a9ec5bc9afcd35e795dea",
-      "kind": "audio"
+      "kind": "audio",
+      "duration_sec": 194.77
     },
     {
       "format": "m4a",
       "path": "takes/take2_full.m4a",
       "sha256": "dc49a5ae41c7eb7264d9f0e563e845c6c3038e29b330f48e09aa20dd82a725ef",
-      "kind": "audio"
+      "kind": "audio",
+      "duration_sec": 178.61
     }
   ],
-  "content_hash": "82b3abf1555e12da5240f35c2441bd65cd44a20b3f96bcdb5f83d137f42bd886",
+  "content_hash": "bfa6ce17b33cfb69efc241bb368a02d59d3d37e9c4202158f9f9bb3b690bac78",
   "revisions": [
     {
-      "at": "2026-11-08T08:04:41Z",
+      "at": "2026-11-08T08:14:23Z",
       "action": "create",
-      "content_hash": "82b3abf1555e12da5240f35c2441bd65cd44a20b3f96bcdb5f83d137f42bd886",
+      "content_hash": "bfa6ce17b33cfb69efc241bb368a02d59d3d37e9c4202158f9f9bb3b690bac78",
       "patch": [],
       "snapshot": {
         "$schema": "https://yukihamada.github.io/openformats/music/v1.json",
@@ -244,7 +247,7 @@
           "human_involvement": "ai-assisted"
         },
         "access": {
-          "visibility": "private",
+          "visibility": "public",
           "embeddable": false,
           "derivatives": "ask"
         },
@@ -260,7 +263,8 @@
           "key": "F major",
           "time_signature": "4/4",
           "duration_sec": 130,
-          "instrumental": false
+          "instrumental": false,
+          "duration_note": "sections の編成は 130 秒。実テイクは前後の間奏・余韻を含み take1=194.77s / take2=178.61s（renditions[].duration_sec に実測値）。"
         },
         "sections": [
           {
@@ -412,9 +416,9 @@
       "note": "初版"
     },
     {
-      "at": "2026-11-08T08:04:41Z",
+      "at": "2026-11-08T08:14:23Z",
       "action": "edit",
-      "content_hash": "0e581a51c52099cc6d2e5795bb0b1d23d13db5980ff46d6948b4e64c3f973c57",
+      "content_hash": "0d751f6c05ff020eea7e73411714b299a92ef96eabf5a3fe751601f1a1fbef58",
       "patch": [
         {
           "op": "add",
