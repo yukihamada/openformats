@@ -29,11 +29,13 @@ from .canonical import canonicalize_bytes
 # - signatures:   ハッシュへの署名 (ハッシュに含めると循環する)
 # - hash_chain:   履歴チェーン (チェーンは別途 content_hash を鎖状に参照する)
 # - renditions:   媒体化の実体。作品の同一性ではなく「出力」なので除外する。
+# - revisions:    版間差分 (RFC 6902)。履歴であって創作内容ではない。除外しないと
+#                 差分を足すたびに content_hash が変わり「同じ作品」でいられない。
 # - provenance.history: 運用ログ (append-only)。作品の創作内容ではなく操作記録。
 #                 これらを除外することで「同じ作品のまま、良いモデルで声だけ
 #                 差し替える / 改訂を記録する」とき content_hash が不変になる。
 #                 履歴の完全性は hash_chain と git 履歴が担保する。
-EXCLUDE_FROM_HASH = {"content_hash", "signatures", "hash_chain", "renditions"}
+EXCLUDE_FROM_HASH = {"content_hash", "signatures", "hash_chain", "renditions", "revisions"}
 
 
 def _body(data: dict) -> dict:
@@ -234,6 +236,112 @@ def latest_rendition(data: dict, kind: str | None = None) -> dict | None:
     if kind:
         rs = [r for r in rs if r.get("kind") == kind]
     return rs[-1] if rs else None
+
+
+# ---------------------------------------------------------------------------
+# revisions (版間差分の記録 = エンコーダ/レコーダ)
+# ---------------------------------------------------------------------------
+#
+# 作品の「創作内容」(content_hash の対象本体) の版間差分を RFC 6902 で保存する。
+# 差分は revisions[] に追記し、content_hash には含めない (履歴は創作内容でない)。
+# これで「変えた所だけ」を保存しつつ、任意の版へ完全復元できる。
+
+def _snapshot(data: dict) -> dict:
+    """content_hash の対象本体 (履歴・媒体・署名を除く) を深いコピーで取り出す。
+
+    深いコピー必須: 浅いコピーだと snapshot が本体の入れ子を共有し、後で本体を
+    編集すると過去のスナップショットまで書き換わって差分が消える。
+    """
+    import copy
+    return copy.deepcopy(_body(data))
+
+
+def _reconstruct(revs: list[dict], upto: int) -> dict:
+    """revs[0] の base スナップショットから patch を順に適用し upto 時点を復元。"""
+    from . import jsonpatch
+
+    body = revs[0]["snapshot"]
+    for i in range(1, upto + 1):
+        body = jsonpatch.apply_patch(body, revs[i].get("patch", []))
+    return body
+
+
+def record_revision(data: dict, *, action: str = "edit", by: str | None = None,
+                    note: str | None = None, at: str | None = None) -> dict:
+    """現在の本体と直前版の差分を revisions に追記する (差分保存)。
+
+    - 初回: base スナップショット (本体全体) を 1 つだけ保存する。
+    - 2 回目以降: 直前版との差分 (RFC 6902 patch) だけを保存する。
+
+    直前版は base + 既存 patch から復元するので、全スナップショットを積まない。
+    これが「1万リビジョンでも軽い」理由。
+    """
+    from . import jsonpatch
+
+    cur = _snapshot(data)
+    revs = list(data.get("revisions", []))
+    if not revs:
+        entry = {
+            "at": at or _now(),
+            "action": action,
+            "content_hash": content_hash(data),
+            "patch": [],
+            "snapshot": cur,
+        }
+        if by:
+            entry["by"] = by
+        if note:
+            entry["note"] = note
+        revs.append(entry)
+        data["revisions"] = revs
+        return data
+
+    prev = _reconstruct(revs, len(revs) - 1)
+    patch = jsonpatch.diff(prev, cur)
+    entry = {
+        "at": at or _now(),
+        "action": action,
+        "content_hash": content_hash(data),
+        "patch": patch,
+    }
+    if by:
+        entry["by"] = by
+    if note:
+        entry["note"] = note
+    revs.append(entry)
+    data["revisions"] = revs
+    return data
+
+
+def checkout(data: dict, index: int) -> dict:
+    """revisions[index] 時点の本体を復元した新しい作品 dict を返す。
+
+    index は revisions の 0 始まり。復元は base スナップショットから patch を
+    順に適用して行う。返すのは「創作内容」のみ (renditions/revisions/署名は
+    含めない)。媒体や署名は別途付け直す。
+    """
+    revs = data.get("revisions", [])
+    if not revs:
+        raise ValueError("revisions が無い")
+    if not (0 <= index < len(revs)):
+        raise IndexError(f"index 範囲外: {index} (0..{len(revs) - 1})")
+    return _reconstruct(revs, index)
+
+
+def revision_log(data: dict) -> list[dict]:
+    """revisions の要約 (index/at/action/by/note/hash/patch_size)。"""
+    log = []
+    for i, r in enumerate(data.get("revisions", [])):
+        log.append({
+            "index": i,
+            "at": r.get("at"),
+            "action": r.get("action"),
+            "by": r.get("by"),
+            "note": r.get("note"),
+            "content_hash": r.get("content_hash"),
+            "patch_ops": len(r.get("patch", [])),
+        })
+    return log
 
 
 # ---------------------------------------------------------------------------

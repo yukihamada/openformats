@@ -202,7 +202,32 @@
           "seed": { "type": "integer" },
           "voice": { "type": "string", "description": "声 id (voice.json 参照)。" },
           "source_rendition": { "type": "string", "description": "派生元 rendition の sha256。同じ作品内で声だけ差し替えた系譜を示す。" },
+          "manifest_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$", "description": "チャンク目録の SHA-256。内容定義チャンクで保存した大きいメディアの再構成に使う。" },
+          "chunk_count": { "type": "integer", "minimum": 0, "description": "チャンク数。" },
+          "new_bytes": { "type": "integer", "minimum": 0, "description": "この保存で実際に新規書き込みしたバイト数 (重複排除後)。差分保存の実効サイズ。" },
           "note": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "revisions": {
+      "type": "array",
+      "description": "版間差分 (エンコーダ/レコーダ)。作品の創作内容の変更を RFC 6902 JSON Patch で記録する。content_hash の対象外なので、差分を足しても作品の同一性は変わらない。先頭要素だけが base スナップショット、以降は差分。任意の版へ checkout で完全復元できる。",
+      "items": {
+        "type": "object",
+        "required": ["at", "action", "content_hash"],
+        "properties": {
+          "at": { "type": "string", "format": "date-time" },
+          "action": { "type": "string", "description": "edit / render / record / migrate 等。" },
+          "by": { "type": "string" },
+          "note": { "type": "string" },
+          "content_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$", "description": "この版の content_hash。" },
+          "snapshot": { "type": "object", "description": "base スナップショット (先頭要素のみ)。以降は空。" },
+          "patch": {
+            "type": "array",
+            "description": "直前版からの差分 (RFC 6902)。先頭要素は空。",
+            "items": { "type": "object" }
+          }
         },
         "additionalProperties": true
       }

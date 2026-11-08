@@ -35,6 +35,7 @@ import wave
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from openformats import core  # noqa: E402
+from openformats import store as storemod  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 STORE = ROOT / ".ofstore"
@@ -60,14 +61,14 @@ def _load_renderer(name: str):
     return mod
 
 
-def _store_put(src: pathlib.Path) -> tuple[str, int]:
-    """内容アドレスでストアに置く。既存なら再利用。"""
-    STORE.mkdir(parents=True, exist_ok=True)
-    h = core.rendition_hash(str(src))
-    dst = STORE / h
-    if not dst.exists():
-        dst.write_bytes(src.read_bytes())
-    return h, dst.stat().st_size
+def _store_put(src: pathlib.Path) -> dict:
+    """内容定義チャンクで content-addressed ストアに置く。
+
+    変わっていないチャンクは再利用されるので、再レンダリングしても
+    実際に新規保存されるのは差分だけ (実質バイナリ差分)。
+    """
+    st = storemod.Store(str(STORE))
+    return st.put_file_chunked(str(src))
 
 
 def main(argv):
@@ -114,18 +115,22 @@ def main(argv):
     if not out.exists():
         raise SystemExit(f"レンダラが出力を作らなかった: {out}")
 
-    stored_sha, size = _store_put(out)
+    manifest = _store_put(out)
+    stored_sha = manifest["sha256"]
+    size = manifest["bytes"]
 
     core.add_rendition(
         data, str(out), kind=args.kind, format=args.format,
         model=model, model_version=args.model_version, provider=provider,
         prompt=args.prompt, seed=args.seed, voice=args.voice,
-        note=f"content-addressed: .ofstore/{stored_sha}",
+        note=f"content-addressed: manifest {manifest['manifest_sha256'][:12]}",
     )
     r = data["renditions"][-1]
     r["sha256"] = stored_sha
     r["bytes"] = size
-    r["path"] = f".ofstore/{stored_sha}"
+    r["manifest_sha256"] = manifest["manifest_sha256"]
+    r["chunk_count"] = manifest["chunk_count"]
+    r["new_bytes"] = manifest["new_bytes"]
     if args.migrate_from:
         r["source_rendition"] = args.migrate_from
         core.append_revision(data, "migrate",
@@ -135,9 +140,11 @@ def main(argv):
         "work": data["id"],
         "rendition_sha256": stored_sha,
         "bytes": size,
+        "new_bytes": manifest["new_bytes"],
+        "chunks": manifest["chunk_count"],
+        "manifest_sha256": manifest["manifest_sha256"],
         "model": model,
         "content_hash": core.content_hash(data),
-        "stored": f".ofstore/{stored_sha}",
         "migrated_from": args.migrate_from,
     }, ensure_ascii=False, indent=2))
 

@@ -143,6 +143,93 @@ def cmd_migrate(args):
     return 0
 
 
+def cmd_revise(args):
+    data = _load(args.work)
+    core.append_revision(data, args.action, by=args.by, note=args.note)
+    if args.write:
+        core.dump(data, args.work)
+        print(f"書き込み: {args.work}", file=sys.stderr)
+    else:
+        print(json.dumps(data.get("hash_chain", [])[-1:], ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_record(args):
+    """現在の本体と直前版の差分を revisions に記録する (差分保存)。"""
+    data = _load(args.work)
+    core.record_revision(data, action=args.action, by=args.by, note=args.note)
+    if args.write:
+        core.dump(data, args.work)
+        print(f"記録: {args.work} (revisions={len(data.get('revisions', []))})", file=sys.stderr)
+    else:
+        print(json.dumps(core.revision_log(data)[-1:], ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_log(args):
+    """revisions の履歴を表示する。"""
+    data = _load(args.work)
+    print(json.dumps(core.revision_log(data), ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_checkout(args):
+    """指定リビジョン時点の本体を復元して出力する。"""
+    data = _load(args.work)
+    body = core.checkout(data, args.index)
+    out = args.out or f"{pathlib.Path(args.work).stem}.rev{args.index}.json"
+    core.dump(body, out)
+    print(json.dumps({"restored": out, "index": args.index,
+                      "content_hash": core.content_hash(body)}, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_store(args):
+    """バイナリを content-addressed ストアにチャンク保存し、使用量を出す。"""
+    from openformats import store as storemod
+    st = storemod.Store(args.store or ".ofstore")
+    if args.file:
+        m = st.put_file_chunked(args.file)
+        print(json.dumps(m, ensure_ascii=False, indent=2))
+    else:
+        print(json.dumps(st.usage(), ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_voice_attach(args):
+    """参照音声を voice.json の clone ブロックに取り込む (qwen-tts 用)。"""
+    from openformats import voiceclone
+    data = _load(args.work)
+    voiceclone.attach_reference(data, args.audio, text=args.text, lang=args.lang,
+                                engine=args.engine)
+    problems = voiceclone.validate_clone(data)
+    if problems:
+        print(json.dumps({"problems": problems}, ensure_ascii=False, indent=2))
+        return 1
+    if args.write:
+        core.dump(data, args.work)
+        print(f"記録: {args.work}", file=sys.stderr)
+    else:
+        print(json.dumps(data.get("clone"), ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_voice_args(args):
+    """qwen-tts に渡すクローン引数を出力する (自己完結性・同意を検査)。"""
+    from openformats import voiceclone
+    data = _load(args.work)
+    problems = voiceclone.validate_clone(data)
+    if problems:
+        print(json.dumps({"problems": problems}, ensure_ascii=False, indent=2))
+        return 1
+    a = voiceclone.qwen_tts_args(data)
+    if isinstance(a.get("ref_audio"), (bytes, bytearray)):
+        a = dict(a)
+        a["ref_audio"] = f"<{len(a['ref_audio'])} bytes>"
+    print(json.dumps(a, ensure_ascii=False, indent=2))
+    return 0
+
+
 def main(argv):
     ap = argparse.ArgumentParser(prog="of", description="openformats CLI")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -153,6 +240,12 @@ def main(argv):
     p = sub.add_parser("verify"); p.add_argument("work"); p.set_defaults(fn=cmd_verify)
     p = sub.add_parser("revise"); p.add_argument("work"); p.add_argument("--action", default="edit"); p.add_argument("--by"); p.add_argument("--note"); p.add_argument("--write", action="store_true"); p.set_defaults(fn=cmd_revise)
     p = sub.add_parser("migrate"); p.add_argument("work"); p.add_argument("--from", dest="from_", required=True); p.add_argument("--model", required=True); p.add_argument("--model-version"); p.set_defaults(fn=cmd_migrate)
+    p = sub.add_parser("record"); p.add_argument("work"); p.add_argument("--action", default="edit"); p.add_argument("--by"); p.add_argument("--note"); p.add_argument("--write", action="store_true"); p.set_defaults(fn=cmd_record)
+    p = sub.add_parser("log"); p.add_argument("work"); p.set_defaults(fn=cmd_log)
+    p = sub.add_parser("checkout"); p.add_argument("work"); p.add_argument("index", type=int); p.add_argument("--out"); p.set_defaults(fn=cmd_checkout)
+    p = sub.add_parser("store"); p.add_argument("file", nargs="?"); p.add_argument("--store"); p.set_defaults(fn=cmd_store)
+    p = sub.add_parser("voice-attach"); p.add_argument("work"); p.add_argument("audio"); p.add_argument("--text", required=True); p.add_argument("--lang"); p.add_argument("--engine", default="qwen-tts"); p.add_argument("--write", action="store_true"); p.set_defaults(fn=cmd_voice_attach)
+    p = sub.add_parser("voice-args"); p.add_argument("work"); p.set_defaults(fn=cmd_voice_args)
 
     args = ap.parse_args(argv[1:])
     return args.fn(args)
