@@ -42,11 +42,27 @@ def _load(p):
 
 def cmd_hash(args):
     data = _load(args.work)
+    # renditions[].path の実体があれば sha256 を自動充填する（content_hash は
+    # renditions を除外して計算するので、充填しても content_hash は変わらない）。
+    filled = 0
+    if args.write:
+        import os
+        base = os.path.dirname(os.path.abspath(args.work))
+        for r in data.get("renditions", []):
+            rel = r.get("path")
+            if not rel:
+                continue
+            full = rel if os.path.isabs(rel) else os.path.join(base, rel)
+            if os.path.exists(full):
+                r["sha256"] = core.rendition_hash(full)
+                filled += 1
     h = core.content_hash(data)
     print(h)
     if args.write:
         data["content_hash"] = h
         core.dump(data, args.work)
+        if filled:
+            print(f"renditions の sha256 を {filled} 件充填", file=sys.stderr)
         print(f"書き込み: {args.work}", file=sys.stderr)
     return 0
 

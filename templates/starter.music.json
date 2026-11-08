@@ -1,0 +1,37 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/music/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "music",
+  "id": "my-song",
+  "title": "わたしの曲",
+  "lang": "ja",
+  "license": "CC-BY-4.0",
+  "provenance": {
+    "human_involvement": "human",
+    "history": [
+      {
+        "at": "2026-11-08T00:00:00Z",
+        "action": "create",
+        "by": "you"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "private",
+    "derivatives": "allow"
+  },
+  "meta": {
+    "genre": [
+      "pop"
+    ],
+    "bpm": 120,
+    "instrumental": false
+  },
+  "renditions": [
+    {
+      "kind": "audio",
+      "format": "mp3",
+      "path": "my-song.mp3"
+    }
+  ]
+}

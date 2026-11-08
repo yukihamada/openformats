@@ -123,7 +123,7 @@ python3 tools/validate.py radio/v1.json works/yuki-podcast-001.radio.json
 - [products/](products/) — Enabler の製品カタログ 61 件 (`*.product.json`)。状態は確認時点を `status` に記録し、未確認は `unknown`。
 - [events/](events/) — イベント（[zamna-hawaii-2026.event.json](events/zamna-hawaii-2026.event.json) 等）。
 - [places/](places/) — 会場・POI（[echoa-ridge.place.json](places/echoa-ridge.place.json) 等）。
-- [examples/](examples/) — 各フォーマットの最小サンプル。
+- [examples/](examples/) — 各フォーマットの最小サンプル。自分の作品を作るときは署名なし・`renditions` 付きの [templates/starter.music.json](templates/starter.music.json) をコピーすると最短です。
 
 ---
 
@@ -140,6 +140,7 @@ python3 tools/validate.py music/v1.json examples/sample.music.json
 python3 tools/validate.py --all          # 全サンプル・作品・カタログを一括検証
 
 # 2. ハッシュ — 内容の SHA-256 を計算し content_hash に書き込む
+#    renditions[].path の実体があれば、その sha256 も自動で充填する
 python3 tools/of.py hash examples/sample.music.json --write
 
 # 3. 署名 — Ed25519 で content_hash に補助署名し、検証する
