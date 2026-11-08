@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="『ひとつ先へ』Sente テーマソングのカバー">
+  <defs>
+    <linearGradient id="mbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a1e5e"/><stop offset="1" stop-color="#8a5cff"/>
+    </linearGradient>
+    <linearGradient id="mwave" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#c9b6ff"/><stop offset="1" stop-color="#e8defb"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="url(#mbg)"/>
+  <g fill="none" stroke="url(#mwave)" stroke-width="3" stroke-linecap="round" opacity="0.85">
+    <path d="M40 300 Q80 250 120 290 T200 280 T280 300 T360 270 T440 295 T520 275 T600 300"/>
+    <path d="M40 330 Q80 290 120 320 T200 310 T280 330 T360 305 T440 325 T520 310 T600 330" opacity="0.5"/>
+  </g>
+  <g>
+    <circle cx="500" cy="120" r="54" fill="#fff" opacity="0.12"/>
+    <g fill="#fff" opacity="0.92">
+      <rect x="486" y="86" width="6" height="60" rx="3"/>
+      <rect x="516" y="78" width="6" height="60" rx="3"/>
+      <rect x="486" y="86" width="36" height="6" rx="3"/>
+      <ellipse cx="481" cy="148" rx="12" ry="9"/>
+      <ellipse cx="511" cy="140" rx="12" ry="9"/>
+    </g>
+  </g>
+  <text x="48" y="120" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" font-size="20" font-weight="700" fill="#c9b6ff">SENTE THEME ・ take1</text>
+  <text x="48" y="180" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" font-size="44" font-weight="800" fill="#ffffff">ひとつ先へ</text>
+  <text x="48" y="215" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" font-size="16" fill="#e8defb">Sente テーマソング</text>
+</svg>
