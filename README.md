@@ -15,7 +15,7 @@
 
 ```json
 {
-  "spec_version": "1.0.0",
+  "spec_version": "1.1.0",
   "kind": "music",
   "id": "hitotsu-saki-e",
   "title": "ひとつ先へ",
@@ -123,7 +123,7 @@ python3 tools/validate.py radio/v1.json works/yuki-podcast-001.radio.json
 - [products/](products/) — Enabler の製品カタログ 61 件 (`*.product.json`)。状態は確認時点を `status` に記録し、未確認は `unknown`。
 - [events/](events/) — イベント（[zamna-hawaii-2026.event.json](events/zamna-hawaii-2026.event.json) 等）。
 - [places/](places/) — 会場・POI（[echoa-ridge.place.json](places/echoa-ridge.place.json) 等）。
-- [examples/](examples/) — 各フォーマットの最小サンプル。自分の作品を作るときは署名なし・`renditions` 付きの [templates/starter.music.json](templates/starter.music.json) をコピーすると最短です。
+- [examples/](examples/) — 各フォーマットの最小サンプル。自分の作品を作るときは署名なし・`renditions` 付きの [templates/starter.music.json](templates/starter.music.json) をコピーすると最短です（`sha256` は空なので、`validate` の前に `hash --write` を実行してください）。
 
 ---
 
@@ -184,7 +184,7 @@ python3 tools/render.py examples/sample.music.json --kind audio --format wav --d
 ```json
 {
   "$schema": "https://yukihamada.github.io/openformats/core/envelope/v1.json",
-  "spec_version": "1.0.0",
+  "spec_version": "1.1.0",
   "kind": "music",
   "id": "my-first-song",
   "title": "はじまりの歌",

@@ -65,7 +65,7 @@
 
   <h2>30 秒でわかる</h2>
   <pre><code>{
-  "spec_version": "1.0.0",
+  "spec_version": "1.1.0",
   "kind": "music",
   "id": "hitotsu-saki-e",
   "title": "ひとつ先へ",
@@ -106,6 +106,7 @@ cp templates/starter.music.json my-song.music.json
 python3 tools/of.py hash my-song.music.json --write
 python3 tools/of.py verify my-song.music.json</code></pre>
   <p>これだけで、あなたの作品は「JSON（設計図）」と「音源（本体）」の 2 層で、あなたの Git に残ります。<code>verify</code> が <code>ok: true</code> なら、音源と JSON の指紋が一致しています。</p>
+  <p><small>※ ひな形は <code>sha256</code> が空なので、<code>validate</code> は <code>hash --write</code> の後に実行してください（先に hash すれば <code>sha256</code> が自動で入り、validate も通ります）。</small></p>
 
   <h2>はじめる</h2>
   <pre><code>git clone https://github.com/yukihamada/openformats

@@ -1,4 +1,5 @@
 {
+  "_note": "このファイルはひな形です。renditions[].path に音源を置き、先に \"python3 tools/of.py hash <file> --write\" を実行すると sha256 が入り、validate が通ります。",
   "$schema": "https://yukihamada.github.io/openformats/music/v1.json",
   "spec_version": "1.1.0",
   "kind": "music",
