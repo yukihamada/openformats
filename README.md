@@ -105,7 +105,7 @@ python3 tools/validate.py radio/v1.json works/yuki-podcast-001.radio.json
 | [voice/v1.json](voice/v1.json) | voice | ナレーション・声 | KOE/teai TTS |
 | [image/v1.json](image/v1.json) | image | 画像・ビジュアル | 生成AI/デザイン |
 | [article/v1.json](article/v1.json) | article | 記事・投稿 | Web/X/note/Zenn |
-| [bim/v1.json](bim/v1.json) | bim | 建築 (bim.house 互換) | bim.house/spec |
+| [bim/v1.json](bim/v1.json) | bim | 建築 (bim.house 完全スキーマ統合) | bim.house/spec |
 | [device/v1.json](device/v1.json) | device | IoT・端末・入出力機器 | スマートホーム/制作機材 |
 | [land/v1.json](land/v1.json) | land | 土地・区画 | bim/event |
 | [country/v1.json](country/v1.json) | country | 国・地域プロファイル | 世界展開/規制分岐 |
@@ -123,7 +123,7 @@ python3 tools/validate.py radio/v1.json works/yuki-podcast-001.radio.json
 - [products/](products/) — Enabler の製品カタログ 61 件 (`*.product.json`)。状態は確認時点を `status` に記録し、未確認は `unknown`。
 - [events/](events/) — イベント（[zamna-hawaii-2026.event.json](events/zamna-hawaii-2026.event.json) 等）。
 - [places/](places/) — 会場・POI（[echoa-ridge.place.json](places/echoa-ridge.place.json) 等）。
-- [examples/](examples/) — 各フォーマットの最小サンプル。自分の作品を作るときは署名なし・`renditions` 付きの [templates/starter.music.json](templates/starter.music.json) をコピーすると最短です（`sha256` は空なので、`validate` の前に `hash --write` を実行してください）。
+- [examples/](examples/) — 各フォーマットの最小サンプル。自分の作品を作るときは署名なし・`renditions` 付きの [templates/starter.music.json](templates/starter.music.json) をコピーすると最短です（`sha256` は空なので、`validate` の前に `hash --write` を実行してください）。建築は [examples/sample.bim.json](examples/sample.bim.json)（bim.house 完全スキーマの実例）。
 
 ---
 

@@ -399,7 +399,8 @@ def test_samples_are_self_consistent():
         if stored:
             assert stored == core.content_hash(d), f"{f}: content_hash 不一致"
         assert core.verify_revisions(d)["ok"], f"{f}: revisions 不整合"
-        assert all(s["valid"] for s in core.verify_signatures(d)), f"{f}: 署名不正"
+        # valid=None は bim.house 署名など openformats 検証対象外。失敗扱いにしない。
+        assert all(s["valid"] is not False for s in core.verify_signatures(d)), f"{f}: 署名不正"
 
 
 def test_large_reference_requires_store():

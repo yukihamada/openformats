@@ -1,0 +1,153 @@
+{
+  "$schema": "https://bim.house/spec/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "bim",
+  "id": "sample-house",
+  "title": "サンプル住宅（bim.house 完全スキーマ）",
+  "lang": "ja",
+  "license": "CC0-1.0",
+  "provenance": {
+    "human_involvement": "ai-assisted",
+    "generator": {
+      "name": "bim.house",
+      "url": "https://bim.house"
+    },
+    "sources": [
+      {
+        "ref": "https://bim.house/spec/v1.json",
+        "note": "正本スキーマ"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "project": {
+    "slug": "sample-house",
+    "name": "サンプル住宅",
+    "address": "北海道標茶町（サンプル）",
+    "lat": 43.31,
+    "lng": 144.55,
+    "site_area_m2": 200.0,
+    "lot_w_m": 14.0,
+    "lot_d_m": 14.0,
+    "zoning": "都市計画区域外",
+    "proposed_floors": 1,
+    "proposed_structure": "木造在来工法",
+    "permit_classification": "法第6条第1号（確認申請対象・サンプル）",
+    "applicant": {
+      "name": "建築主（サンプル）",
+      "is_owner": true
+    },
+    "designer": {
+      "office_name": "（未確定・提携建築士事務所による確認が必要）",
+      "designer_role": "設計コンセプト立案"
+    },
+    "road_access": {
+      "road_type": "2項道路",
+      "width_m": 4.0
+    },
+    "rooms": [
+      {
+        "id": "r1",
+        "name": "居間",
+        "floor": 1,
+        "area_m2": 20.0,
+        "ceiling_height_mm": 2400,
+        "is_residential_room": true,
+        "daylight": {
+          "required_ratio": 0.125,
+          "actual_daylight_ratio": 0.16,
+          "pass": true
+        }
+      }
+    ],
+    "mep": {
+      "water_method": "公設水道",
+      "drain_method": "公共下水道",
+      "hw_method": "ヒートポンプ給湯",
+      "vent_method": "第1種換気"
+    }
+  },
+  "elements": [
+    {
+      "id": "e1",
+      "cls": "IFCSLAB",
+      "label": "1F_基礎/床スラブ",
+      "shape": "box",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "w": 11000,
+      "d": 8500,
+      "h": 200,
+      "floor": 1,
+      "material": {
+        "code": "RC",
+        "name": "鉄筋コンクリート",
+        "thickness_mm": 200,
+        "u_value_w_m2k": 1.6,
+        "fire_rating_min": 120
+      }
+    },
+    {
+      "id": "e2",
+      "cls": "IFCWALL",
+      "label": "外壁_北",
+      "shape": "box",
+      "x": 0,
+      "y": 8500,
+      "z": 0,
+      "w": 11000,
+      "d": 150,
+      "h": 2700,
+      "floor": 1,
+      "material": {
+        "code": "WOOD",
+        "thickness_mm": 150,
+        "u_value_w_m2k": 0.24,
+        "f_star": "F4"
+      },
+      "structural": {
+        "load_bearing": true,
+        "seismic_grade": "3"
+      }
+    }
+  ],
+  "audit": {
+    "audited_at": "2026-11-08",
+    "engine_version": "sample",
+    "checks": [
+      {
+        "id": "daylight",
+        "result": "pass",
+        "note": "サンプル値。実案件では要再計算。"
+      }
+    ]
+  },
+  "attachments": [
+    {
+      "uri": "https://bim.house/api/showcase/sample-house/exterior.jpg",
+      "kind": "image",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "title": "外観パース（サンプル）"
+    }
+  ],
+  "signatures": [
+    {
+      "signer": {
+        "name": "（未署名・サンプル）",
+        "kenchikushi_class": "一級建築士"
+      },
+      "alg": "Ed25519",
+      "pubkey": "c2FtcGxlLXB1YmxpYy1rZXktMzJieXRlcy0wMDAwMDA=",
+      "signed_at": "2026-11-08T00:00:00Z",
+      "scope": "draft",
+      "hash_alg": "SHA-256",
+      "digest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signature": "c2FtcGxlLXNpZ25hdHVyZQ=="
+    }
+  ],
+  "content_hash": "689aa16d95c8cb662c2fbf3bf6e38fe96e89a1df5e91a25e5e62409fe21fb400"
+}
