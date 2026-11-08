@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
 <title>openformats — 1 作品 = 1 JSON</title>
 <meta name="description" content="あらゆる創作の最小単位を、人間が読める JSON で定義するオープンな仕様。音楽・ラジオ・本・声・動画・製品・場所を同じ語彙で。">
 <meta property="og:type" content="website">
@@ -11,92 +12,364 @@
 <meta property="og:url" content="https://yukihamada.github.io/openformats/">
 <meta property="og:site_name" content="openformats">
 <meta property="og:image" content="https://yukihamada.github.io/openformats/og-image.png">
+<link rel="canonical" href="https://yukihamada.github.io/openformats/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "openformats",
+  "headline": "1 作品 = 1 JSON のオープン仕様",
+  "description": "あらゆる創作の最小単位を人間が読める JSON で定義するオープンな仕様。音楽・ラジオ・本・声・動画・製品・場所を同じ語彙で。",
+  "url": "https://yukihamada.github.io/openformats/",
+  "author": {"@type": "Person", "name": "濱田優貴", "url": "https://yukihamada.jp"},
+  "license": "https://github.com/yukihamada/openformats/blob/main/LICENSE",
+  "isBasedOn": "https://github.com/yukihamada/openformats"
+}
+</script>
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="openformats — あなたの作品は、あなたの手元に残るか？">
 <meta name="twitter:description" content="1 作品 = 1 JSON。音楽も本もラジオも、テキストで、あなたの Git の中に。実音源つき。">
 <meta name="twitter:image" content="https://yukihamada.github.io/openformats/og-image.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%232b5cff'/%3E%3Ctext x='12' y='17' font-size='13' font-family='monospace' fill='white' text-anchor='middle'%3E%7B%7D%3C/text%3E%3C/svg%3E">
 <style>
-  :root { --fg:#1a1a1a; --muted:#6b6b6b; --line:#e5e5e5; --bg:#fbfbf9; --accent:#2b5cff; }
-  @media (prefers-color-scheme: dark){ :root{ --fg:#e8e8e6; --muted:#9a9a96; --line:#2a2a28; --bg:#141413; --accent:#7aa0ff; } }
+  :root {
+    --fg:#1a1a1a; --muted:#6b6b6b; --line:#e5e5e5; --bg:#fbfbf9; --card:#ffffff;
+    --accent:#2b5cff; --accent-soft:#eef2ff; --accent-2:#7aa0ff;
+    --cta-bg:#2b5cff; --cta-fg:#ffffff;
+    --code-bg:rgba(20,20,19,.06); --code-fg:#3a3a3a; --shadow:0 10px 30px rgba(43,92,255,.10);
+    --radius:14px; --maxw:1000px; color-scheme:light dark;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --fg:#e8e8e6; --muted:#9a9a96; --line:#2a2a28; --bg:#141413; --card:#1b1b1a;
+      --accent:#7aa0ff; --accent-soft:#1c2233; --accent-2:#a9c0ff;
+      --cta-bg:#2b5cff; --cta-fg:#ffffff;
+      --code-bg:rgba(255,255,255,.10); --code-fg:#d8d8d2; --shadow:0 10px 30px rgba(0,0,0,.45); }
+  }
   * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--fg);
+  html { scroll-behavior:smooth; scroll-padding-top:110px; }
+  #main { scroll-margin-top:8px; }
+  @media (min-width:601px){ html { scroll-padding-top:72px; } }
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} *{animation:none!important;transition:none!important;} }
+  body { margin:0; background:var(--bg); color:var(--fg); overflow-x:hidden;
     font:16px/1.7 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif;
-    -webkit-font-smoothing:antialiased; }
-  main { max-width:720px; margin:0 auto; padding:72px 24px 96px; }
-  h1 { font-size:clamp(28px,6vw,44px); line-height:1.2; letter-spacing:-.02em; margin:0 0 8px; }
-  .lede { font-size:clamp(17px,2.5vw,20px); color:var(--muted); margin:0 0 40px; }
-  h2 { font-size:20px; margin:48px 0 12px; letter-spacing:-.01em; }
-  p { margin:0 0 16px; }
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+  main { max-width:var(--maxw); margin:0 auto; padding:0 24px 96px; scroll-margin-top:72px; }
   a { color:var(--accent); text-decoration:none; }
   a:hover { text-decoration:underline; }
-  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.9em;
-    background:color-mix(in srgb,var(--fg) 8%,transparent); padding:.15em .4em; border-radius:5px; }
-  pre { background:color-mix(in srgb,var(--fg) 6%,transparent); padding:16px 18px; border-radius:10px;
+  main p a, .sub a { padding:3px 1px; }
+  .sub a, footer a, .who a, .early a { display:inline-flex; align-items:center; min-height:44px; min-width:44px; padding:0 4px; }
+  @media (max-width:820px){ footer a, .work .body a, .dl a, main p a:not(.cta), main li a, .early a { display:inline-block; min-height:44px; line-height:44px; padding:0 2px; }
+    .fmt { min-height:64px; } .fmt .t h3 { line-height:1.2; } }
+  small { font-size:14px; }
+  .builder label small { font-size:14px; }
+  :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:4px; }
+  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:max(13px,.9em); color:var(--code-fg);
+    background:var(--code-bg); padding:.15em .4em; border-radius:5px; }
+  pre { background:var(--code-bg); padding:16px 18px; border-radius:10px;
     overflow:auto; font-size:14px; line-height:1.6; }
   pre code { background:none; padding:0; }
-  ul { padding-left:1.2em; margin:0 0 16px; }
-  li { margin:.3em 0; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; margin:16px 0; }
-  .grid a { display:block; padding:10px 12px; border:1px solid var(--line); border-radius:8px; font-size:14px; }
-  .grid a:hover { border-color:var(--accent); text-decoration:none; }
-  .grid a span { display:block; color:var(--muted); font-size:12px; }
-  .work { border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin:12px 0; }
-  .work strong { display:block; font-size:15px; }
-  .work .meta { display:block; color:var(--muted); font-size:13px; margin:2px 0 10px; }
-  .work audio { width:100%; height:40px; }
-  .cta { display:inline-block; background:var(--accent); color:#fff; padding:11px 20px; border-radius:9px;
-    font-weight:600; font-size:15px; margin:4px 8px 4px 0; }
-  .cta:hover { text-decoration:none; filter:brightness(1.08); }
-  .cta.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent); }
-  .work .dl { font-size:13px; margin-top:6px; }
+  .codewrap pre { white-space:pre-wrap; word-break:break-word; overflow-x:hidden; }
+
+  /* hero */
+  .hero { display:grid; grid-template-columns:1fr 1.12fr; gap:36px; align-items:center;
+    padding:72px 0 48px; }
+  .hero h1 { font-size:clamp(30px,4.4vw,48px); line-height:1.15; letter-spacing:-.025em; margin:0 0 16px; }
+  .hero .lede { font-size:clamp(16px,2vw,19px); color:var(--muted); margin:0 0 28px; max-width:34em; }
+  .hero-art { position:relative; }
+  .hero-art img { width:100%; height:auto; display:block; }
+  @media (max-width:820px){ .hero-art img{max-height:240px; object-fit:contain; width:100%;} }
+  @media (max-width:400px){ .hero-art img{max-height:180px;} }
+  .hero-art .dark { display:none; }
+  @media (prefers-color-scheme: dark){ .hero-art .light{display:none;} .hero-art .dark{display:block;} }
+  .who { margin:22px 0 6px; font-size:14px; color:var(--muted); }
+  .who a { color:var(--fg); }
+  .hero-sub { display:inline-block; margin-left:14px; font-size:14px; color:var(--muted); text-decoration:underline; padding:12px 4px; }
+  @media (max-width:820px){ .hero{grid-template-columns:1fr; gap:16px; padding:20px 0 16px;} }
+
+  .cta { display:inline-block; background:var(--cta-bg); color:var(--cta-fg); padding:12px 22px; border-radius:10px;
+    font-weight:600; font-size:15px; margin:4px 10px 4px 0; box-shadow:var(--shadow); transition:transform .15s,filter .15s; }
+  .cta:hover { text-decoration:none; filter:brightness(1.08); transform:translateY(-1px); }
+  .cta.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent); box-shadow:none; }
+  .cta.ghost:hover { background:var(--accent-soft); }
+
+  /* brand */
+  .brand { display:flex; align-items:center; gap:10px; padding:22px 0 0; }
+  .brand .mark { width:30px; height:30px; border-radius:8px; background:var(--accent); color:#fff;
+    display:grid; place-items:center; font-family:ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; }
+  .brand .name { font-weight:700; font-size:16px; letter-spacing:-.01em; }
+  @media (prefers-color-scheme:dark){ .brand .mark { background:#2b5cff; } }
+  .brand .tag { color:var(--muted); font-size:14px; margin-left:2px; }
+  .brand .ver { margin-left:auto; font-size:14px; color:var(--muted); font-family:ui-monospace,Menlo,monospace;
+    border:1px solid var(--line); border-radius:999px; padding:3px 10px; }
+  @media (max-width:560px){ .brand .tag{display:none;} }
+
+  .site-nav { position:sticky; top:0; z-index:50; background:var(--bg); border-bottom:1px solid var(--line);
+    backdrop-filter:saturate(1.2) blur(6px); }
+  .toc a[aria-current="true"]{ color:var(--accent); font-weight:600; }
+  .toc { max-width:var(--maxw); margin:0 auto; display:flex; flex-wrap:wrap; gap:4px 18px;
+    padding:10px 24px; font-size:14px; }
+  .toc a { display:inline-flex; align-items:center; color:var(--muted); padding:8px 2px; min-height:44px; line-height:24px; }
+  .toc a:hover { color:var(--accent); }
+  @media (max-width:600px){ .toc{flex-wrap:nowrap; overflow-x:auto; gap:0 16px; padding:4px 16px; -webkit-overflow-scrolling:touch; scrollbar-width:none; -webkit-mask-image:linear-gradient(to right,#000 92%,transparent); mask-image:linear-gradient(to right,#000 92%,transparent);}
+    .toc::-webkit-scrollbar{display:none;}
+    .toc a{white-space:nowrap; padding:10px 2px; min-height:44px; line-height:24px; font-size:14px;} .toc .toc-gh{margin-left:0;} }
+  @media (max-width:360px){ .toc{flex-wrap:wrap; overflow-x:visible; -webkit-mask-image:none; mask-image:none;} }
+  .toc .toc-gh { margin-left:auto; color:var(--accent); font-weight:600; }
+
+  .builder { margin-top:18px; }
+  .builder .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:720px){ .builder .grid{grid-template-columns:1fr;} }
+  .builder label, .builder .outlabel { display:block; font-size:14px; color:var(--muted); margin:10px 0 4px; }
+  .builder input, .builder select { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:9px;
+    background:var(--card); color:var(--fg); font-size:14px; font-family:inherit; min-height:44px; }
+  .builder input:focus, .builder select:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  .builder .out { background:var(--code-bg); border:1px solid var(--line); border-radius:10px; padding:14px;
+    font-family:ui-monospace,Menlo,monospace; font-size:13px; white-space:pre-wrap; word-break:break-word;
+    max-height:340px; overflow:auto; margin:0; }
+  .codewrap pre { padding-top:44px; }
+  .builder .row { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; align-items:center; }
+  .builder .hint { font-size:14px; color:var(--muted); }
+
+  /* copy button */
+  .codewrap { position:relative; }
+  .copy { position:absolute; top:8px; right:8px; background:var(--card); color:var(--muted);
+    border:1px solid var(--line); border-radius:7px; padding:5px 10px; font-size:14px; cursor:pointer; min-height:44px; min-width:44px;
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif; }
+  .copy:hover { border-color:var(--accent); color:var(--accent); }
+  .copy:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .faq { margin:24px 0 0; }
+  .faq details { border:1px solid var(--line); border-radius:10px; padding:0 14px; margin:8px 0; background:var(--card); }
+  .faq summary { cursor:pointer; padding:14px 0; font-weight:600; min-height:44px; display:flex; align-items:center; }
+  .faq summary:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .faq details p { margin:0 0 14px; color:var(--muted); font-size:14px; }
+  .glossary { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin:16px 0 0; }
+  .glossary div { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-size:14px; }
+  .glossary b { color:var(--accent); }
+
+  section { margin-top:64px; }
+  h2 { font-size:clamp(21px,2.6vw,26px); margin:0 0 6px; letter-spacing:-.015em; }
+  .sub { color:var(--muted); margin:0 0 24px; font-size:15px; }
+  p { margin:0 0 16px; }
+
+  /* stat strip */
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:8px 0 0; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px; }
+  .stat b { display:block; font-size:26px; letter-spacing:-.02em; }
+  .stat span { color:var(--muted); font-size:14px; }
+  @media (max-width:640px){ .stats{grid-template-columns:repeat(2,1fr);} }
+
+  /* format grid with icons */
+  .formats { display:grid; grid-template-columns:repeat(auto-fill,minmax(215px,1fr)); gap:12px; }
+  .fmt { display:flex; gap:12px; align-items:center; background:var(--card); border:1px solid var(--line);
+    border-radius:var(--radius); padding:14px 16px; transition:border-color .15s,transform .15s; }
+  .fmt:hover { border-color:var(--accent); text-decoration:none; transform:translateY(-2px); }
+  .fmt .ic { flex:0 0 38px; width:38px; height:38px; border-radius:10px; background:var(--accent-soft);
+    color:var(--accent); display:grid; place-items:center; }
+  .fmt .ic svg { width:22px; height:22px; }
+  .fmt .t { line-height:1.25; }
+  .fmt .t h3 { display:block; font-size:16px; font-weight:600; color:var(--fg); margin:0; letter-spacing:-.01em; }
+  .fmt .t .en { font-weight:400; color:var(--muted); font-size:14px; }
+  .fmt .t span { font-size:14px; color:var(--muted); }
+
+  /* works with covers */
+  .works { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
+  .work { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+    display:flex; flex-direction:column; transition:transform .15s,box-shadow .15s; }
+  .work:hover { transform:translateY(-2px); box-shadow:var(--shadow); }
+  .work .cover { aspect-ratio:16/10; background:var(--accent-soft); display:block; overflow:hidden; }
+  .work .cover img { width:100%; height:100%; object-fit:cover; display:block; }
+  .work .cover.placeholder { display:grid; place-items:center; color:var(--accent); }
+  .work .cover.placeholder svg { width:44px; height:44px; opacity:.8; }
+  .work .body { padding:14px 16px 16px; display:flex; flex-direction:column; gap:6px; flex:1; }
+  .work .work-title { font-size:15px; margin:0; }
+  .work .meta { color:var(--muted); font-size:14px; }
+  .work audio { width:100%; height:40px; margin-top:6px; accent-color:var(--accent); }
+  .work audio { width:100%; height:38px; margin-top:8px; }
+  .work .dl { font-size:14px; margin-top:auto; padding-top:8px; }
+  .work .dl a { display:inline-block; padding:10px 8px; min-height:44px; min-width:44px; }
+  footer a { display:inline-block; padding:10px 2px; min-height:44px; }
+
+  /* products with thumbnails */
+  .products { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; }
+  @media (min-width:641px){ .products .prod:first-child{grid-column:span 2;} }
+  @media (max-width:640px){ .products{grid-template-columns:repeat(2,1fr);} .formats{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:400px){ .products{grid-template-columns:1fr;} .formats{grid-template-columns:1fr;} }
+  .prod { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+    display:flex; flex-direction:column; transition:border-color .15s,transform .15s; }
+  .prod:hover { border-color:var(--accent); text-decoration:none; transform:translateY(-2px); }
+  .prod .thumb { aspect-ratio:16/10; background:var(--accent-soft); overflow:hidden; }
+  .prod .thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  .prod .pbody { padding:10px 14px 14px; }
+  .prod .pbody h3 { display:block; font-size:16px; color:var(--fg); margin:0; letter-spacing:-.01em; }
+  .prod .pbody span { font-size:14px; color:var(--muted); font-family:ui-monospace,Menlo,monospace; }
+
   footer { margin-top:72px; padding-top:24px; border-top:1px solid var(--line); color:var(--muted); font-size:14px; }
+  .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+  .sr-only:focus { position:fixed; top:12px; left:12px; width:auto; height:auto; margin:0; padding:10px 16px;
+    clip:auto; overflow:visible; background:var(--cta-bg); color:var(--cta-fg); border-radius:8px;
+    font-weight:600; z-index:100; box-shadow:var(--shadow); }
 </style>
 </head>
 <body>
-<main>
-  <h1>あなたの作品は、<br>あなたの手元に残るか？</h1>
-  <p class="lede">1 作品 = 1 JSON。音楽も、本も、ラジオも、声も、動画も、製品も、場所も。ぜんぶ同じ語彙で、テキストで、あなたの Git の中に。</p>
-
-  <p><a class="cta" href="#start">自分の作品を残す →</a> <a class="cta ghost" href="#works">実作品を聴く</a></p>
-
-  <p>openformats は、あらゆる創作の「最小単位」を、人間が読める JSON で定義するオープンな仕様です。特定のアプリに閉じ込められない。100 年後も <code>cat</code> で読める。</p>
-
-  <h2>30 秒でわかる</h2>
-  <pre><code>{
-  "spec_version": "1.1.0",
-  "kind": "music",
-  "id": "hitotsu-saki-e",
-  "title": "ひとつ先へ",
-  "provenance": { "human_involvement": "ai-assisted" }
-}</code></pre>
-  <p><code>kind</code> を変えれば、ラジオにも、本にも、動画にもなります。同じ道具（検証・ハッシュ・署名・レンダリング）が、ぜんぶの作品にそのまま効きます。</p>
-
-  <h2>フォーマット（16 種類）</h2>
-  <div class="grid">
-    <a href="music/v1.json">music<span>楽曲・作曲</span></a>
-    <a href="radio/v1.json">radio<span>ラジオ・ポッドキャスト</span></a>
-    <a href="book/v1.json">book<span>本・原稿</span></a>
-    <a href="movie/v1.json">movie<span>動画タイムライン</span></a>
-    <a href="voice/v1.json">voice<span>ナレーション・声</span></a>
-    <a href="image/v1.json">image<span>画像・ビジュアル</span></a>
-    <a href="article/v1.json">article<span>記事・投稿</span></a>
-    <a href="bim/v1.json">bim<span>建築 (bim.house)</span></a>
-    <a href="device/v1.json">device<span>IoT・端末</span></a>
-    <a href="land/v1.json">land<span>土地・区画</span></a>
-    <a href="country/v1.json">country<span>国・地域</span></a>
-    <a href="event/v1.json">event<span>イベント</span></a>
-    <a href="collection/v1.json">collection<span>アルバム・シリーズ</span></a>
-    <a href="person/v1.json">person<span>作者・話者</span></a>
-    <a href="place/v1.json">place<span>場所・会場</span></a>
-    <a href="product/v1.json">product<span>製品・サービス</span></a>
+<a class="sr-only" href="#main">本文へスキップ</a>
+<header class="site-nav">
+  <nav class="toc" aria-label="目次">
+    <a href="#builder">ブラウザで作る</a>
+    <a href="#formats">フォーマット</a>
+    <a href="#works">実作品</a>
+    <a href="#start">3ステップ</a>
+    <a href="#products">プロダクト</a>
+    <a class="toc-gh" href="https://github.com/yukihamada/openformats">GitHub ↗</a>
+  </nav>
+</header>
+<main id="main" tabindex="-1">
+  <div class="brand">
+    <span class="mark" aria-hidden="true">{}</span>
+    <span class="name">openformats</span>
+    <span class="tag">— 創作の最小単位を JSON で定義するオープン仕様</span>
+    <span class="ver">v1.0</span>
   </div>
-  <p>すべて <a href="core/envelope/v1.json">core/envelope/v1.json</a> を継承します。</p>
 
-  <h2 id="start">自分の作品を残す（コピーして 3 ステップ）</h2>
-  <p>手元の音源（例: <code>my-song.mp3</code>）を残す最短手順です。ひな形をコピーし、音源を同じフォルダに置いて、指紋を書き込むだけ。</p>
-  <pre><code># 1. ひな形をコピー（署名なし・renditions 付きの starter を使う）
+  <section class="hero" id="hero" tabindex="-1">
+    <div>
+      <h1>あなたの作品は、<br>あなたの手元に残るか？</h1>
+      <p class="lede">サービスが終わっても、作品はあなたの Git に残る。音楽・本・ラジオ・声・動画まで、同じ書き方でテキストに。</p>
+      <p><a class="cta" href="#builder">作品の設計図をつくる（無料・ブラウザ内）→</a> <a class="hero-sub" href="#works">実作品を聴く</a></p>
+    </div>
+    <div class="hero-art">
+      <img class="light" src="assets/hero.svg" width="960" height="560" fetchpriority="high" alt="1つの作品が1つのJSONになり、音楽・ラジオ・本・声・動画・建築などへ広がる様子のイラスト" decoding="async">
+      <img class="dark" src="assets/hero-dark.svg" width="960" height="560" fetchpriority="high" alt="" aria-hidden="true" decoding="async">
+    </div>
+  </section>
+
+  <div class="stats" aria-label="このリポジトリの規模">
+    <div class="stat"><b>16</b><span>種類（うち8種はブラウザで即生成）</span></div>
+    <div class="stat"><b>61</b><span>対応プロダクト</span></div>
+    <div class="stat"><b>SHA-256</b><span>で本体と照合</span></div>
+    <div class="stat"><b>MIT</b><span>仕様はオープン</span></div>
+  </div>
+
+  <section id="builder" class="builder" aria-labelledby="h-builder">
+    <h2 id="h-builder">ブラウザだけで、今すぐ 1 作品を残す</h2>
+    <p class="sub">コマンド不要。タイトルと作者を入れるだけで、正しい JSON（設計図）ができます。ダウンロードして、音源と同じフォルダに置けば完成です。<br><small>※ 16 種類のうち、ここでブラウザ生成できるのは主要 8 種類です（残りはひな形から）。</small></p>
+    <noscript><p class="hint">このビルダーは JavaScript で動きます。オフの場合は、下の「3 ステップ」のひな形 JSON をコピーして使ってください。</p></noscript>
+    <div class="grid">
+      <div>
+        <label for="b-title">作品タイトル</label>
+        <input id="b-title" type="text" placeholder="例: はじめての曲" autocomplete="off">
+        <label for="b-author">作者名</label>
+        <input id="b-author" type="text" placeholder="例: 山田 花子" autocomplete="off">
+        <label for="b-id">ID（省略可・英数字とハイフン）</label>
+        <input id="b-id" type="text" placeholder="例: my-first-song" autocomplete="off" pattern="[a-z0-9-]*">
+        <label for="b-kind">種類（kind）<small> — 主要8種。残りはひな形から</small></label>
+        <select id="b-kind">
+          <option value="music">music（音楽）</option>
+          <option value="radio">radio（ラジオ・ポッドキャスト）</option>
+          <option value="voice">voice（声）</option>
+          <option value="book">book（本・記事）</option>
+          <option value="article">article（記事）</option>
+          <option value="movie">movie（動画）</option>
+          <option value="image">image（画像）</option>
+          <option value="collection">collection（まとめ）</option>
+        </select>
+        <label for="b-license">ライセンス</label>
+        <select id="b-license">
+          <option value="CC-BY-4.0">CC-BY-4.0（クレジット表記で再利用OK）</option>
+          <option value="CC0-1.0">CC0-1.0（完全に自由）</option>
+          <option value="All-Rights-Reserved">All Rights Reserved（再利用不可）</option>
+        </select>
+        <label for="b-file">本体ファイル（音源・画像など）を選ぶ</label>
+        <input id="b-file" type="file" aria-describedby="b-filehint b-hint">
+        <p class="hint" id="b-filehint">選ぶと、指紋（SHA-256）をこのブラウザ内で計算して JSON に入れます。ファイルはどこにも送信しません。</p>
+      </div>
+      <div>
+        <span class="outlabel" id="b-outlabel">できあがる JSON（設計図）</span>
+        <pre class="out" id="b-out" aria-labelledby="b-outlabel"></pre>
+        <p class="hint" id="b-legend"><code>id</code>=作品の一意な名前 / <code>kind</code>=種類 / <code>renditions</code>=本体ファイルと指紋 / <code>provenance</code>=作り方の履歴 / <code>license</code>=再利用の条件</p>
+      </div>
+    </div>
+    <div class="row">
+      <button class="cta ghost" type="button" id="b-dl">JSON をダウンロード</button>
+      <button class="cta ghost" type="button" id="b-copy">コピー</button>
+      <span class="hint" id="b-hint">ファイルを選ぶと指紋（sha256）まで入った検証可能な JSON になります。</span>
+    </div>
+  </section>
+
+  <section id="formats" aria-labelledby="h-formats">
+    <h2 id="h-formats">フォーマット（16 種類）</h2>
+    <p class="sub">すべて <a href="core/envelope/v1.json">core/envelope/v1.json</a> を継承します。同じ道具（検証・ハッシュ・署名・レンダリング）が、ぜんぶの作品にそのまま効きます。</p>
+    <div class="formats">
+      <a class="fmt" href="music/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-music"/></svg></span><span class="t"><h3>楽曲・作曲 <span class="en">music</span></h3></span></a>
+      <a class="fmt" href="radio/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-radio"/></svg></span><span class="t"><h3>ラジオ・ポッドキャスト <span class="en">radio</span></h3></span></a>
+      <a class="fmt" href="book/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-book"/></svg></span><span class="t"><h3>本・原稿 <span class="en">book</span></h3></span></a>
+      <a class="fmt" href="movie/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-movie"/></svg></span><span class="t"><h3>動画タイムライン <span class="en">movie</span></h3></span></a>
+      <a class="fmt" href="voice/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-voice"/></svg></span><span class="t"><h3>ナレーション・声 <span class="en">voice</span></h3></span></a>
+      <a class="fmt" href="image/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-image"/></svg></span><span class="t"><h3>画像・ビジュアル <span class="en">image</span></h3></span></a>
+      <a class="fmt" href="article/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-article"/></svg></span><span class="t"><h3>記事・投稿 <span class="en">article</span></h3></span></a>
+      <a class="fmt" href="bim/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-bim"/></svg></span><span class="t"><h3>建築 (bim.house) <span class="en">bim</span></h3></span></a>
+      <a class="fmt" href="device/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-device"/></svg></span><span class="t"><h3>IoT・端末 <span class="en">device</span></h3></span></a>
+      <a class="fmt" href="land/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-land"/></svg></span><span class="t"><h3>土地・区画 <span class="en">land</span></h3></span></a>
+      <a class="fmt" href="country/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-country"/></svg></span><span class="t"><h3>国・地域 <span class="en">country</span></h3></span></a>
+      <a class="fmt" href="event/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-event"/></svg></span><span class="t"><h3>イベント <span class="en">event</span></h3></span></a>
+      <a class="fmt" href="collection/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-collection"/></svg></span><span class="t"><h3>アルバム・シリーズ <span class="en">collection</span></h3></span></a>
+      <a class="fmt" href="person/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-person"/></svg></span><span class="t"><h3>作者・話者 <span class="en">person</span></h3></span></a>
+      <a class="fmt" href="place/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-place"/></svg></span><span class="t"><h3>場所・会場 <span class="en">place</span></h3></span></a>
+      <a class="fmt" href="product/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-product"/></svg></span><span class="t"><h3>製品・サービス <span class="en">product</span></h3></span></a>
+    </div>
+    <p style="margin-top:22px"><a class="cta ghost" href="#builder">この形式で作ってみる →</a></p>
+  </section>
+
+  <section id="works" aria-labelledby="h-works">
+    <h2 id="h-works">本物の作品 — その場で聴けます</h2>
+    <p class="sub">この仕組みで作った実作品。音源の SHA-256 は JSON の <code>renditions[].sha256</code> と一致します（詳細は <a href="https://github.com/yukihamada/openformats/tree/main/works">works/</a>）。<br><small>実測ログ（2026-11-08）: 3 作品とも <code>of.py verify</code> → <code>content_hash_match: true</code> / <code>renditions[].ok: true</code>（Moco-News.wav = <code>2ec98f8a…</code>）</small></p>
+    <div class="works">
+      <div class="work">
+        <div class="cover"><img src="assets/works/moco-news.webp" width="640" height="400" alt="「モコの、ひと息AIニュース」のカバー" loading="lazy" decoding="async"></div>
+        <div class="body">
+          <h3 class="work-title">モコの、ひと息AIニュース</h3>
+          <span class="meta">週次AIニュース・3本 ・ wav ・ 1分19秒</span>
+          <audio controls preload="none" aria-label="モコの、ひと息AIニュース（週次AIニュース）" src="works/Moco-News.wav"></audio>
+          <div class="asize">WAV ・ 3.8 MB ・ 1:19</div>
+          <div class="dl"><a href="works/Moco-News.wav">wav をダウンロード</a> ・ <a href="works/moco-news-20261009.radio.json">JSON</a></div>
+        </div>
+      </div>
+      <div class="work">
+        <div class="cover"><img src="assets/works/episode-001.svg" width="640" height="400" alt="ポッドキャスト『AIが賢くなるほど、なぜ僕らは忙しいのか？』のカバー" loading="lazy" decoding="async"></div>
+        <div class="body">
+          <h3 class="work-title">AIが賢くなるほど、なぜ僕らは忙しいのか？</h3>
+          <span class="meta">本人声ポッドキャスト・第1回 ・ mp3 ・ 8分59秒</span>
+          <audio controls preload="none" aria-label="AIが賢くなるほど、なぜ僕らは忙しいのか？（本人声ポッドキャスト 第1回）" src="works/episode-001.mp3"></audio>
+          <div class="asize">MP3 ・ 12.9 MB ・ 8:59</div>
+          <div class="dl"><a href="works/episode-001.mp3">mp3 をダウンロード</a> ・ <a href="works/yuki-podcast-001.radio.json">JSON</a></div>
+        </div>
+      </div>
+      <div class="work">
+        <div class="cover"><img src="assets/works/hitotsu-saki-e.svg" width="640" height="400" alt="『ひとつ先へ』Sente テーマソングのカバー" loading="lazy" decoding="async"></div>
+        <div class="body">
+          <h3 class="work-title">ひとつ先へ</h3>
+          <span class="meta">Sente テーマソング・take1 ・ m4a ・ 3分15秒</span>
+          <audio controls preload="none" aria-label="ひとつ先へ（Sente テーマソング take1）" src="works/takes/take1_full.m4a"></audio>
+          <div class="asize">M4A ・ 3.5 MB ・ 3:15</div>
+          <div class="dl"><a href="works/takes/take1_full.m4a">m4a をダウンロード</a> ・ <a href="works/hitotsu-saki-e.music.json">JSON</a></div>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:22px"><a class="cta ghost" href="#builder">自分の作品も残す →</a></p>
+  </section>
+
+  <section id="start" aria-labelledby="h-start">
+    <h2 id="h-start">自分の作品を残す（コピーして 3 ステップ）</h2>
+    <p class="sub">コマンドが苦手なら、まず上の <a href="#builder">ブラウザで作る</a> だけで完成します。ターミナルで自動化したい人向けの手順はこちら。</p>
+    <div class="glossary" aria-label="用語のミニ解説">
+      <div><b>JSON</b> — 作品の「設計図」。タイトル・作者・ライセンスなどを人間が読めるテキストで。</div>
+      <div><b>renditions</b> — 音源や映像など「本体ファイル」の一覧。</div>
+      <div><b>sha256</b> — ファイルの「指紋」。本体が改ざんされていないか照合できます。</div>
+    </div>
+    <div class="codewrap">
+      <button class="copy" type="button" data-copy="code-1" aria-label="手順1をコピー">コピー</button>
+      <pre><code id="code-1"># 1. ひな形をコピー（署名なし・renditions 付きの starter を使う）
 cp templates/starter.music.json my-song.music.json
 
 # 2. 音源を JSON と同じフォルダに置き、title / id / renditions[].path を自分のものに書き換え
@@ -105,63 +378,208 @@ cp templates/starter.music.json my-song.music.json
 # 3. 指紋を計算して書き込み、本物か検証する（renditions の sha256 も自動で入る）
 python3 tools/of.py hash my-song.music.json --write
 python3 tools/of.py verify my-song.music.json</code></pre>
-  <p>これだけで、あなたの作品は「JSON（設計図）」と「音源（本体）」の 2 層で、あなたの Git に残ります。<code>verify</code> が <code>ok: true</code> なら、音源と JSON の指紋が一致しています。</p>
-  <p><small>※ ひな形は <code>sha256</code> が空なので、<code>validate</code> は <code>hash --write</code> の後に実行してください（先に hash すれば <code>sha256</code> が自動で入り、validate も通ります）。</small></p>
-
-  <h2>はじめる</h2>
-  <pre><code>git clone https://github.com/yukihamada/openformats
+    </div>
+    <p>これだけで、あなたの作品は「JSON（設計図）」と「音源（本体）」の 2 層で、あなたの Git に残ります。<code>verify</code> が <code>ok: true</code> なら、音源と JSON の指紋が一致しています。</p>
+    <p><small>※ ひな形は <code>sha256</code> が空なので、<code>validate</code> は <code>hash --write</code> の後に実行してください。</small></p>
+    <div class="codewrap">
+      <button class="copy" type="button" data-copy="code-2" aria-label="手順2をコピー">コピー</button>
+      <pre><code id="code-2">git clone https://github.com/yukihamada/openformats
 cd openformats
 python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
 .venv/bin/python tools/validate.py --all</code></pre>
+    </div>
+    <p><small>Git が苦手なら、GitHub の自分のリポジトリ画面に、ダウンロードした JSON と本体ファイルをそのままドラッグ＆ドロップするだけでも残せます。</small></p>
+    <p class="who">作っているのは <a href="https://github.com/yukihamada">濱田優貴（@yukihamada）</a> です。仕様も実装も GitHub で公開しています。</p>
+    <h2 id="h-faq">よくある質問</h2>
+    <div class="faq" aria-labelledby="h-faq">
+      <details><summary>GitHub が終わったら、作品はどうなりますか？</summary><p>JSON と本体ファイルはあなたの手元（ローカルや他の Git ホスト）にそのまま残ります。特定のサービスに依存しないので、別の場所へコピーするだけで続けられます。</p></details>
+      <details><summary>無料で使えますか？</summary><p>はい。仕様（SPEC）もツールも MIT ライセンスで、無料です。有料のサービスに登録する必要はありません。</p></details>
+      <details><summary>JSON を書くのが面倒です。</summary><p>上の「JSON を作る」フォームに入力するだけで、正しい JSON をその場で作れます。ファイルは送信されず、ブラウザ内だけで完結します。</p></details>
+    </div>
+  </section>
 
-  <h2 id="works">本物の作品 — その場で聴けます</h2>
-  <p>この仕組みで作った実作品。音源の SHA-256 は JSON の <code>renditions[].sha256</code> と一致します（詳細は <a href="https://github.com/yukihamada/openformats/tree/main/works">works/</a>）。</p>
-
-  <div class="work">
-    <strong>AIが賢くなるほど、なぜ僕らは忙しいのか？</strong>
-    <span class="meta">本人声ポッドキャスト・第1回</span>
-    <audio controls preload="none" src="https://cdn.jsdelivr.net/gh/yukihamada/openformats@main/works/episode-001.mp3"></audio>
-    <div class="dl"><a href="https://cdn.jsdelivr.net/gh/yukihamada/openformats@main/works/episode-001.mp3">mp3 をダウンロード</a> ・ <a href="https://github.com/yukihamada/openformats/blob/main/works/yuki-podcast-001.radio.json">JSON</a></div>
-  </div>
-
-  <div class="work">
-    <strong>モコの、ひと息AIニュース</strong>
-    <span class="meta">週次AIニュース・3本</span>
-    <audio controls preload="none" src="https://cdn.jsdelivr.net/gh/yukihamada/openformats@main/works/Moco-News.wav"></audio>
-    <div class="dl"><a href="https://cdn.jsdelivr.net/gh/yukihamada/openformats@main/works/Moco-News.wav">wav をダウンロード</a> ・ <a href="https://github.com/yukihamada/openformats/blob/main/works/moco-news-20261009.radio.json">JSON</a></div>
-  </div>
-
-  <div class="work">
-    <strong>ひとつ先へ</strong>
-    <span class="meta">Sente テーマソング・take1</span>
-    <audio controls preload="none" src="https://cdn.jsdelivr.net/gh/yukihamada/openformats@main/works/takes/take1_full.m4a"></audio>
-    <div class="dl"><a href="https://cdn.jsdelivr.net/gh/yukihamada/openformats@main/works/takes/take1_full.m4a">m4a をダウンロード</a> ・ <a href="https://github.com/yukihamada/openformats/blob/main/works/hitotsu-saki-e.music.json">JSON</a></div>
-  </div>
-
-  <h2>この JSON を使うプロダクト</h2>
-  <p>各フォーマット（kind）を実際に生成・消費するサービスだけを掲載（<a href="https://github.com/yukihamada/openformats/tree/main/products">products/</a> にカタログ全件）。</p>
-  <div class="grid">
-    <a href="https://koe.live">KOE<span>voice</span></a>
-    <a href="https://uta.live">uta.live<span>voice/music</span></a>
-    <a href="https://movie.live">movie.live<span>movie/voice</span></a>
-    <a href="https://news.xyz">news.xyz<span>radio/movie</span></a>
-    <a href="https://bim.house">bim.house<span>bim</span></a>
-    <a href="https://zumen.house">ZUMEN.HOUSE<span>bim/land</span></a>
-    <a href="https://kata.house">KATA.HOUSE<span>bim/land</span></a>
-    <a href="https://house.wearmu.com">MU HOUSE<span>bim/land/place</span></a>
-    <a href="https://solun.art">SOLUNA<span>land/place</span></a>
-    <a href="https://stayflowapp.com/stays">StayFlow<span>place/event</span></a>
-    <a href="https://wearmu.com/make">MU<span>image/collection</span></a>
-    <a href="https://teai.io">teai<span>article/book</span></a>
-    <a href="https://sente.teai.io">先手 / Sente<span>article/book</span></a>
-    <a href="https://elio.love">Elio<span>article/book</span></a>
-    <a href="https://jiuflow.com">JiuFlow<span>article/event</span></a>
-    <a href="https://takibi.wtf">焚き火 / ATSM<span>article/event</span></a>
-  </div>
+  <section id="products" aria-labelledby="h-products">
+    <h2 id="h-products">この JSON を使うプロダクト <small style="font-weight:400;color:var(--muted)">（主要 13 / 全 61 件）</small></h2>
+    <p class="sub">各フォーマット（kind）を実際に生成・消費するサービスだけを掲載（<a href="https://github.com/yukihamada/openformats/tree/main/products">products/</a> に 61 件のカタログ全件、ここは主要 13 件）。</p>
+    <div class="products">
+      <a class="prod" href="https://koe.live" target="_blank" rel="noopener"><span class="thumb"><img src="assets/products/koe.webp" width="640" height="400" alt="KOE のスクリーンショット" loading="lazy" decoding="async"></span><span class="pbody"><h3>KOE</h3><span>voice</span></span></a>
+      <a class="prod" href="https://uta.live" target="_blank" rel="noopener"><span class="thumb"><img src="assets/products/uta.webp" width="640" height="400" alt="uta.live のスクリーンショット" loading="lazy" decoding="async"></span><span class="pbody"><h3>uta.live</h3><span>voice/music</span></span></a>
+      <a class="prod" href="https://bim.house" target="_blank" rel="noopener"><span class="thumb"><img src="assets/products/bim.webp" width="640" height="400" alt="bim.house のスクリーンショット" loading="lazy" decoding="async"></span><span class="pbody"><h3>bim.house</h3><span>bim</span></span></a>
+      <a class="prod" href="https://zumen.house" target="_blank" rel="noopener"><span class="thumb"><img src="assets/products/zumen.webp" width="640" height="400" alt="ZUMEN.HOUSE のスクリーンショット" loading="lazy" decoding="async"></span><span class="pbody"><h3>ZUMEN.HOUSE</h3><span>bim/land</span></span></a>
+      <a class="prod" href="https://kata.house" target="_blank" rel="noopener"><span class="thumb"><img src="assets/products/kata.webp" width="640" height="400" alt="KATA.HOUSE のスクリーンショット" loading="lazy" decoding="async"></span><span class="pbody"><h3>KATA.HOUSE</h3><span>bim/land</span></span></a>
+      <a class="prod" href="https://house.wearmu.com" target="_blank" rel="noopener"><span class="thumb"><img src="assets/products/muhouse.webp" width="640" height="400" alt="MU HOUSE のスクリーンショット" loading="lazy" decoding="async"></span><span class="pbody"><h3>MU HOUSE</h3><span>bim/land/place</span></span></a>
+      <a class="prod" href="https://solun.art" target="_blank" rel="noopener"><span class="thumb"><img src="assets/products/soluna.webp" width="640" height="400" alt="SOLUNA のスクリーンショット" loading="lazy" decoding="async"></span><span class="pbody"><h3>SOLUNA</h3><span>land/place</span></span></a>
+      <a class="prod" href="https://stayflowapp.com/stays" target="_blank" rel="noopener"><span class="thumb"><img src="assets/products/stayflow.webp" width="640" height="400" alt="StayFlow のスクリーンショット" loading="lazy" decoding="async"></span><span class="pbody"><h3>StayFlow</h3><span>place/event</span></span></a>
+      <a class="prod" href="https://wearmu.com/make" target="_blank" rel="noopener"><span class="thumb"><img src="assets/products/mu.webp" width="640" height="400" alt="MU のスクリーンショット" loading="lazy" decoding="async"></span><span class="pbody"><h3>MU</h3><span>image/collection</span></span></a>
+      <a class="prod" href="https://teai.io" target="_blank" rel="noopener"><span class="thumb"><img src="assets/products/teai.webp" width="640" height="400" alt="teai のスクリーンショット" loading="lazy" decoding="async"></span><span class="pbody"><h3>teai</h3><span>article/book</span></span></a>
+      <a class="prod" href="https://sente.teai.io" target="_blank" rel="noopener"><span class="thumb"><img src="assets/products/sente.webp" width="640" height="400" alt="先手 / Sente のスクリーンショット" loading="lazy" decoding="async"></span><span class="pbody"><h3>先手 / Sente</h3><span>article/book</span></span></a>
+      <a class="prod" href="https://jiuflow.com" target="_blank" rel="noopener"><span class="thumb"><img src="assets/products/jiuflow.webp" width="640" height="400" alt="JiuFlow のスクリーンショット" loading="lazy" decoding="async"></span><span class="pbody"><h3>JiuFlow</h3><span>article/event</span></span></a>
+      <a class="prod" href="https://takibi.wtf" target="_blank" rel="noopener"><span class="thumb"><img src="assets/products/takibi.webp" width="640" height="400" alt="焚き火 / ATSM のスクリーンショット" loading="lazy" decoding="async"></span><span class="pbody"><h3>焚き火 / ATSM</h3><span>article/event</span></span></a>
+    </div>
+    <div class="early" role="note">
+      <strong>初期採用者を募集しています。</strong> この仕様で作品を残したら、GitHub の <a href="https://github.com/yukihamada/openformats/issues">Issues</a> に作品リンクを貼ってください。ここに実例として掲載します（架空の実績は載せません）。
+    </div>
+    <p style="margin-top:22px"><a class="cta ghost" href="#builder">今すぐ作る →</a> <a class="cta ghost" href="https://github.com/yukihamada/openformats">仕様を読む</a></p>
+  </section>
 
   <footer>
-    仕様は <a href="https://github.com/yukihamada/openformats">MIT</a>。規範文書は <a href="https://github.com/yukihamada/openformats/blob/main/SPEC.md">SPEC.md</a>、版管理は <a href="https://github.com/yukihamada/openformats/blob/main/VERSIONING.md">VERSIONING.md</a>。
+    仕様は <a href="https://github.com/yukihamada/openformats">MIT</a>。規範文書は <a href="https://github.com/yukihamada/openformats/blob/main/SPEC.md">SPEC.md</a>、版管理は <a href="https://github.com/yukihamada/openformats/blob/main/VERSIONING.md">VERSIONING.md</a>。<br>
+    制作・運営: <a href="https://yukihamada.jp">濱田優貴</a> ・ <a href="https://github.com/yukihamada/openformats">GitHub リポジトリ</a> ・ <a href="https://github.com/yukihamada/openformats/issues">改善提案・問い合わせ</a><br>
+    <small>最終更新: 2026-11-08 ・ 検証: <code>of.py verify</code> が <code>ok: true</code> を返すと、音源と JSON の指紋が一致します。</small>
   </footer>
 </main>
+<div class="sr-only" role="status" aria-live="polite" id="copy-status"></div>
+<script>
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var el = document.getElementById(btn.dataset.copy);
+      if(!el) return;
+      var text = el.innerText;
+      var done = function(){
+        btn.textContent='コピー済み';
+        var st=document.getElementById('copy-status'); if(st) st.textContent='コードをコピーしました';
+        setTimeout(function(){btn.textContent='コピー';},1500);
+      };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done, function(){ fallback(text, done); });
+      } else { fallback(text, done); }
+    });
+  });
+  function fallback(text, cb){
+    var ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta); cb();
+  }
+
+  // ---- browser builder ----
+  (function(){
+    var t=document.getElementById('b-title'), a=document.getElementById('b-author'),
+        k=document.getElementById('b-kind'), f=document.getElementById('b-file'),
+        idf=document.getElementById('b-id'),
+        lic=document.getElementById('b-license'),
+        out=document.getElementById('b-out'), dl=document.getElementById('b-dl'),
+        cp=document.getElementById('b-copy'), hint=document.getElementById('b-hint');
+    if(!out) return;
+    document.querySelectorAll('a[href="#builder"]').forEach(function(link){
+      link.addEventListener('click',function(){ setTimeout(function(){ if(t) t.focus({preventScroll:true}); },60); });
+    });
+
+    var fileState={name:'', sha256:'', bytes:0, format:''};
+    function hashStr(s){
+      var h1=0x811c9dc5, h2=0x1000193;
+      for(var i=0;i<s.length;i++){
+        var c=s.charCodeAt(i);
+        h1=Math.imul(h1^c,0x01000193)>>>0;
+        h2=Math.imul(h2+c,0x85ebca6b)>>>0;
+      }
+      return (h1.toString(36)+h2.toString(36)).padStart(10,'0');
+    }
+    var sessionTok=Math.random().toString(36).slice(2,8), blankSeq=0;
+    function slug(s){
+      var raw=(s||'').trim();
+      var base=raw.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);
+      var d=new Date(), stamp=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+      var kk=(k&&k.value)?k.value:'work';
+      if(base.length>=4 && /[a-z]/.test(base)) return base;
+      if(raw) return kk+'-'+stamp+'-'+hashStr(raw).slice(0,6);
+      return kk+'-'+stamp+'-'+sessionTok+(blankSeq?('-'+blankSeq):'');
+    }
+    function normId(){
+      if(idf&&idf.value.trim()){
+        var v=idf.value.trim().toLowerCase().replace(/[^a-z0-9-]+/g,"-").replace(/^-+|-+$/g,"");
+        if(v.length>=2) return v;
+      }
+      return slug(t.value.trim());
+    }
+    function build(){
+      var title=t.value.trim()||'無題の作品', author=a.value.trim()||'あなた',
+          kind=k.value, file=fileState.name;
+      var o={
+        "$schema":"https://yukihamada.github.io/openformats/"+kind+"/v1.json",
+        "spec_version":"1.1.0","kind":kind,"id":normId(),"title":title,"lang":"ja",
+        "license":(lic?lic.value:"CC-BY-4.0"),
+        "authors":[{"name":author}],
+        "provenance":{"human_involvement":"human","history":[{"at":new Date().toISOString(),"action":"create","by":author}]},
+        "access":{"visibility":"private","derivatives":"allow"}
+      };
+      var rend=null;
+      if(fileState.sha256){ rend={kind:"audio",format:fileState.format||'bin',path:file,sha256:fileState.sha256,bytes:fileState.bytes}; }
+      if(kind==='music'){ if(rend)o.renditions=[rend]; }
+      else if(kind==='radio'){ o.speakers=[{id:"host",name:author}]; o.segments=[{type:"speech",speaker:"host",text:"ここに台本"}]; if(rend)o.renditions=[rend]; }
+      else if(kind==='voice'){ o.source={path:file||'voice.wav'}; if(rend)o.renditions=[rend]; }
+      else if(kind==='book'){ o.metadata={}; o.chapters=[{id:"ch1",title:"第1章",blocks:[{type:"paragraph",text:"本文"}]}]; if(rend)o.renditions=[rend]; }
+      else if(kind==='article'){ o.blocks=[{type:"paragraph",text:"本文"}]; if(rend)o.renditions=[rend]; }
+      else if(kind==='movie'){ o.timeline=[{id:"c1",type:"video",clips:[{start_sec:0,duration_sec:0,src:file||'clip.mp4'}]}]; if(rend)o.renditions=[rend]; }
+      else if(kind==='image'){ o.source={path:file||'image.png'}; if(rend)o.renditions=[rend]; }
+      else if(kind==='collection'){ o.items=[{ref:"example.music.json"}]; }
+      return JSON.stringify(o,null,2);
+    }
+    var announceTimer=null;
+    function render(){
+      out.textContent=build();
+      if(announceTimer) clearTimeout(announceTimer);
+      announceTimer=setTimeout(function(){
+        var st=document.getElementById('copy-status');
+        if(st) st.textContent='JSON を更新しました。'+(k.value==='collection'?'（collection は参照の集まりです）':'');
+      },900);
+    }
+    t.addEventListener('input',function(){ if(!t.value.trim()) blankSeq++; });
+    [t,a,idf].forEach(function(el){ if(el) el.addEventListener('input',render); });
+    k.addEventListener('change',render);
+    if(lic) lic.addEventListener('change',render);
+    render();
+    if(f){
+      f.addEventListener('change',function(){
+        var file=f.files&&f.files[0];
+        if(!file){ fileState={name:'',sha256:'',bytes:0,format:''}; render(); return; }
+        fileState.name=file.name; fileState.bytes=file.size;
+        fileState.format=(file.name.split('.').pop()||'bin').toLowerCase();
+        hint.textContent='指紋を計算中…';
+        if(window.crypto&&crypto.subtle){
+          file.arrayBuffer().then(function(buf){ return crypto.subtle.digest('SHA-256',buf); })
+            .then(function(h){
+              fileState.sha256=[...new Uint8Array(h)].map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+              render();
+              hint.textContent=(k.value==='collection')
+                ? '指紋を計算しました。ただし collection は参照の集まりなので、renditions には入りません。'
+                : '指紋（sha256）を入れました。この JSON は of.py verify で照合できます。';
+            })
+            .catch(function(){ hint.textContent='この環境では指紋を計算できませんでした。ファイル名だけ入れます。'; render(); });
+        } else { hint.textContent='この環境では指紋を計算できません。ファイル名だけ入れます。'; render(); }
+      });
+    }
+    dl.addEventListener('click',function(){
+      var blob=new Blob([build()],{type:'application/json'});
+      var url=URL.createObjectURL(blob), link=document.createElement('a');
+      var jid; try{ jid=JSON.parse(build()).id; }catch(e){ jid=slug(t.value.trim()); }
+      var dd=new Date(), ds=dd.getFullYear()+String(dd.getMonth()+1).padStart(2,'0')+String(dd.getDate()).padStart(2,'0');
+      link.href=url; link.download=(jid||'my-work')+'-'+ds+'.'+k.value+'.json';
+      document.body.appendChild(link); link.click(); document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      hint.textContent='ダウンロードしました。本体ファイルと同じフォルダに置いてください。';
+      var st=document.getElementById('copy-status'); if(st) st.textContent='JSON をダウンロードしました';
+    });
+    cp.addEventListener('click',function(){
+      var text=build();
+      var done=function(){ cp.textContent='コピー済み'; var st=document.getElementById('copy-status'); if(st)st.textContent='JSONをコピーしました'; setTimeout(function(){cp.textContent='コピー';},1500); };
+      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done,function(){fallback(text,done);}); }
+      else fallback(text,done);
+    });
+  })();
+</script>
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.toc a[href^="#"]'));
+  var map={}; links.forEach(function(a){ var id=a.getAttribute('href').slice(1); var el=document.getElementById(id); if(el) map[id]=a; });
+  if(!('IntersectionObserver' in window)) return;
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ links.forEach(function(a){a.removeAttribute('aria-current');}); var a=map[e.target.id]; if(a) a.setAttribute('aria-current','true'); }
+    });
+  },{rootMargin:'-45% 0px -50% 0px', threshold:0});
+  Object.keys(map).forEach(function(id){ io.observe(document.getElementById(id)); });
+})();
+</script>
 </body>
 </html>

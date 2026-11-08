@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="ポッドキャスト『AIが賢くなるほど、なぜ僕らは忙しいのか？』のカバー">
+  <defs>
+    <linearGradient id="pbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b2a5e"/><stop offset="1" stop-color="#2b5cff"/>
+    </linearGradient>
+    <linearGradient id="wave" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7aa0ff"/><stop offset="1" stop-color="#a9c0ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="url(#pbg)"/>
+  <g stroke="url(#wave)" stroke-width="3" stroke-linecap="round" opacity="0.9">
+    <line x1="60" y1="300" x2="60" y2="300"/>
+    <line x1="80" y1="285" x2="80" y2="315"/>
+    <line x1="100" y1="265" x2="100" y2="335"/>
+    <line x1="120" y1="245" x2="120" y2="355"/>
+    <line x1="140" y1="275" x2="140" y2="325"/>
+    <line x1="160" y1="230" x2="160" y2="370"/>
+    <line x1="180" y1="255" x2="180" y2="345"/>
+    <line x1="200" y1="285" x2="200" y2="315"/>
+    <line x1="220" y1="250" x2="220" y2="350"/>
+    <line x1="240" y1="270" x2="240" y2="330"/>
+  </g>
+  <circle cx="300" cy="300" r="26" fill="#fff" opacity="0.16"/>
+  <path d="M292 288 L316 300 L292 312 Z" fill="#fff"/>
+  <text x="60" y="120" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" font-size="20" font-weight="700" fill="#a9c0ff">PODCAST ・ 第1回</text>
+  <text x="60" y="170" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" font-size="34" font-weight="800" fill="#ffffff">AIが賢くなるほど、</text>
+  <text x="60" y="212" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" font-size="34" font-weight="800" fill="#ffffff">なぜ僕らは忙しいのか？</text>
+  <text x="60" y="360" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" font-size="16" fill="#c9d6ff">本人声ポッドキャスト</text>
+</svg>
