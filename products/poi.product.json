@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "poi",
   "name": "ポイッ",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "開発中。9/15棚卸しでも未提出。判定精度は未確認。"
+  "note": "開発中。9/15棚卸しでも未提出。判定精度は未確認。",
+  "content_hash": "2a3c4746d4b9e74094657e9b08d331d8822e3eafece8573244bc02fcb7aed320"
 }

@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "mu-mart",
   "name": "MU MART",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "ベータ表記。注文・配送は未確認。"
+  "note": "ベータ表記。注文・配送は未確認。",
+  "content_hash": "744a39db9f0479772efc2177d2cbb5279d89ec72ebcd31373af1b050732448eb"
 }

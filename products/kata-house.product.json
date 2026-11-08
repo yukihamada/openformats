@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "kata-house",
   "name": "KATA.HOUSE",
@@ -40,5 +40,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "建築関連の派生入口。設計・施工の完了は未確認。"
+  "note": "建築関連の派生入口。設計・施工の完了は未確認。",
+  "content_hash": "dd8c1f41f89bc236a005f1bb0a70488580c6de97885a43db729db90f9846a572"
 }

@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openformats.dev/land/v1.json",
+  "$id": "https://yukihamada.github.io/openformats/land/v1.json",
   "title": "land.json v1 — open land / parcel format",
   "description": "1 区画 = 1 JSON。位置・面積・用途地域・権利・地形を記述。bim.json の project と接続し、建築・イベント・撮影の前提情報を安全に共有する。第三者個人情報・詳細地番は既定で含めない。MIT。",
-  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "allOf": [{ "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json" }],
   "type": "object",
   "required": ["kind", "id", "location"],
   "properties": {

@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "adflow",
   "name": "AdFlow",
@@ -37,5 +37,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "広告効果・利益・完全自動運用は未検証。"
+  "note": "広告効果・利益・完全自動運用は未検証。",
+  "content_hash": "f2e71ee837f04b97fc8814a567dee643a8afe02a573a91c077160ab0c2d82d18"
 }

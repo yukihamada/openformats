@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "company",
   "name": "Enabler / 会社案内",
@@ -37,5 +37,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "製品そのものではない。掲載数・設立年・実績の表記に相違があるため転記しない。"
+  "note": "製品そのものではない。掲載数・設立年・実績の表記に相違があるため転記しない。",
+  "content_hash": "d7c499ccab8505fc8b9460adf022308f5570c79091fd1ef9efcbe5548dad9320"
 }

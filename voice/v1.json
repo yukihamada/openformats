@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openformats.dev/voice/v1.json",
+  "$id": "https://yukihamada.github.io/openformats/voice/v1.json",
   "title": "voice.json v1 — open voice / narration asset format",
   "description": "1 音声 = 1 JSON。話者・台本・発話区間・声の許諾・TTS パラメータを記述。KOE/teai 等と連携。声の同意を最優先で記録する。MIT。",
-  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "allOf": [{ "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json" }],
   "type": "object",
   "required": ["kind", "id", "source"],
   "properties": {

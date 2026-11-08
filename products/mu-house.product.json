@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "mu-house",
   "name": "MU HOUSE",
@@ -40,5 +40,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "bim.house等との共通実装・派生関係があり得るため独立製品数の実績にしない。"
+  "note": "bim.house等との共通実装・派生関係があり得るため独立製品数の実績にしない。",
+  "content_hash": "393d0ba6d415d5dd8665966b3ebf30569aea3364cc8636be7eddb57da2f42953"
 }

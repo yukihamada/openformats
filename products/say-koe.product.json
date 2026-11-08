@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "say-koe",
   "name": "say.koe",
@@ -41,5 +41,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "ベータ表記。現行用途・機能の動作は未確認。"
+  "note": "ベータ表記。現行用途・機能の動作は未確認。",
+  "content_hash": "06bdc4d9a02a095222af2bebdf00bd11949af93585c7359bce0e91fbe33f101b"
 }

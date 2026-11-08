@@ -1,14 +1,49 @@
 {
-  "$schema": "https://openformats.dev/country/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/country/v1.json",
+  "spec_version": "1.1.0",
   "kind": "country",
   "id": "jp",
   "title": "Japan",
   "license": "CC0-1.0",
-  "code": { "iso3166_alpha2": "JP", "iso3166_alpha3": "JPN", "region": "Asia" },
-  "languages": [{ "bcp47": "ja", "name": "日本語", "official": true }],
-  "currency": { "code": "JPY", "symbol": "¥", "decimal_digits": 0 },
-  "timezone": ["Asia/Tokyo"],
-  "media_regulation": { "content_rating_system": "CERO/Eirin", "gdpr_like": true, "ai_labeling_required": false },
-  "sources": [{ "url": "https://www.iso.org/iso-3166-country-codes.html", "retrieved_at": "2026-11-08" }]
+  "code": {
+    "iso3166_alpha2": "JP",
+    "iso3166_alpha3": "JPN",
+    "region": "Asia"
+  },
+  "languages": [
+    {
+      "bcp47": "ja",
+      "name": "日本語",
+      "official": true
+    }
+  ],
+  "currency": {
+    "code": "JPY",
+    "symbol": "¥",
+    "decimal_digits": 0
+  },
+  "timezone": [
+    "Asia/Tokyo"
+  ],
+  "media_regulation": {
+    "content_rating_system": "CERO/Eirin",
+    "gdpr_like": true,
+    "ai_labeling_required": false
+  },
+  "sources": [
+    {
+      "url": "https://www.iso.org/iso-3166-country-codes.html",
+      "retrieved_at": "2026-11-08"
+    }
+  ],
+  "content_hash": "c5d7e16ee30620e6917650a21b37f9e4f701e36d3bdf90400b35581540696faa",
+  "signatures": [
+    {
+      "alg": "Ed25519",
+      "public_key": "f/NPZdENXk1dAVXqB+QWn1mIx6LUdhoJWuYWA4hnTPY=",
+      "signature": "DZ2sc+LEl4+k3rvGCpLnu276Jgk7jCheBDJUHDjcSxc3m0Ejgv4al1mG/JTi1aOXTFOF8KuHEsMV3O+9kgehDQ==",
+      "signer": "openformats-maintainer",
+      "signed_at": "2026-11-08T07:47:04Z"
+    }
+  ]
 }

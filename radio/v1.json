@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openformats.dev/radio/v1.json",
+  "$id": "https://yukihamada.github.io/openformats/radio/v1.json",
   "title": "radio.json v1 — open radio / podcast episode format",
   "description": "1 エピソード = 1 JSON。話者・台本・音声クリップ・BGM・ミックスを最小単位で記述し、TTS/KOE・音楽生成・動画化へ変換可能。MIT。",
-  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "allOf": [{ "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json" }],
   "type": "object",
   "required": ["kind", "id", "speakers", "segments"],
   "properties": {

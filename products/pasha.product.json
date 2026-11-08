@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "pasha",
   "name": "パシャ",
@@ -37,5 +37,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "9/15棚卸しに公開版の記録。OCR精度・法令対応の網羅性は未検証。"
+  "note": "9/15棚卸しに公開版の記録。OCR精度・法令対応の網羅性は未検証。",
+  "content_hash": "f007de7bdbb508f20d2e1ad0cae9dbd12a3dfdfc59d7c9ea6fe73e0450b62d23"
 }

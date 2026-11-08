@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openformats.dev/person/v1.json",
+  "$id": "https://yukihamada.github.io/openformats/person/v1.json",
   "title": "person.json v1 — open creator / persona profile format",
   "description": "1 人 (またはペルソナ) = 1 JSON。作者・話者・登場人物の公開プロフィール。秘密・連絡先・住所は既定で含めない。声・作品の来歴と接続。MIT。",
-  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "allOf": [{ "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json" }],
   "type": "object",
   "required": ["kind", "id", "display_name"],
   "properties": {

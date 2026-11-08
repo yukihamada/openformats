@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "zumen",
   "name": "ZUMEN.HOUSE",
@@ -40,5 +40,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "実納品・図面精度・即日対応は未確認。"
+  "note": "実納品・図面精度・即日対応は未確認。",
+  "content_hash": "330dafd76fd4b356a0c13d023347ce536fb6a79386f6845fe30f3af81a897379"
 }

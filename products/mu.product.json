@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "mu",
   "name": "MU",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "商品種類設定85/JP作成可76を既存観測。最新注文の製造配送一連確認は未実施。"
+  "note": "商品種類設定85/JP作成可76を既存観測。最新注文の製造配送一連確認は未実施。",
+  "content_hash": "97aa259a518eb36368995fd83b26c07f4168ff01042e01ce5ad8b528f72ce635"
 }

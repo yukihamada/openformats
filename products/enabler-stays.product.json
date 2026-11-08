@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "enabler-stays",
   "name": "enabler.fun",
@@ -40,5 +40,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "宿の案内ブランド。掲載施設とソフトウェア製品数を混同しない。"
+  "note": "宿の案内ブランド。掲載施設とソフトウェア製品数を混同しない。",
+  "content_hash": "660f207eff10bc9a088572167ac99e12a7b815e3f4d5d18e9e1251d3315dd883"
 }

@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "koe",
   "name": "KOE",
@@ -41,5 +41,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "公開サンプル音声あり。一般口座の本人鍵連携から生成までは未確認。"
+  "note": "公開サンプル音声あり。一般口座の本人鍵連携から生成までは未確認。",
+  "content_hash": "dd155bceaf933a2fad337bd409ecef1fde3fe9d5047dddc120ef7fda92464fa5"
 }

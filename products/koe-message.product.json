@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "koe-message",
   "name": "KOE 声メッセージ",
@@ -41,5 +41,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "9/15棚卸しで未提出。Web版の公開状態と混同しない。"
+  "note": "9/15棚卸しで未提出。Web版の公開状態と混同しない。",
+  "content_hash": "e77269faf1b278251fb510f9e871a87eae6fd6bf2acf1a2c904e08792c968b8d"
 }

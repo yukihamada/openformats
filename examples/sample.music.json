@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/music/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/music/v1.json",
+  "spec_version": "1.1.0",
   "kind": "music",
   "id": "hajimari-no-uta",
   "title": "はじまりの歌",
@@ -8,20 +8,86 @@
   "license": "CC-BY-4.0",
   "created_at": "2026-11-08T00:00:00Z",
   "provenance": {
-    "generator": { "name": "teai", "version": "2026.11" },
+    "generator": {
+      "name": "teai",
+      "version": "2026.11"
+    },
     "human_involvement": "ai-assisted",
-    "history": [{ "at": "2026-11-08T00:00:00Z", "action": "create", "by": "yuki" }]
+    "history": [
+      {
+        "at": "2026-11-08T00:00:00Z",
+        "action": "create",
+        "by": "yuki"
+      }
+    ]
   },
-  "access": { "visibility": "public", "derivatives": "allow" },
-  "meta": { "genre": ["pop"], "mood": ["hopeful"], "bpm": 120, "key": "C major", "instrumental": false },
+  "access": {
+    "visibility": "public",
+    "derivatives": "allow"
+  },
+  "meta": {
+    "genre": [
+      "pop"
+    ],
+    "mood": [
+      "hopeful"
+    ],
+    "bpm": 120,
+    "key": "C major",
+    "instrumental": false
+  },
   "sections": [
-    { "name": "intro", "start_sec": 0, "duration_sec": 8, "bars": 4, "energy": 0.3 },
-    { "name": "verse", "start_sec": 8, "duration_sec": 24, "bars": 12, "energy": 0.5 }
+    {
+      "name": "intro",
+      "start_sec": 0,
+      "duration_sec": 8,
+      "bars": 4,
+      "energy": 0.3
+    },
+    {
+      "name": "verse",
+      "start_sec": 8,
+      "duration_sec": 24,
+      "bars": 12,
+      "energy": 0.5
+    }
   ],
   "tracks": [
-    { "id": "vox", "instrument": "voice", "role": "lead", "gain_db": 0 },
-    { "id": "bass", "instrument": "bass", "role": "bass", "gain_db": -3 }
+    {
+      "id": "vox",
+      "instrument": "voice",
+      "role": "lead",
+      "gain_db": 0
+    },
+    {
+      "id": "bass",
+      "instrument": "bass",
+      "role": "bass",
+      "gain_db": -3
+    }
   ],
-  "lyrics": [{ "section": "verse", "lines": ["朝の光が窓を染めて", "まだ知らない今日がはじまる"], "lang": "ja" }],
-  "generation": { "provider": "teai", "prompt": "warm hopeful japanese pop, acoustic guitar, 120bpm" }
+  "lyrics": [
+    {
+      "section": "verse",
+      "lines": [
+        "朝の光が窓を染めて",
+        "まだ知らない今日がはじまる"
+      ],
+      "lang": "ja"
+    }
+  ],
+  "generation": {
+    "provider": "teai",
+    "prompt": "warm hopeful japanese pop, acoustic guitar, 120bpm"
+  },
+  "content_hash": "dc7ce8fead6a404d9bb42c5be46acc94dfafe28c8e105fb2d7cdbd801ad1b42a",
+  "signatures": [
+    {
+      "alg": "Ed25519",
+      "public_key": "f/NPZdENXk1dAVXqB+QWn1mIx6LUdhoJWuYWA4hnTPY=",
+      "signature": "Y9HaEiw28Yj+oavRZZRGy6eg9rH9q8I8HrR7Ui3XsL8FcWyFJPONuxJdrIOzv7CTZH/CY7gy4tFf0nmGaKBEAA==",
+      "signer": "openformats-maintainer",
+      "signed_at": "2026-11-08T07:47:05Z"
+    }
+  ]
 }

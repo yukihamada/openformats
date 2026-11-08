@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "sente",
   "name": "先手 / Sente",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "常駐サーバーは設定済み環境の検証。iOS最新版の一般配布は未確認。"
+  "note": "常駐サーバーは設定済み環境の検証。iOS最新版の一般配布は未確認。",
+  "content_hash": "fb4a6c051b4ebea44d04588f7ebc34b7dbdc9735dc069e2e13f1c15e7314d87d"
 }

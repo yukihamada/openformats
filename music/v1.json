@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://openformats.dev/music/v1.json",
+  "$id": "https://yukihamada.github.io/openformats/music/v1.json",
   "title": "music.json v1 — open music / composition format",
   "description": "1 曲 = 1 JSON。メタ・テンポ・キー・セクション・トラック・歌詞・生成プロンプトを最小単位で記述。Suno/MUREKA 等の生成や DAW 連携へ変換可能。MIT。",
-  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "allOf": [{ "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json" }],
   "type": "object",
   "required": ["kind", "id"],
   "properties": {

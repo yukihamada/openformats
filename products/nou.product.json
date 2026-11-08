@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "nou",
   "name": "NOU",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "Web案内とiOSの公開状態は別。iOSは9/15棚卸しで未提出。"
+  "note": "Web案内とiOSの公開状態は別。iOSは9/15棚卸しで未提出。",
+  "content_hash": "4b98fb0ccba14e5799c44c3510391bbb5da3586d0b71096e8717ce7edc4755e2"
 }

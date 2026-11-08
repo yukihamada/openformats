@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "enai",
   "name": "ENAI トークン構想",
@@ -37,5 +37,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "未発売・研究中としてのみ記載。購入案内・価格・利益・特典を掲載しない。"
+  "note": "未発売・研究中としてのみ記載。購入案内・価格・利益・特典を掲載しない。",
+  "content_hash": "991e83a5c7d0f71e9c9995359921843145fc655bcf2c3411d6089390afbf8bd2"
 }

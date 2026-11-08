@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "chatbuy",
   "name": "chatbuy",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "ベータ表記。商品購入・配送は未確認。"
+  "note": "ベータ表記。商品購入・配送は未確認。",
+  "content_hash": "e9dd9fd778d6074d56d3786ae230a5febf1ab478de222b06eb711eaa96f24e76"
 }

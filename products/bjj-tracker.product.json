@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "bjj-tracker",
   "name": "BJJ Tracker",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "9/15棚卸しで未提出。具体的機能は未確認。"
+  "note": "9/15棚卸しで未提出。具体的機能は未確認。",
+  "content_hash": "2d8e7f1623d5da31a7027c4e3b881847b1d203056ebf3d19f710c5d5ac57316d"
 }

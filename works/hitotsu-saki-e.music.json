@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/music/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/music/v1.json",
+  "spec_version": "1.1.0",
   "kind": "music",
   "id": "hitotsu-saki-e",
   "title": "ひとつ先へ",
@@ -200,13 +200,15 @@
     {
       "format": "m4a",
       "path": "takes/take1_full.m4a",
-      "sha256": "627961020ae8f9fc416da064fd3977447a6d24d9f93a9ec5bc9afcd35e795dea"
+      "sha256": "627961020ae8f9fc416da064fd3977447a6d24d9f93a9ec5bc9afcd35e795dea",
+      "kind": "audio"
     },
     {
       "format": "m4a",
       "path": "takes/take2_full.m4a",
-      "sha256": "dc49a5ae41c7eb7264d9f0e563e845c6c3038e29b330f48e09aa20dd82a725ef"
+      "sha256": "dc49a5ae41c7eb7264d9f0e563e845c6c3038e29b330f48e09aa20dd82a725ef",
+      "kind": "audio"
     }
   ],
-  "content_hash": "fc694d25c38b4e0c0f6ac6a2c1ed060639e97d816e66203ca88c4b2fb3169799"
+  "content_hash": "82b3abf1555e12da5240f35c2441bd65cd44a20b3f96bcdb5f83d137f42bd886"
 }

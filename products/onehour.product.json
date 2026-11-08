@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "onehour",
   "name": "1HOUR.HOUSE",
@@ -40,5 +40,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "名称に含まれる時間は性能保証として使わない。"
+  "note": "名称に含まれる時間は性能保証として使わない。",
+  "content_hash": "0034a619b3e501ddc3c22ebf623aaeed26e0098b691c0d3684acef5c750ec52b"
 }

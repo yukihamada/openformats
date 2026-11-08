@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "kamishibai-koe",
   "name": "紙芝居KOE",
@@ -41,5 +41,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "ベータ表記。KOE本体とは別の関連入口。"
+  "note": "ベータ表記。KOE本体とは別の関連入口。",
+  "content_hash": "ba9d37a2e8955e089f46683c4307db84be19d3bd0af29cf40226f08a765dcfd7"
 }

@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "toro",
   "name": "TORO",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "公式一覧は開発中。公開入口・機能は未確認。"
+  "note": "公式一覧は開発中。公開入口・機能は未確認。",
+  "content_hash": "c4cafa268bd6035b933ccde8e7189543e28683655c7401c1b4f5e4d6ca5da444"
 }

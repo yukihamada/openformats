@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "nagaiki",
   "name": "ながいき",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "ベータ表記。健康改善・診断等の効果は未検証。"
+  "note": "ベータ表記。健康改善・診断等の効果は未検証。",
+  "content_hash": "1e19a972002ce4a2f719be17af826000e2766d7a87d58d3cc559e4ea3105f09a"
 }

@@ -1,6 +1,6 @@
 {
-  "$schema": "https://openformats.dev/product/v1.json",
-  "spec_version": "1.0.0",
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
   "kind": "product",
   "id": "nou-connect",
   "name": "NOU Connect",
@@ -38,5 +38,6 @@
     "visibility": "public",
     "derivatives": "ask"
   },
-  "note": "9/15棚卸しで未提出。具体的機能・公開入口は未確認。"
+  "note": "9/15棚卸しで未提出。具体的機能・公開入口は未確認。",
+  "content_hash": "825f657ebe608fbd7ce854ed5b0b32c8d62bb8874b373a2ed5d7dc095f61b8b1"
 }
