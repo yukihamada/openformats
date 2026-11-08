@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/movie/v1.json",
+  "title": "movie.json v1 — open movie / video timeline format",
+  "description": "1 本 = 1 JSON。ショット・カット・音声・字幕・トランジションを時間軸で記述し、レンダリング (ffmpeg/Remotion 等) へ変換可能。MIT。",
+  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "type": "object",
+  "required": ["kind", "id", "timeline"],
+  "properties": {
+    "kind": { "const": "movie" },
+    "format": {
+      "type": "object",
+      "properties": {
+        "width": { "type": "integer", "default": 1920 },
+        "height": { "type": "integer", "default": 1080 },
+        "fps": { "type": "number", "default": 30 },
+        "duration_sec": { "type": "number" },
+        "aspect": { "type": "string", "examples": ["16:9", "9:16", "1:1", "4:5"] }
+      },
+      "additionalProperties": true
+    },
+    "timeline": {
+      "type": "array",
+      "description": "トラックの集合。映像・音声・字幕を分けて持つ。",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "clips"],
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string", "enum": ["video", "audio", "subtitle", "overlay", "music"] },
+          "clips": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["start_sec", "duration_sec"],
+              "properties": {
+                "start_sec": { "type": "number" },
+                "duration_sec": { "type": "number" },
+                "src": { "type": "string", "description": "素材参照 (image.json / voice.json / music.json の id も可)。" },
+                "in_sec": { "type": "number", "description": "素材内の開始位置。" },
+                "text": { "type": "string", "description": "subtitle 用。" },
+                "transition": { "type": "string", "enum": ["cut", "fade", "dissolve", "wipe", "slide"], "default": "cut" },
+                "transition_sec": { "type": "number", "default": 0 },
+                "effects": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+                "transform": {
+                  "type": "object",
+                  "properties": {
+                    "x": { "type": "number" }, "y": { "type": "number" },
+                    "scale": { "type": "number" }, "rotate_deg": { "type": "number" },
+                    "opacity": { "type": "number" }
+                  },
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "renditions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "format": { "type": "string", "examples": ["mp4", "webm", "gif"] },
+          "path": { "type": "string" },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "duration_sec": { "type": "number" }
+        },
+        "additionalProperties": true
+      }
+    }
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/event/v1.json",
+  "title": "event.json v1 — open event / gathering format",
+  "description": "1 イベント = 1 JSON。会場・日程・出演者・チケット・配信・関連メディアを記述。land.json / device.json / movie.json と接続。MIT。",
+  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "type": "object",
+  "required": ["kind", "id", "schedule"],
+  "properties": {
+    "kind": { "const": "event" },
+    "schedule": {
+      "type": "object",
+      "required": ["start"],
+      "properties": {
+        "start": { "type": "string", "format": "date-time" },
+        "end": { "type": "string", "format": "date-time" },
+        "timezone": { "type": "string" },
+        "recurrence": { "type": "string", "description": "RRULE (任意)。" }
+      },
+      "additionalProperties": true
+    },
+    "venue": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "land_id": { "type": "string", "description": "land.json の id。" },
+        "bim_id": { "type": "string", "description": "bim.json の id。" },
+        "capacity": { "type": "integer" },
+        "indoor": { "type": "boolean" },
+        "address": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "performers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "role": { "type": "string" },
+          "ref": { "type": "string", "description": "関連作品 id。" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "tickets": {
+      "type": "object",
+      "properties": {
+        "currency": { "type": "string" },
+        "tiers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "price": { "type": "number" },
+              "quantity": { "type": "integer" },
+              "sold": { "type": "integer" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "url": { "type": "string", "format": "uri" }
+      },
+      "additionalProperties": true
+    },
+    "streaming": {
+      "type": "object",
+      "description": "配信の有無と参照。",
+      "properties": {
+        "live": { "type": "boolean" },
+        "platforms": { "type": "array", "items": { "type": "string" } },
+        "movie_id": { "type": "string", "description": "movie.json の id。" }
+      },
+      "additionalProperties": true
+    },
+    "related_media": {
+      "type": "array",
+      "description": "関連する radio/music/movie/image の id。",
+      "items": { "type": "string" }
+    }
+  }
+}

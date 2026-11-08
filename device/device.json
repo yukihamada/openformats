@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/device/v1.json",
+  "title": "device.json v1 — open device / hardware profile format",
+  "description": "1 デバイス = 1 JSON。IoT・スマートホーム・ウェアラブル・ロボット等の能力 (capability)、接続、制御インターフェースを記述。メディア制作の入出力端末 (カメラ/マイク/照明/スピーカー) も同じ語彙で扱う。MIT。",
+  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "type": "object",
+  "required": ["kind", "id", "device_class", "capabilities"],
+  "properties": {
+    "kind": { "const": "device" },
+    "device_class": {
+      "type": "string",
+      "description": "機器分類。",
+      "enum": ["light", "lock", "camera", "microphone", "speaker", "display", "sensor", "actuator", "wearable", "robot", "computer", "vehicle", "appliance", "other"]
+    },
+    "manufacturer": { "type": "string" },
+    "model": { "type": "string" },
+    "firmware": { "type": "string" },
+    "capabilities": {
+      "type": "array",
+      "description": "この機器ができること。制御は capability 単位で安全に許可する。",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string", "examples": ["on_off", "dim", "color", "unlock", "record", "play", "capture", "move"] },
+          "params": { "type": "object", "additionalProperties": true },
+          "reversible": { "type": "boolean", "description": "取り消せる操作か。不可逆操作は承認必須。" },
+          "safety": { "type": "string", "enum": ["safe", "caution", "danger"], "default": "safe" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "connectivity": {
+      "type": "object",
+      "properties": {
+        "protocols": { "type": "array", "items": { "type": "string" }, "examples": [["matter", "ble", "wifi", "zigbee", "http"]] },
+        "local_first": { "type": "boolean", "description": "クラウド非依存で動くか。" },
+        "endpoints": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "location": {
+      "type": "object",
+      "properties": {
+        "home": { "type": "string" },
+        "room": { "type": "string" },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" }
+      },
+      "additionalProperties": true
+    },
+    "media_io": {
+      "type": "object",
+      "description": "メディア制作に関わる入出力 (解像度・サンプルレート等)。",
+      "properties": {
+        "input": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+        "output": { "type": "array", "items": { "type": "object", "additionalProperties": true } }
+      },
+      "additionalProperties": true
+    },
+    "state": {
+      "type": "object",
+      "description": "現在状態のスナップショット (キャッシュ。正本は機器側)。",
+      "additionalProperties": true
+    }
+  }
+}

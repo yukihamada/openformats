@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/bim/v1.json",
+  "title": "bim.json v1 — open BIM-JSON format (openformats edition)",
+  "description": "1 物件 = 1 JSON。bim.house / TSUGI の既存 bim.json v1 を openformats ファミリーに接続するための互換エントリ。正本仕様は https://bim.house/spec/v1.json 。MIT。",
+  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "type": "object",
+  "required": ["kind", "id", "elements"],
+  "properties": {
+    "kind": { "const": "bim" },
+    "$schema": { "const": "https://bim.house/spec/v1.json" },
+    "project": {
+      "type": "object",
+      "description": "案件メタ。詳細は bim.house/spec/v1.json を正本とする。",
+      "properties": {
+        "slug": { "type": "string" },
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "site_area_m2": { "type": "number" },
+        "zoning": { "type": "string" },
+        "proposed_floors": { "type": "integer" },
+        "proposed_structure": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "elements": {
+      "type": "array",
+      "description": "建築要素。正本スキーマ (bim.house/spec/v1.json) の elements と同一。",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "permit": {
+      "type": "object",
+      "description": "確認申請ルートの補助記述。法的正本ではない。",
+      "properties": {
+        "classification": { "type": "string" },
+        "checks": { "type": "array", "items": { "type": "object", "additionalProperties": true } }
+      },
+      "additionalProperties": true
+    }
+  }
+}

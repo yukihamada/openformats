@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/music/v1.json",
+  "title": "music.json v1 — open music / composition format",
+  "description": "1 曲 = 1 JSON。メタ・テンポ・キー・セクション・トラック・歌詞・生成プロンプトを最小単位で記述。Suno/MUREKA 等の生成や DAW 連携へ変換可能。MIT。",
+  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "type": "object",
+  "required": ["kind", "id"],
+  "properties": {
+    "kind": { "const": "music" },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "genre": { "type": "array", "items": { "type": "string" } },
+        "mood": { "type": "array", "items": { "type": "string" } },
+        "bpm": { "type": "number" },
+        "key": { "type": "string", "examples": ["C major", "A minor", "F# dorian"] },
+        "time_signature": { "type": "string", "default": "4/4" },
+        "duration_sec": { "type": "number" },
+        "instrumental": { "type": "boolean" },
+        "explicit": { "type": "boolean", "default": false }
+      },
+      "additionalProperties": true
+    },
+    "sections": {
+      "type": "array",
+      "description": "曲の構成 (intro/verse/chorus/bridge/outro 等)。",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string" },
+          "start_sec": { "type": "number" },
+          "duration_sec": { "type": "number" },
+          "bars": { "type": "integer" },
+          "energy": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "additionalProperties": true
+      }
+    },
+    "tracks": {
+      "type": "array",
+      "description": "楽器・ボーカルのトラック。",
+      "items": {
+        "type": "object",
+        "required": ["id", "instrument"],
+        "properties": {
+          "id": { "type": "string" },
+          "instrument": { "type": "string" },
+          "role": { "type": "string", "examples": ["lead", "bass", "drums", "pad", "vocal"] },
+          "gain_db": { "type": "number" },
+          "pan": { "type": "number", "minimum": -1, "maximum": 1 },
+          "src": { "type": "string", "description": "ステム参照。" },
+          "midi": { "type": "string", "description": "MIDI ファイル参照 (任意)。" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "lyrics": {
+      "type": "array",
+      "description": "歌詞。セクションと対応。",
+      "items": {
+        "type": "object",
+        "properties": {
+          "section": { "type": "string" },
+          "lines": { "type": "array", "items": { "type": "string" } },
+          "lang": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "generation": {
+      "type": "object",
+      "description": "生成に使ったプロンプト・モデル。再現性と来歴のため記録。",
+      "properties": {
+        "provider": { "type": "string", "examples": ["suno", "mureka", "teai"] },
+        "prompt": { "type": "string" },
+        "model": { "type": "string" },
+        "seed": { "type": "integer" }
+      },
+      "additionalProperties": true
+    },
+    "rights": {
+      "type": "object",
+      "properties": {
+        "composition": { "type": "string", "description": "作曲権の扱い。" },
+        "master": { "type": "string", "description": "原盤権の扱い。" },
+        "sample_clearance": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "renditions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "format": { "type": "string", "examples": ["mp3", "wav", "flac", "m4a"] },
+          "path": { "type": "string" },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        },
+        "additionalProperties": true
+      }
+    }
+  }
+}

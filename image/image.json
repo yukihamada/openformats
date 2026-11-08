@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/image/v1.json",
+  "title": "image.json v1 — open image / visual asset format",
+  "description": "1 画像 = 1 JSON。生成プロンプト・構図・レイヤ・派生サイズ・権利を記述。ラスタ/ベクタ/生成画像を同じ語彙で扱う。MIT。",
+  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "type": "object",
+  "required": ["kind", "id", "source"],
+  "properties": {
+    "kind": { "const": "image" },
+    "source": {
+      "type": "object",
+      "description": "実体ファイル。",
+      "required": ["path"],
+      "properties": {
+        "path": { "type": "string" },
+        "format": { "type": "string", "examples": ["png", "jpg", "webp", "svg", "avif"] },
+        "width": { "type": "integer" },
+        "height": { "type": "integer" },
+        "dpi": { "type": "number" },
+        "color_space": { "type": "string", "examples": ["sRGB", "Display P3", "CMYK"] },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "additionalProperties": true
+    },
+    "generation": {
+      "type": "object",
+      "properties": {
+        "provider": { "type": "string", "examples": ["teai", "gemini", "midjourney", "sdxl"] },
+        "model": { "type": "string" },
+        "prompt": { "type": "string" },
+        "negative_prompt": { "type": "string" },
+        "seed": { "type": "integer" },
+        "steps": { "type": "integer" }
+      },
+      "additionalProperties": true
+    },
+    "composition": {
+      "type": "object",
+      "description": "構図・被写体の記述。アクセシビリティの alt を必須運用。",
+      "properties": {
+        "alt": { "type": "string" },
+        "subject": { "type": "array", "items": { "type": "string" } },
+        "palette": { "type": "array", "items": { "type": "string" } },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "layers": {
+      "type": "array",
+      "description": "重ね順のあるレイヤ (PSD/SVG 相当)。",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "src": { "type": "string" },
+          "opacity": { "type": "number" },
+          "blend": { "type": "string" },
+          "visible": { "type": "boolean", "default": true }
+        },
+        "additionalProperties": true
+      }
+    },
+    "variants": {
+      "type": "array",
+      "description": "派生サイズ・形式。",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string", "examples": ["thumbnail", "hero", "social-9x16"] },
+          "path": { "type": "string" },
+          "width": { "type": "integer" },
+          "height": { "type": "integer" },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "rights": {
+      "type": "object",
+      "properties": {
+        "subject_release": { "type": "boolean", "description": "被写体の肖像許諾。" },
+        "model_release": { "type": "boolean" },
+        "ai_generated": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

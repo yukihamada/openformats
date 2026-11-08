@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/article/v1.json",
+  "title": "article.json v1 — open article / post format",
+  "description": "1 記事 = 1 JSON。ブログ・ニュース・ノート・SNS 長文を共通構造で表す。Web 公開・音声化・動画化へ変換可能。出典を構造で持つ。MIT。",
+  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "type": "object",
+  "required": ["kind", "id", "blocks"],
+  "properties": {
+    "kind": { "const": "article" },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "slug": { "type": "string" },
+        "excerpt": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "published_at": { "type": "string", "format": "date-time" },
+        "canonical_url": { "type": "string", "format": "uri" },
+        "reading_time_min": { "type": "number" }
+      },
+      "additionalProperties": true
+    },
+    "blocks": {
+      "type": "array",
+      "description": "本文ブロック。book.json と互換の語彙。",
+      "items": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": { "type": "string", "enum": ["heading", "paragraph", "list", "quote", "code", "table", "figure", "embed", "divider"] },
+          "level": { "type": "integer", "minimum": 1, "maximum": 6 },
+          "text": { "type": "string" },
+          "items": { "type": "array", "items": { "type": "string" } },
+          "ordered": { "type": "boolean" },
+          "rows": { "type": "array", "items": { "type": "array", "items": { "type": "string" } } },
+          "src": { "type": "string" },
+          "alt": { "type": "string" },
+          "caption": { "type": "string" },
+          "url": { "type": "string", "format": "uri", "description": "embed 用。" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "citations": {
+      "type": "array",
+      "description": "出典。一次情報を優先。",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "retrieved_at": { "type": "string", "format": "date" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "syndication": {
+      "type": "array",
+      "description": "転載先 (X, note, Zenn 等) とその状態。",
+      "items": {
+        "type": "object",
+        "properties": {
+          "platform": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "status": { "type": "string", "enum": ["draft", "scheduled", "published", "failed"] }
+        },
+        "additionalProperties": true
+      }
+    }
+  }
+}

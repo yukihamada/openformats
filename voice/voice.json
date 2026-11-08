@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/voice/v1.json",
+  "title": "voice.json v1 — open voice / narration asset format",
+  "description": "1 音声 = 1 JSON。話者・台本・発話区間・声の許諾・TTS パラメータを記述。KOE/teai 等と連携。声の同意を最優先で記録する。MIT。",
+  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "type": "object",
+  "required": ["kind", "id", "source"],
+  "properties": {
+    "kind": { "const": "voice" },
+    "source": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "path": { "type": "string" },
+        "format": { "type": "string", "examples": ["wav", "mp3", "m4a", "flac"] },
+        "sample_rate": { "type": "integer", "default": 48000 },
+        "channels": { "type": "integer", "default": 1 },
+        "duration_sec": { "type": "number" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "additionalProperties": true
+    },
+    "speaker": {
+      "type": "object",
+      "required": ["name", "consent"],
+      "properties": {
+        "name": { "type": "string" },
+        "consent": {
+          "type": "string",
+          "enum": ["self", "licensed", "synthetic", "public-domain"],
+          "description": "声の使用同意。self=本人, licensed=許諾, synthetic=合成音声。"
+        },
+        "consent_doc": { "type": "string", "description": "同意書の参照 (秘密は含めない)。" },
+        "voice_model": { "type": "string", "description": "登録済み声モデルの id (KOE 等)。" }
+      },
+      "additionalProperties": true
+    },
+    "tts": {
+      "type": "object",
+      "description": "合成パラメータ。再現性のため記録。",
+      "properties": {
+        "provider": { "type": "string", "examples": ["koe", "teai", "local-tts"] },
+        "voice_id": { "type": "string" },
+        "speed": { "type": "number", "default": 1.0 },
+        "pitch": { "type": "number", "default": 0 },
+        "style": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "script": {
+      "type": "array",
+      "description": "台本と発話区間。読み検証・字幕と対応。",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": { "type": "string" },
+          "start_sec": { "type": "number" },
+          "end_sec": { "type": "number" },
+          "reading": { "type": "string", "description": "読み (ひらがな等)。ASR 照合用。" },
+          "emphasis": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": true
+      }
+    }
+  }
+}

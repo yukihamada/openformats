@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openformats.dev/country/v1.json",
+  "spec_version": "1.0.0",
+  "kind": "country",
+  "id": "jp",
+  "title": "Japan",
+  "license": "CC0-1.0",
+  "code": { "iso3166_alpha2": "JP", "iso3166_alpha3": "JPN", "region": "Asia" },
+  "languages": [{ "bcp47": "ja", "name": "日本語", "official": true }],
+  "currency": { "code": "JPY", "symbol": "¥", "decimal_digits": 0 },
+  "timezone": ["Asia/Tokyo"],
+  "media_regulation": { "content_rating_system": "CERO/Eirin", "gdpr_like": true, "ai_labeling_required": false },
+  "sources": [{ "url": "https://www.iso.org/iso-3166-country-codes.html", "retrieved_at": "2026-11-08" }]
+}

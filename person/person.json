@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/person/v1.json",
+  "title": "person.json v1 — open creator / persona profile format",
+  "description": "1 人 (またはペルソナ) = 1 JSON。作者・話者・登場人物の公開プロフィール。秘密・連絡先・住所は既定で含めない。声・作品の来歴と接続。MIT。",
+  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "type": "object",
+  "required": ["kind", "id", "display_name"],
+  "properties": {
+    "kind": { "const": "person" },
+    "display_name": { "type": "string" },
+    "persona_type": { "type": "string", "enum": ["real", "fictional", "ai", "organization"], "default": "real" },
+    "bio": { "type": "string" },
+    "roles": { "type": "array", "items": { "type": "string" } },
+    "links": {
+      "type": "array",
+      "description": "公開リンクのみ。",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "url": { "type": "string", "format": "uri" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "voices": {
+      "type": "array",
+      "description": "この人が持つ登録済みの声 (voice.json と接続)。",
+      "items": { "type": "string" }
+    },
+    "works": {
+      "type": "array",
+      "description": "関連作品の id。",
+      "items": { "type": "string" }
+    },
+    "privacy": {
+      "type": "object",
+      "description": "公開範囲。住所・電話・私的連絡先は保存しない。",
+      "properties": {
+        "public_contact": { "type": "boolean", "default": false },
+        "real_identity_linked": { "type": "boolean", "default": false }
+      },
+      "additionalProperties": true
+    }
+  }
+}

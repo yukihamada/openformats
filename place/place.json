@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/place/v1.json",
+  "title": "place.json v1 — open place / venue / POI format",
+  "description": "1 場所 = 1 JSON。施設・店舗・会場・観光地などの地点情報。land.json より軽量な地点表現。撮影・イベント・旅行に使う。詳細住所は公開粒度を選べる。MIT。",
+  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "type": "object",
+  "required": ["kind", "id", "location"],
+  "properties": {
+    "kind": { "const": "place" },
+    "place_type": { "type": "string", "examples": ["restaurant", "hotel", "venue", "shop", "park", "station", "studio", "landmark"] },
+    "location": {
+      "type": "object",
+      "required": ["lat", "lng"],
+      "properties": {
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "country": { "type": "string" },
+        "address": { "type": "string" },
+        "precision": { "type": "string", "enum": ["exact", "street", "city"], "default": "city" }
+      },
+      "additionalProperties": true
+    },
+    "contact": {
+      "type": "object",
+      "description": "公開されている場合のみ。",
+      "properties": {
+        "url": { "type": "string", "format": "uri" },
+        "phone_public": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "hours": { "type": "object", "additionalProperties": true },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "media": {
+      "type": "array",
+      "description": "関連する image/movie の id。",
+      "items": { "type": "string" }
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/radio/v1.json",
+  "title": "radio.json v1 — open radio / podcast episode format",
+  "description": "1 エピソード = 1 JSON。話者・台本・音声クリップ・BGM・ミックスを最小単位で記述し、TTS/KOE・音楽生成・動画化へ変換可能。MIT。",
+  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "type": "object",
+  "required": ["kind", "id", "speakers", "segments"],
+  "properties": {
+    "kind": { "const": "radio" },
+    "episode": {
+      "type": "object",
+      "properties": {
+        "series": { "type": "string" },
+        "number": { "type": "integer" },
+        "description": { "type": "string" },
+        "duration_sec": { "type": "number" },
+        "explicit": { "type": "boolean", "default": false }
+      },
+      "additionalProperties": true
+    },
+    "speakers": {
+      "type": "array",
+      "description": "登場する話者。声の許諾・参照を明記する。",
+      "items": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "voice": {
+            "type": "object",
+            "description": "使用する声。KOE/teai の voice id 等。",
+            "properties": {
+              "provider": { "type": "string", "examples": ["teai", "koe", "local-tts"] },
+              "voice_id": { "type": "string" },
+              "consent": { "type": "string", "enum": ["self", "licensed", "synthetic", "public-domain"] }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "segments": {
+      "type": "array",
+      "description": "発話・間・効果音の列。順序が再生順。",
+      "items": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": { "type": "string", "enum": ["speech", "pause", "sfx", "music", "silence", "marker"] },
+          "speaker": { "type": "string", "description": "speech 用。speakers[].id を参照。" },
+          "text": { "type": "string", "description": "speech 用の台本。" },
+          "start_sec": { "type": "number" },
+          "duration_sec": { "type": "number" },
+          "src": { "type": "string", "description": "音声クリップ/効果音の参照。" },
+          "gain_db": { "type": "number" },
+          "fade_in_sec": { "type": "number" },
+          "fade_out_sec": { "type": "number" },
+          "label": { "type": "string", "description": "marker 用 (章・CM 等)。" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "mix": {
+      "type": "object",
+      "description": "マスター設定。",
+      "properties": {
+        "loudness_lufs": { "type": "number", "default": -16 },
+        "sample_rate": { "type": "integer", "default": 48000 },
+        "channels": { "type": "integer", "default": 2 }
+      },
+      "additionalProperties": true
+    },
+    "renditions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "format": { "type": "string", "examples": ["mp3", "wav", "m4a", "mp4"] },
+          "path": { "type": "string" },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        },
+        "additionalProperties": true
+      }
+    }
+  }
+}

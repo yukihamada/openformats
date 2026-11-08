@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openformats.dev/land/v1.json",
+  "spec_version": "1.0.0",
+  "kind": "land",
+  "id": "sample-parcel",
+  "title": "サンプル区画",
+  "license": "CC0-1.0",
+  "location": { "lat": 43.31, "lng": 144.55, "country": "JP", "pref": "北海道", "city": "標茶町", "precision": "city" },
+  "parcel": { "area_m2": 200.0, "width_m": 14.0, "depth_m": 14.0, "shape": "rect", "elevation_m": 200 },
+  "zoning": { "use_district": "都市計画区域外", "coverage_ratio_pct": 60, "floor_area_ratio_pct": 200 },
+  "rights": { "tenure": "freehold", "owner_visible": false },
+  "hazards": { "flood": "low" },
+  "linked": ["sample-book"]
+}

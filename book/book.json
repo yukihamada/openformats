@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/book/v1.json",
+  "title": "book.json v1 — open book / manuscript format",
+  "description": "1 冊 = 1 JSON。本文はブロック列 (Markdown 互換の最小単位) で表現し、組版・EPUB・PDF・音声化へ変換可能。openformats core envelope を継承。MIT。",
+  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "type": "object",
+  "required": ["kind", "id", "metadata", "chapters"],
+  "properties": {
+    "kind": { "const": "book" },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "subtitle": { "type": "string" },
+        "series": { "type": "string" },
+        "series_index": { "type": "integer", "minimum": 0 },
+        "edition": { "type": "string" },
+        "isbn": { "type": "string" },
+        "publisher": { "type": "string" },
+        "published_at": { "type": "string", "format": "date" },
+        "keywords": { "type": "array", "items": { "type": "string" } },
+        "description": { "type": "string", "description": "裏表紙・ストア用の紹介文。" },
+        "subject_codes": { "type": "array", "items": { "type": "string" }, "description": "BISAC / 日本図書分類 等" },
+        "age_rating": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "trim": {
+      "type": "object",
+      "description": "判型・組版。印刷/電子の両対応。",
+      "properties": {
+        "format": { "type": "string", "examples": ["A5", "B6", "kindle", "web"] },
+        "width_mm": { "type": "number" },
+        "height_mm": { "type": "number" },
+        "bleed_mm": { "type": "number", "default": 3 },
+        "paper": { "type": "string", "enum": ["cream", "white", "color"], "default": "cream" },
+        "spine_mm_per_page": { "type": "number", "default": 0.0635, "description": "クリーム紙の背幅換算。" }
+      },
+      "additionalProperties": true
+    },
+    "chapters": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "blocks"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "number": { "type": "integer" },
+          "blocks": {
+            "type": "array",
+            "description": "本文ブロック。最小単位で構造を保つ。",
+            "items": {
+              "type": "object",
+              "required": ["type"],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["heading", "paragraph", "list", "quote", "code", "table", "figure", "footnote", "divider"]
+                },
+                "level": { "type": "integer", "minimum": 1, "maximum": 6, "description": "heading 用" },
+                "text": { "type": "string" },
+                "items": { "type": "array", "items": { "type": "string" }, "description": "list 用" },
+                "ordered": { "type": "boolean", "description": "list 用" },
+                "rows": { "type": "array", "items": { "type": "array", "items": { "type": "string" } }, "description": "table 用" },
+                "src": { "type": "string", "description": "figure 用の画像参照" },
+                "alt": { "type": "string" },
+                "caption": { "type": "string" },
+                "ref": { "type": "string", "description": "相互参照先の id" }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "colophon": {
+      "type": "object",
+      "description": "奥付。",
+      "properties": {
+        "author_bio": { "type": "string" },
+        "rights": { "type": "string" },
+        "contact": { "type": "string" },
+        "credits": { "type": "string" },
+        "printed_by": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "renditions": {
+      "type": "array",
+      "description": "派生物 (PDF/EPUB/音声) への参照。元データは常にこの JSON。",
+      "items": {
+        "type": "object",
+        "properties": {
+          "format": { "type": "string", "examples": ["pdf", "epub", "m4b", "html"] },
+          "path": { "type": "string" },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "pages": { "type": "integer" }
+        },
+        "additionalProperties": true
+      }
+    }
+  }
+}

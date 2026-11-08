@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/land/v1.json",
+  "title": "land.json v1 — open land / parcel format",
+  "description": "1 区画 = 1 JSON。位置・面積・用途地域・権利・地形を記述。bim.json の project と接続し、建築・イベント・撮影の前提情報を安全に共有する。第三者個人情報・詳細地番は既定で含めない。MIT。",
+  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "type": "object",
+  "required": ["kind", "id", "location"],
+  "properties": {
+    "kind": { "const": "land" },
+    "location": {
+      "type": "object",
+      "required": ["lat", "lng"],
+      "properties": {
+        "lat": { "type": "number", "minimum": -90, "maximum": 90 },
+        "lng": { "type": "number", "minimum": -180, "maximum": 180 },
+        "country": { "type": "string", "description": "ISO 3166-1 alpha-2。country.json の id を参照。" },
+        "pref": { "type": "string" },
+        "city": { "type": "string" },
+        "address": { "type": "string", "description": "公開可の粒度のみ。詳細地番は既定で省略。" },
+        "precision": { "type": "string", "enum": ["exact", "street", "city", "region"], "default": "city" }
+      },
+      "additionalProperties": true
+    },
+    "parcel": {
+      "type": "object",
+      "properties": {
+        "area_m2": { "type": "number", "minimum": 0 },
+        "width_m": { "type": "number" },
+        "depth_m": { "type": "number" },
+        "shape": { "type": "string", "examples": ["rect", "irregular", "flag"] },
+        "boundary": {
+          "type": "array",
+          "description": "GeoJSON 風の座標列 (任意)。",
+          "items": { "type": "array", "items": { "type": "number" } }
+        },
+        "elevation_m": { "type": "number" },
+        "slope_pct": { "type": "number" }
+      },
+      "additionalProperties": true
+    },
+    "zoning": {
+      "type": "object",
+      "properties": {
+        "use_district": { "type": "string", "description": "用途地域 (例: 第一種低層住居専用地域)。" },
+        "coverage_ratio_pct": { "type": "number", "description": "建ぺい率。" },
+        "floor_area_ratio_pct": { "type": "number", "description": "容積率。" },
+        "height_limit_m": { "type": "number" },
+        "fire_zone": { "type": "string" },
+        "scenic_district": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "rights": {
+      "type": "object",
+      "description": "権利関係。秘密・個人情報は含めない。",
+      "properties": {
+        "tenure": { "type": "string", "enum": ["freehold", "leasehold", "rental", "public", "unknown"], "default": "unknown" },
+        "owner_visible": { "type": "boolean", "default": false },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "hazards": {
+      "type": "object",
+      "description": "災害リスク。安全な利用のため記録。",
+      "properties": {
+        "flood": { "type": "string" },
+        "landslide": { "type": "string" },
+        "liquefaction": { "type": "string" },
+        "tsunami": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "linked": {
+      "type": "array",
+      "description": "関連作品 (bim.json / event.json 等) の id。",
+      "items": { "type": "string" }
+    }
+  }
+}

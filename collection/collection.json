@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/collection/v1.json",
+  "title": "collection.json v1 — open collection / album / playlist / series format",
+  "description": "1 まとまり = 1 JSON。曲・動画・記事・本などを束ねる (アルバム/プレイリスト/シリーズ/展示)。各要素は他フォーマットの id を参照。MIT。",
+  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "type": "object",
+  "required": ["kind", "id", "items"],
+  "properties": {
+    "kind": { "const": "collection" },
+    "collection_type": {
+      "type": "string",
+      "enum": ["album", "playlist", "series", "exhibition", "course", "magazine", "bundle", "other"]
+    },
+    "description": { "type": "string" },
+    "cover": { "type": "string", "description": "image.json の id または参照。" },
+    "items": {
+      "type": "array",
+      "description": "順序付きの要素。",
+      "items": {
+        "type": "object",
+        "required": ["ref"],
+        "properties": {
+          "ref": { "type": "string", "description": "他作品の id (music/movie/article/book/...)。" },
+          "kind": { "type": "string", "description": "参照先の kind。" },
+          "order": { "type": "integer" },
+          "note": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "total_duration_sec": { "type": "number" }
+  }
+}

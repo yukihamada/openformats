@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/country/v1.json",
+  "title": "country.json v1 — open country / region profile format",
+  "description": "1 国/地域 = 1 JSON。言語・通貨・法規制・文化・メディア配信要件を記述。世界向け設計と地域依存の分離のため。出典を必須運用。MIT。",
+  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "type": "object",
+  "required": ["kind", "id", "code"],
+  "properties": {
+    "kind": { "const": "country" },
+    "code": {
+      "type": "object",
+      "properties": {
+        "iso3166_alpha2": { "type": "string", "pattern": "^[A-Z]{2}$" },
+        "iso3166_alpha3": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "region": { "type": "string", "examples": ["Asia", "Europe", "Oceania"] },
+        "subregion": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "languages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "bcp47": { "type": "string" },
+          "name": { "type": "string" },
+          "official": { "type": "boolean" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "currency": {
+      "type": "object",
+      "properties": {
+        "code": { "type": "string", "examples": ["JPY", "USD", "EUR"] },
+        "symbol": { "type": "string" },
+        "decimal_digits": { "type": "integer", "default": 2 }
+      },
+      "additionalProperties": true
+    },
+    "timezone": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "IANA タイムゾーン。"
+    },
+    "media_regulation": {
+      "type": "object",
+      "description": "配信・出版・音楽・動画の地域要件。世界展開時の分岐点。",
+      "properties": {
+        "content_rating_system": { "type": "string" },
+        "copyright_term": { "type": "string" },
+        "gdpr_like": { "type": "boolean" },
+        "ai_labeling_required": { "type": "boolean" },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "culture": {
+      "type": "object",
+      "properties": {
+        "greeting": { "type": "string" },
+        "color_meaning": { "type": "object", "additionalProperties": true },
+        "taboos": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "sources": {
+      "type": "array",
+      "description": "一次情報の出典と取得日。",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": { "type": "string", "format": "uri" },
+          "retrieved_at": { "type": "string", "format": "date" },
+          "note": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    }
+  }
+}

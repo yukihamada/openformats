@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/core/envelope/v1.json",
+  "title": "openformats core envelope v1",
+  "description": "全 openformats 形式 (*.json) が共有する共通エンベロープ。1 作品 = 1 JSON、content-addressed、append-only、Ed25519 補助署名、MIT。bim.json v1 の設計哲学をメディア全般へ拡張したもの。",
+  "type": "object",
+  "required": ["spec_version", "kind", "id"],
+  "additionalProperties": true,
+  "properties": {
+    "$schema": { "type": "string", "format": "uri" },
+    "spec_version": {
+      "type": "string",
+      "pattern": "^1\\.[0-9]+\\.[0-9]+$",
+      "description": "準拠する仕様のセマンティックバージョン (1.x.y)。"
+    },
+    "kind": {
+      "type": "string",
+      "description": "フォーマット種別。ファイル名の拡張子と一致する。",
+      "enum": ["book", "device", "radio", "movie", "music", "land", "country", "image", "voice", "article", "event", "bim"]
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+      "description": "この作品の安定スラッグ。人間可読・URL 安全。"
+    },
+    "title": { "type": "string", "description": "表示タイトル (自然言語可)。" },
+    "lang": { "type": "string", "description": "BCP-47 言語タグ (例: ja, en, ja-Hira)。" },
+    "license": {
+      "type": "string",
+      "description": "この作品自体のライセンス (SPDX 識別子推奨)。フォーマット仕様は常に MIT。",
+      "examples": ["MIT", "CC-BY-4.0", "CC0-1.0", "all-rights-reserved"]
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "authors": {
+      "type": "array",
+      "description": "作者・制作者。人間でも AI でもよい。",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string" },
+          "role": { "type": "string", "description": "author / composer / director / editor / performer / designer 等" },
+          "orcid": { "type": "string" },
+          "url": { "type": "string", "format": "uri" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "description": "来歴。AI 生成・素材の出所・変換履歴を正直に記録する。",
+      "properties": {
+        "generator": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "description": "生成ツール/モデル名 (例: teai/KOE, Suno, Gemini)" },
+            "version": { "type": "string" },
+            "url": { "type": "string", "format": "uri" }
+          },
+          "additionalProperties": true
+        },
+        "human_involvement": {
+          "type": "string",
+          "enum": ["human", "ai-assisted", "ai-generated", "mixed"],
+          "description": "人間と AI の関与度。AI 生成を人間作と偽らない。"
+        },
+        "sources": {
+          "type": "array",
+          "description": "参照・入力素材。",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ref": { "type": "string", "description": "URL / ファイルパス / 作品 id" },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "note": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "history": {
+          "type": "array",
+          "description": "append-only な変更履歴。過去は消さない。",
+          "items": {
+            "type": "object",
+            "required": ["at", "action"],
+            "properties": {
+              "at": { "type": "string", "format": "date-time" },
+              "action": { "type": "string", "description": "create / edit / render / publish / derive 等" },
+              "by": { "type": "string" },
+              "note": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "content-addressed ハッシュ。正規化した本体の SHA-256。同じ作品 → 同じハッシュ。"
+    },
+    "hash_chain": {
+      "type": "array",
+      "description": "前リビジョンへの SHA-256 チェーン。改ざん検知と履歴の連続性。",
+      "items": {
+        "type": "object",
+        "required": ["sha256"],
+        "properties": {
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "at": { "type": "string", "format": "date-time" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "signatures": {
+      "type": "array",
+      "description": "Ed25519 補助署名。電子署名法 3 条認定 CA との併用が前提 (補助であり法的正本ではない)。",
+      "items": {
+        "type": "object",
+        "required": ["alg", "public_key", "signature"],
+        "properties": {
+          "alg": { "type": "string", "const": "Ed25519" },
+          "public_key": { "type": "string", "description": "base64 の 32byte 公開鍵" },
+          "signature": { "type": "string", "description": "base64 の 64byte 署名 (content_hash 対象)" },
+          "signed_at": { "type": "string", "format": "date-time" },
+          "signer": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "access": {
+      "type": "object",
+      "description": "安全な共有のためのアクセス制御メタ。実体の権限制御は保存先に委ねる。",
+      "properties": {
+        "visibility": { "type": "string", "enum": ["private", "unlisted", "public"], "default": "private" },
+        "embeddable": { "type": "boolean", "default": false },
+        "derivatives": { "type": "string", "enum": ["allow", "ask", "deny"], "default": "ask" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

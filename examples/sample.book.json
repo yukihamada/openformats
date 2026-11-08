@@ -1,0 +1,19 @@
+{
+  "$schema": "https://openformats.dev/book/v1.json",
+  "spec_version": "1.0.0",
+  "kind": "book",
+  "id": "sample-book",
+  "title": "サンプルの本",
+  "lang": "ja",
+  "license": "all-rights-reserved",
+  "metadata": { "subtitle": "最小構成", "series": "demo", "series_index": 1, "description": "book.json の最小例。" },
+  "trim": { "format": "A5", "width_mm": 148, "height_mm": 210, "bleed_mm": 3, "paper": "cream" },
+  "chapters": [
+    { "id": "ch1", "title": "第一章", "number": 1, "blocks": [
+      { "type": "heading", "level": 1, "text": "はじめに" },
+      { "type": "paragraph", "text": "これは最小の本文ブロックです。" },
+      { "type": "list", "ordered": false, "items": ["一つ目", "二つ目"] }
+    ]}
+  ],
+  "colophon": { "author_bio": "サンプル著者", "rights": "© 2026" }
+}

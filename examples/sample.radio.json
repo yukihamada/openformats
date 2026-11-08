@@ -1,0 +1,18 @@
+{
+  "$schema": "https://openformats.dev/radio/v1.json",
+  "spec_version": "1.0.0",
+  "kind": "radio",
+  "id": "sample-radio-ep1",
+  "title": "サンプルラジオ #1",
+  "lang": "ja",
+  "license": "all-rights-reserved",
+  "episode": { "series": "sample", "number": 1, "duration_sec": 60 },
+  "speakers": [
+    { "id": "host", "name": "パーソナリティ", "voice": { "provider": "koe", "voice_id": "host-01", "consent": "self" } }
+  ],
+  "segments": [
+    { "type": "speech", "speaker": "host", "text": "こんにちは、サンプルラジオへようこそ。", "start_sec": 0, "duration_sec": 5 },
+    { "type": "music", "src": "hajimari-no-uta", "start_sec": 5, "duration_sec": 10, "gain_db": -12 }
+  ],
+  "mix": { "loudness_lufs": -16, "sample_rate": 48000, "channels": 2 }
+}
