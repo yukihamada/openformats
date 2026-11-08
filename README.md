@@ -127,6 +127,40 @@ python3 tools/validate.py radio/v1.json works/yuki-podcast-001.radio.json
 
 ---
 
+## つくったプロダクト
+
+この仕組みを実際に使っているサービスの一部です（[products/](products/) に 1 製品 = 1 JSON で収録）。
+
+**声・音楽・メディア**
+- [KOE](https://koe.live) — 声で人をつなぐ
+- [KOE 音声入力](https://app.koe.live) ・ [声メッセンジャー MCP](https://mcp.koe.live) ・ [say.koe](https://say.koe.live)
+- [uta.live](https://uta.live) ・ [movie.live](https://movie.live) ・ [news.xyz](https://news.xyz)
+- [Soluna Live Radio](https://apps.apple.com/jp/app/id6759962263) ・ [kamishibai.tv](https://kamishibai.tv) ・ [紙芝居KOE](https://kamishibai-koe.pages.dev)
+
+**住まい・滞在**
+- [bim.house](https://bim.house) — 家づくりと確認申請準備
+- [MU HOUSE](https://house.wearmu.com) ・ [KATA.HOUSE](https://kata.house) ・ [ZUMEN.HOUSE](https://zumen.house) ・ [1HOUR.HOUSE](https://1hour.house)
+- [SOLUNA](https://solun.art) ・ [StayFlow](https://stayflowapp.com/stays) ・ [enabler.fun](https://enabler.fun) ・ [KAGI](https://kagi.life)
+
+**AI・仕事**
+- [teai](https://teai.io) ・ [先手 / Sente](https://sente.teai.io)
+- [Elio](https://elio.love) ・ [Trio](https://trio.fly.dev) ・ [chatweb.ai](https://chatweb.ai) ・ [NOU](https://nou.fund) ・ [Kata（AI）](https://kata-ai.fly.dev)
+
+**創作・買い物**
+- [MU](https://wearmu.com/make) — 服のデザイン ・ [MU MART](https://mart.wearmu.com)
+- [Takara Market](https://takaramarket.com) ・ [chatbuy](https://chatbuy.pages.dev)
+
+**事業・お金・契約**
+- [ミセバンAI](https://misebanai.com) ・ [BANTO](https://banto.work) ・ [パシャ](https://pasha.run) ・ [チャリン](https://charin.fly.dev) ・ [AdFlow](https://adflow.tools) ・ [ポン](https://pon-sign.fly.dev) ・ [商標まる](https://shohyo-maru.jp) ・ [サクッ](https://apps.apple.com/jp/app/id6761040925)
+
+**健康・学び・コミュニティ**
+- [JiuFlow](https://jiuflow.com) ・ [ながいき](https://nagaiki.app) ・ [WeGoFast](https://wegofast.app) ・ [焚き火 / ATSM](https://takibi.wtf) ・ [焚き火の紙芝居](https://takibi-story.pages.dev)
+
+**会社・その他**
+- [Enabler](https://enablerdao.com) ・ [Enabler HQ](https://enablerhq.com) ・ [yukihamada.jp](https://yukihamada.jp) ・ [OpenClaw](https://github.com/yukihamada/openclaw)
+
+---
+
 ## 使い方（3 つのツール・4 ステップ）
 
 ```bash
