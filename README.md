@@ -129,31 +129,29 @@ python3 tools/validate.py radio/v1.json works/yuki-podcast-001.radio.json
 
 ## この JSON を使うプロダクト
 
-各フォーマット（kind）を実際に読み書きしているサービスの一部です（[products/](products/) に 1 製品 = 1 JSON、`formats` フィールドで対応 kind を記録）。
+各フォーマット（kind）を**実際に生成・消費する**プロダクトだけを載せています（カタログ全件は [products/](products/)）。業務ツールや会社ページなど、対応する kind を持たないものはここには含めていません。
 
-**voice / radio / music / movie / image** — 声・音楽・メディア
-- [KOE](https://koe.live) — 声で人をつなぐ ・ [KOE 音声入力](https://app.koe.live) ・ [声メッセンジャー MCP](https://mcp.koe.live) ・ [say.koe](https://say.koe.live)
+**voice / radio / music / movie / image** — 声・音楽・映像
+- [KOE](https://koe.live) — 登録済みの声から音声アセットを生成（voice）
+- [KOE 音声入力](https://app.koe.live) ・ [声メッセンジャー MCP](https://mcp.koe.live) ・ [say.koe](https://say.koe.live)
 - [uta.live](https://uta.live) ・ [movie.live](https://movie.live) ・ [news.xyz](https://news.xyz) ・ [Soluna Live Radio](https://apps.apple.com/jp/app/id6759962263)
 - [kamishibai.tv](https://kamishibai.tv) ・ [紙芝居KOE](https://kamishibai-koe.pages.dev)
 
-**bim / land / place / event** — 建築・土地・場所・イベント
-- [bim.house](https://bim.house) — 家づくりと確認申請準備
-- [MU HOUSE](https://house.wearmu.com) ・ [KATA.HOUSE](https://kata.house) ・ [ZUMEN.HOUSE](https://zumen.house) ・ [1HOUR.HOUSE](https://1hour.house)
-- [SOLUNA](https://solun.art) ・ [StayFlow](https://stayflowapp.com/stays) ・ [enabler.fun](https://enabler.fun) ・ [KAGI](https://kagi.life)
+**bim / land / place / event** — 建築・土地・滞在
+- [bim.house](https://bim.house) — 建築情報モデルと申請準備データ（bim）
+- [ZUMEN.HOUSE](https://zumen.house) ・ [KATA.HOUSE](https://kata.house) ・ [MU HOUSE](https://house.wearmu.com) ・ [1HOUR.HOUSE](https://1hour.house)
+- [SOLUNA](https://solun.art) ・ [StayFlow](https://stayflowapp.com/stays) ・ [enabler.fun](https://enabler.fun)
 
-**article / book** — 記事・本
+**image / collection** — デザイン・商品
+- [MU](https://wearmu.com/make) — 言葉から服・グッズのデザイン（image）
+- [MU MART](https://mart.wearmu.com) ・ [Takara Market](https://takaramarket.com) ・ [chatbuy](https://chatbuy.pages.dev)
+
+**article / event** — 学び・コミュニティ
+- [JiuFlow](https://jiuflow.com) ・ [WeGoFast](https://wegofast.app) ・ [焚き火 / ATSM](https://takibi.wtf) ・ [焚き火の紙芝居](https://takibi-story.pages.dev)
+
+**article / book** — AI・制作
 - [teai](https://teai.io) ・ [先手 / Sente](https://sente.teai.io) ・ [Elio](https://elio.love) ・ [Trio](https://trio.fly.dev)
 - [chatweb.ai](https://chatweb.ai) ・ [NOU](https://nou.fund) ・ [Kata（AI）](https://kata-ai.fly.dev) ・ [OpenClaw](https://github.com/yukihamada/openclaw)
-
-**image / collection** — 画像・コレクション
-- [MU](https://wearmu.com/make) — 服のデザイン ・ [MU MART](https://mart.wearmu.com) ・ [Takara Market](https://takaramarket.com) ・ [chatbuy](https://chatbuy.pages.dev)
-
-**article / event** — 記事・イベント
-- [JiuFlow](https://jiuflow.com) ・ [ながいき](https://nagaiki.app) ・ [WeGoFast](https://wegofast.app) ・ [焚き火 / ATSM](https://takibi.wtf) ・ [焚き火の紙芝居](https://takibi-story.pages.dev)
-
-**article** — 記事・投稿
-- [ミセバンAI](https://misebanai.com) ・ [BANTO](https://banto.work) ・ [パシャ](https://pasha.run) ・ [チャリン](https://charin.fly.dev) ・ [AdFlow](https://adflow.tools) ・ [ポン](https://pon-sign.fly.dev) ・ [商標まる](https://shohyo-maru.jp) ・ [サクッ](https://apps.apple.com/jp/app/id6761040925)
-- [Enabler](https://enablerdao.com) ・ [Enabler HQ](https://enablerhq.com) ・ [yukihamada.jp](https://yukihamada.jp) ・ [ENAI トークン構想](https://enablerdao.com/token)
 
 ---
 
