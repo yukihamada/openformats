@@ -146,7 +146,8 @@ def cmd_verify(args):
         "revisions": revisions,
     }
     ok = (stored == h) if stored else True
-    ok = ok and all(s["valid"] for s in sigs) and chain["ok"] and revisions["ok"]
+    # valid=None は bim.house 署名など openformats 検証対象外。失敗扱いにしない。
+    ok = ok and all(s["valid"] is not False for s in sigs) and chain["ok"] and revisions["ok"]
     ok = ok and all(r["ok"] for r in rends)
     out["ok"] = ok
     print(json.dumps(out, ensure_ascii=False, indent=2))

@@ -139,7 +139,10 @@ RFC 2119 に従います。
 1. 対応する `<kind>/v1.json` でスキーマ検証に通る。
 2. `content_hash` が §3 のアルゴリズムで再計算した値と一致する。
 3. `hash_chain` が §5 の検証規則を満たす。
-4. `signatures[]` がある場合、すべて Ed25519 検証に通る。
+4. `signatures[]` がある場合、openformats の Ed25519 補助署名 (`public_key`) は
+   すべて検証に通る。bim.house の建築士署名 (`pubkey`/`digest`) は content_hash
+   と別 basis に署名するため、openformats では検証対象外 (`valid: null`) として
+   扱い、失敗にしない。
 
 検証コマンド: `python3 tools/validate.py --all && python3 tools/of.py verify <file>`。
 
@@ -154,6 +157,17 @@ openformats は既存標準を置き換えず、それらへの**ハブ**を目�
 | music | MusicXML / DAW / Suno・MUREKA プロンプト |
 | voice / radio | KOE / teai TTS |
 | product | schema.org / 社内カタログ |
+
+### bim と bim.house
+
+`bim/v1.json` は [bim.house/spec/v1.json](https://bim.house/spec/v1.json) の完全
+スキーマ (project / applicant / designer / supervisor / contractor / road_access /
+ground_investigation / permit / rooms / mep / elements / audit / attachments /
+`$defs`) を、openformats の envelope と統合したもの。共通フィールド
+(`content_hash`・`hash_chain`・`renditions`・`consent`・`rights`・`provenance` 等)
+は `core/envelope/v1.json` を `$ref` で継承し、`kind: "bim"` を付けて作品として
+扱えるようにする。bim.house ネイティブの物件 JSON は `kind`/`id` を持たないため、
+openformats 作品にするにはこの 2 つを補う（[examples/sample.bim.json](examples/sample.bim.json) 参照）。
 
 JSON は「創作の最小単位」を表し、実体は rendition に逃がす。これにより、
 どのエディタ・DAW・レンダラとも相互変換できる。

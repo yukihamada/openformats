@@ -135,18 +135,35 @@ def sign_document(data: dict, secret_b64: str, signer: str | None = None,
 
 
 def verify_signatures(data: dict) -> list[dict]:
-    """全署名を検証し、結果のリストを返す。"""
+    """全署名を検証し、結果のリストを返す。
+
+    openformats の Ed25519 補助署名 (public_key/signature, content_hash 対象) は
+    実検証する。bim.house の建築士署名 (pubkey/digest/signature) は content_hash
+    とは別の basis (正規化 JSON の digest) に署名するため、ここでは valid=None
+    (検証対象外) として情報だけ返す。cmd_verify は None を失敗扱いにしない。
+    """
     h = content_hash(data)
     results = []
     for s in data.get("signatures", []):
-        ok = False
-        try:
-            ok = ed25519.verify(unb64(s["public_key"]), bytes.fromhex(h),
-                                unb64(s["signature"]))
-        except Exception:
+        if "public_key" in s:
             ok = False
-        results.append({"signer": s.get("signer"), "public_key": s["public_key"],
-                        "valid": ok})
+            try:
+                ok = ed25519.verify(unb64(s["public_key"]), bytes.fromhex(h),
+                                    unb64(s["signature"]))
+            except Exception:
+                ok = False
+            results.append({"signer": s.get("signer"), "public_key": s["public_key"],
+                            "valid": ok})
+        elif "pubkey" in s:
+            signer = s.get("signer")
+            if isinstance(signer, dict):
+                signer = signer.get("name")
+            results.append({"signer": signer, "public_key": s.get("pubkey"),
+                            "scheme": "bim.house", "valid": None,
+                            "note": "bim.house 署名は content_hash と別 basis のため openformats 検証対象外"})
+        else:
+            results.append({"signer": s.get("signer"), "public_key": None,
+                            "valid": False, "note": "public_key も pubkey も無い"})
     return results
 
 

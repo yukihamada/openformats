@@ -1,43 +1,1097 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://yukihamada.github.io/openformats/bim/v1.json",
-  "title": "bim.json v1 — open BIM-JSON format (openformats edition)",
-  "description": "1 物件 = 1 JSON。bim.house / TSUGI の既存 bim.json v1 を openformats ファミリーに接続するための互換エントリ。正本仕様は https://bim.house/spec/v1.json 。MIT。",
-  "allOf": [{ "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json" }],
+  "title": "bim.json v1 — open BIM-JSON format (openformats edition, bim.house full)",
+  "description": "1 物件 = 1 JSON。bim.house / TSUGI の bim.json v1 完全スキーマ (project/applicant/designer/supervisor/contractor/road_access/ground_investigation/permit/rooms/mep/elements/audit/attachments) を openformats の envelope と統合する。共通フィールド (content_hash・hash_chain・renditions・consent・rights・provenance 等) は core/envelope/v1.json を $ref で継承する。正本仕様は https://bim.house/spec/v1.json 。MIT。",
   "type": "object",
-  "required": ["kind", "id", "elements"],
+  "required": [
+    "spec_version",
+    "kind",
+    "id",
+    "elements"
+  ],
+  "additionalProperties": true,
   "properties": {
-    "kind": { "const": "bim" },
-    "$schema": { "const": "https://bim.house/spec/v1.json" },
+    "$schema": {
+      "type": "string",
+      "format": "uri",
+      "description": "bim.house/spec/v1.json を指してよい。openformats は envelope として解釈する。"
+    },
+    "spec_version": {
+      "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/spec_version"
+    },
+    "kind": {
+      "const": "bim"
+    },
+    "id": {
+      "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/id"
+    },
+    "title": {
+      "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/title"
+    },
+    "lang": {
+      "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/lang"
+    },
+    "license": {
+      "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/license"
+    },
+    "created_at": {
+      "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/created_at"
+    },
+    "updated_at": {
+      "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/updated_at"
+    },
+    "authors": {
+      "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/authors"
+    },
+    "provenance": {
+      "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/provenance"
+    },
+    "consent": {
+      "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/consent"
+    },
+    "rights": {
+      "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/rights"
+    },
+    "content_hash": {
+      "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/content_hash"
+    },
+    "hash_chain": {
+      "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/hash_chain"
+    },
+    "renditions": {
+      "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/renditions"
+    },
+    "revisions": {
+      "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/revisions"
+    },
+    "access": {
+      "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/access"
+    },
     "project": {
       "type": "object",
-      "description": "案件メタ。詳細は bim.house/spec/v1.json を正本とする。",
+      "description": "Project-level metadata.",
       "properties": {
-        "slug": { "type": "string" },
-        "name": { "type": "string" },
-        "address": { "type": "string" },
-        "lat": { "type": "number" },
-        "lng": { "type": "number" },
-        "site_area_m2": { "type": "number" },
-        "zoning": { "type": "string" },
-        "proposed_floors": { "type": "integer" },
-        "proposed_structure": { "type": "string" }
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "lat": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        },
+        "lng": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        },
+        "site_area_m2": {
+          "type": "number",
+          "minimum": 0
+        },
+        "lot_w_m": {
+          "type": "number",
+          "minimum": 0
+        },
+        "lot_d_m": {
+          "type": "number",
+          "minimum": 0
+        },
+        "zoning": {
+          "type": "string"
+        },
+        "proposed_floors": {
+          "type": "integer",
+          "minimum": -3,
+          "maximum": 50
+        },
+        "proposed_structure": {
+          "type": "string"
+        },
+        "construction_jpy": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fetched_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "permit_classification": {
+          "type": "string",
+          "description": "確認申請ルート (法 6 条 1〜4 号判定の補助記述)"
+        },
+        "applicant": {
+          "type": "object",
+          "description": "建築主 (確認申請者) の情報。確認申請 第二号様式 / 計画概要書 で展開される。",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            },
+            "phone": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "is_owner": {
+              "type": "boolean"
+            },
+            "ownership_proof_doc": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        },
+        "designer": {
+          "type": "object",
+          "description": "設計者 (代理人) の情報。建築士法 21 条 業務報告 + 第二号様式。",
+          "properties": {
+            "office_name": {
+              "type": "string"
+            },
+            "office_registration": {
+              "type": "string",
+              "description": "都道府県知事登録 第N号"
+            },
+            "office_address": {
+              "type": "string"
+            },
+            "kanri_kenchikushi_name": {
+              "type": "string",
+              "description": "管理建築士氏名"
+            },
+            "kanri_kenchikushi_number": {
+              "type": "string"
+            },
+            "designer_name": {
+              "type": "string"
+            },
+            "designer_kenchikushi_class": {
+              "type": "string",
+              "enum": [
+                "一級建築士",
+                "二級建築士",
+                "木造建築士",
+                "構造設計一級建築士",
+                "設備設計一級建築士"
+              ]
+            },
+            "designer_kenchikushi_number": {
+              "type": "string"
+            },
+            "designer_role": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "additionalProperties": true
+        },
+        "supervisor": {
+          "type": "object",
+          "description": "工事監理者 (建築士法 22 条の 3)。",
+          "properties": {
+            "office_name": {
+              "type": "string"
+            },
+            "office_registration": {
+              "type": "string"
+            },
+            "office_address": {
+              "type": "string"
+            },
+            "supervisor_name": {
+              "type": "string"
+            },
+            "supervisor_kenchikushi_class": {
+              "type": "string"
+            },
+            "supervisor_kenchikushi_number": {
+              "type": "string"
+            },
+            "contract_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "inspection_count_planned": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "scope": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        },
+        "contractor": {
+          "type": "object",
+          "description": "施工者 (建設業法 19 条)。着工時に確定。",
+          "properties": {
+            "office_name": {
+              "type": "string"
+            },
+            "registration": {
+              "type": "string",
+              "description": "建設業許可 第N号"
+            },
+            "address": {
+              "type": "string"
+            },
+            "warranty_years_construction": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "warranty_years_water_leak": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "warranty_years_structure": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": true
+        },
+        "road_access": {
+          "type": "object",
+          "description": "道路調査 (建基法 42 条)。",
+          "properties": {
+            "frontage_direction": {
+              "type": "string",
+              "enum": [
+                "north",
+                "south",
+                "east",
+                "west"
+              ]
+            },
+            "road_width_m": {
+              "type": "number",
+              "minimum": 0
+            },
+            "road_type": {
+              "type": "string",
+              "description": "町道 / 県道 / 国道 / 位置指定道路 等"
+            },
+            "road_law_article": {
+              "type": "string",
+              "description": "法 42 条 1 項一号 〜 五号 / 2 項 等"
+            },
+            "road_setback_required_m": {
+              "type": "number",
+              "minimum": 0
+            },
+            "compliance": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        },
+        "drainage": {
+          "type": "object",
+          "description": "排水放流先計画 (下水道法 24 条)。",
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": [
+                "公共下水道",
+                "合併浄化槽",
+                "敷地内浸透",
+                "その他"
+              ]
+            },
+            "discharge_to": {
+              "type": "string",
+              "description": "放流先 (河川 / 側溝 / 公共枡)"
+            },
+            "septic_tank_persons": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "浄化槽 人槽"
+            },
+            "drain_pipe_mm": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": true
+        },
+        "ground_investigation": {
+          "type": "object",
+          "description": "地盤調査結果 (令 38 / 93 + 告示 1347 / 1113)。",
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": [
+                "SWS",
+                "Boring",
+                "PS-Logging",
+                "ペネトロメータ",
+                "その他"
+              ]
+            },
+            "date": {
+              "type": "string",
+              "format": "date"
+            },
+            "surveyor": {
+              "type": "string",
+              "description": "調査会社名"
+            },
+            "n_value_avg": {
+              "type": "number",
+              "minimum": 0,
+              "description": "平均 N 値"
+            },
+            "allowable_bearing_kn_m2": {
+              "type": "number",
+              "minimum": 0,
+              "description": "長期許容応力度 qa (kN/㎡)"
+            },
+            "groundwater_depth_m": {
+              "type": "number",
+              "minimum": 0
+            },
+            "liquefaction_risk": {
+              "type": "string"
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "depth_m": {
+                    "type": "number"
+                  },
+                  "n_min": {
+                    "type": "integer"
+                  },
+                  "n_max": {
+                    "type": "integer"
+                  },
+                  "qa_kn_m2": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "barrier_free": {
+          "type": "object",
+          "description": "バリアフリー仕様 (バリアフリー法 + 品確法 高齢者等配慮対策 等級)。",
+          "properties": {
+            "min_door_mm": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "min_corridor_mm": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "step_free": {
+              "type": "string",
+              "enum": [
+                "有",
+                "無",
+                "一部"
+              ]
+            },
+            "handrails": {
+              "type": "string",
+              "enum": [
+                "両側",
+                "片側",
+                "無"
+              ]
+            },
+            "toilet_w_mm": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "bath_w_mm": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "kourei_grade": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5,
+              "description": "高齢者等配慮対策 等級 1-5"
+            }
+          },
+          "additionalProperties": true
+        },
+        "permit": {
+          "type": "object",
+          "description": "確認申請に関するメタ。電子申請 XML 出力に使われる。",
+          "properties": {
+            "authority_name": {
+              "type": "string",
+              "description": "建築主事 / 指定確認検査機関名"
+            },
+            "authority_type": {
+              "type": "string",
+              "enum": [
+                "特定行政庁",
+                "指定確認検査機関",
+                "未確定"
+              ],
+              "description": "v130 P0: 第一号様式 宛先欄の分岐用"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "新築",
+                "増築",
+                "改築",
+                "移転",
+                "大規模修繕",
+                "大規模模様替",
+                "用途変更",
+                "未確定"
+              ],
+              "description": "v130 P0: 申請区分 (建基法 6 条)"
+            },
+            "application_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "application_number": {
+              "type": "string",
+              "description": "v130 P0: 受付番号 (例: 建2026第N号) — 副本 manifest として正本と紐付け"
+            },
+            "approval_route": {
+              "type": "string",
+              "description": "法 6 条 1-4 号"
+            },
+            "approval_route_enum": {
+              "type": "string",
+              "enum": [
+                "law6_1",
+                "law6_2",
+                "law6_3",
+                "law6_4",
+                "未確定"
+              ],
+              "description": "v130 P0: 法 6 条 1-4 号 の enum 化 (旧 approval_route は文字列、 段階的移行)"
+            },
+            "structural_review_required": {
+              "type": "boolean",
+              "description": "構造適合性判定 必要性 (法 6 条の 3)"
+            },
+            "fire_consent_required": {
+              "type": "boolean",
+              "description": "消防同意 必要性 (法 93 条)"
+            },
+            "fire_consent_number": {
+              "type": "string",
+              "description": "v130 P0: 消防同意番号"
+            },
+            "health_consent_number": {
+              "type": "string",
+              "description": "v130 P0: 保健所同意番号"
+            }
+          },
+          "additionalProperties": true
+        },
+        "applicant_seal": {
+          "type": "object",
+          "description": "v130 P0: 建築主の押印情報 (確認申請書 第一号様式 必須)",
+          "properties": {
+            "image_uri": {
+              "type": "string",
+              "format": "uri",
+              "description": "印影 PNG/SVG の URL"
+            },
+            "image_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$",
+              "description": "印影画像の SHA-256"
+            },
+            "sealed_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "実印",
+                "認印",
+                "電子署名",
+                "未押印"
+              ]
+            },
+            "kojin_houjin": {
+              "type": "string",
+              "enum": [
+                "個人",
+                "法人"
+              ]
+            },
+            "corporate_number": {
+              "type": "string",
+              "pattern": "^[0-9]{13}$",
+              "description": "13 桁法人番号 (法人の場合のみ)"
+            }
+          },
+          "additionalProperties": true
+        },
+        "documents": {
+          "type": "array",
+          "description": "v130 P0: 確認申請書類リスト (first-class) — permit_documents_checklist の structured 版。 21 書類を含む。 attachments[] と doc_code で外部キー。",
+          "items": {
+            "type": "object",
+            "required": [
+              "doc_code",
+              "doc_label"
+            ],
+            "properties": {
+              "doc_code": {
+                "type": "string",
+                "enum": [
+                  "form1",
+                  "form2",
+                  "ininjyou",
+                  "fukei_kenmochi",
+                  "haichi",
+                  "heimen",
+                  "rittsumen",
+                  "danmen",
+                  "kanagari",
+                  "menseki_kyuseki",
+                  "kouzou_zumen",
+                  "kouzou_keisan",
+                  "sickhouse",
+                  "shouene",
+                  "kenchikushi_menkyo",
+                  "jimusho_touroku",
+                  "kanri_haichi",
+                  "kouzu_touki",
+                  "dourou_shitei",
+                  "jiban_houkoku",
+                  "kashitanpou_hoken"
+                ]
+              },
+              "doc_label": {
+                "type": "string"
+              },
+              "role": {
+                "type": "string",
+                "enum": [
+                  "seihon",
+                  "fukuhon",
+                  "shahon",
+                  "auto_generated"
+                ]
+              },
+              "generated_from": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "manual",
+                  "external"
+                ]
+              },
+              "source_uri": {
+                "type": "string"
+              },
+              "source_sha256": {
+                "type": "string"
+              },
+              "attached_attachment_uris": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "submitted_to": {
+                "type": "string"
+              },
+              "received_number": {
+                "type": "string"
+              },
+              "received_at": {
+                "type": "string",
+                "format": "date"
+              },
+              "supersedes_sha256": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "description": "v130 P0: メタデータの出処/推定/検証情報 — 散らばっていた _underscore メタ (_estimated, _basis, _source, _verified_at) を統一する block",
+          "properties": {
+            "estimated": {
+              "type": "boolean",
+              "default": false
+            },
+            "basis": {
+              "type": "string",
+              "description": "推定の根拠 (例: 地域典型値、 実調査未実施)"
+            },
+            "source": {
+              "type": "string",
+              "description": "情報の出処 (登記書類、 memory ファイル、 etc)"
+            },
+            "verified_at": {
+              "type": "string",
+              "format": "date"
+            },
+            "verified_by": {
+              "type": "string",
+              "description": "検証者 (役職/氏名)"
+            }
+          },
+          "additionalProperties": true
+        },
+        "rooms": {
+          "type": "array",
+          "description": "居室別の採光・換気・面積データ (令 19 / 20 / 28 条)。",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "floor": {
+                "type": "integer"
+              },
+              "area_m2": {
+                "type": "number"
+              },
+              "ceiling_height_mm": {
+                "type": "integer"
+              },
+              "is_residential_room": {
+                "type": "boolean"
+              },
+              "daylight": {
+                "type": "object",
+                "properties": {
+                  "required_ratio": {
+                    "type": "number"
+                  },
+                  "actual_window_area_m2": {
+                    "type": "number"
+                  },
+                  "actual_daylight_ratio": {
+                    "type": "number"
+                  },
+                  "correction_factor_d_h": {
+                    "type": "number"
+                  },
+                  "pass": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "mep": {
+          "type": "object",
+          "description": "設備計画 (給排水・電気・換気・給湯)。",
+          "properties": {
+            "water_method": {
+              "type": "string"
+            },
+            "drain_method": {
+              "type": "string"
+            },
+            "hw_method": {
+              "type": "string"
+            },
+            "heat_method": {
+              "type": "string"
+            },
+            "vent_method": {
+              "type": "string"
+            },
+            "elec_main_a": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": true
+        }
       },
       "additionalProperties": true
     },
     "elements": {
       "type": "array",
-      "description": "建築要素。正本スキーマ (bim.house/spec/v1.json) の elements と同一。",
-      "items": { "type": "object", "additionalProperties": true }
+      "description": "Building elements (walls, slabs, windows, etc.).",
+      "items": {
+        "$ref": "#/$defs/Element"
+      }
     },
-    "permit": {
+    "audit": {
       "type": "object",
-      "description": "確認申請ルートの補助記述。法的正本ではない。",
-      "properties": {
-        "classification": { "type": "string" },
-        "checks": { "type": "array", "items": { "type": "object", "additionalProperties": true } }
-      },
+      "description": "Auto-generated by houki engine; user code should not write here directly.",
       "additionalProperties": true
+    },
+    "attachments": {
+      "type": "array",
+      "description": "v62: 添付ファイル (画像 / PDF / IFC / 計算書) の SHA-256 hash 宣言。bim.house/api/showcase/<slug>/verify-attachments で再計算照合可能 (改竄検証)。",
+      "items": {
+        "type": "object",
+        "required": [
+          "uri",
+          "kind",
+          "sha256"
+        ],
+        "properties": {
+          "uri": {
+            "type": "string",
+            "format": "uri",
+            "description": "添付ファイルの URL (https://bim.house/... or 外部 URL)"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "image",
+              "drawing",
+              "ifc",
+              "pdf",
+              "calc_report",
+              "survey_report",
+              "datasheet",
+              "other"
+            ]
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "ファイル内容の SHA-256 (lower hex 64 文字)"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "title": {
+            "type": "string"
+          },
+          "added_at": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "signatures": {
+      "type": "array",
+      "description": "署名。openformats の Ed25519 補助署名 (public_key/signature) と、bim.house の建築士署名 (signer/pubkey/digest/signature) の両形式を許容する。",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "https://yukihamada.github.io/openformats/core/envelope/v1.json#/properties/signatures/items"
+          },
+          {
+            "$ref": "#/$defs/Signature"
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "Element": {
+      "type": "object",
+      "required": [
+        "id",
+        "cls",
+        "shape",
+        "x",
+        "y",
+        "z",
+        "w",
+        "d",
+        "h"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^e[0-9]+$|^[a-z][a-z0-9_-]*$"
+        },
+        "cls": {
+          "$ref": "#/$defs/IFCClass"
+        },
+        "label": {
+          "type": "string"
+        },
+        "descr": {
+          "type": "string"
+        },
+        "shape": {
+          "type": "string",
+          "enum": [
+            "box",
+            "cylinder"
+          ]
+        },
+        "x": {
+          "type": "integer",
+          "description": "X coordinate in mm (east+)"
+        },
+        "y": {
+          "type": "integer",
+          "description": "Y coordinate in mm (north+)"
+        },
+        "z": {
+          "type": "integer",
+          "description": "Z coordinate in mm (up+, ground=0)"
+        },
+        "w": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Width in mm (box) or radius (cylinder)"
+        },
+        "d": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Depth in mm (box) or 0 (cylinder)"
+        },
+        "h": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Height in mm"
+        },
+        "rotation": {
+          "type": "number",
+          "description": "Rotation around Z axis in radians (right-hand rule).",
+          "default": 0.0
+        },
+        "floor": {
+          "type": "integer",
+          "minimum": -3,
+          "maximum": 50
+        },
+        "material": {
+          "$ref": "#/$defs/Material"
+        },
+        "structural": {
+          "$ref": "#/$defs/Structural"
+        }
+      }
+    },
+    "IFCClass": {
+      "type": "string",
+      "enum": [
+        "IFCSITE",
+        "IFCWALL",
+        "IFCSLAB",
+        "IFCROOF",
+        "IFCWINDOW",
+        "IFCDOOR",
+        "IFCBEAM",
+        "IFCCOLUMN",
+        "IFCSTAIR",
+        "IFCRAILING",
+        "IFCMEMBER",
+        "IFCFURNISHINGELEMENT",
+        "IFCBUILDINGELEMENTPROXY"
+      ]
+    },
+    "Material": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "RC",
+            "SIPS",
+            "CLT",
+            "WOOD",
+            "STEEL",
+            "GLASS",
+            "CMU",
+            "EARTH",
+            "SHO-SUGI",
+            "COR-TEN",
+            "ASPHALT",
+            "GRAVEL",
+            "TILE",
+            "STONE",
+            "BRICK",
+            "GYPSUM",
+            "INSULATION",
+            "MEMBRANE",
+            "OTHER"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "thickness_mm": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "u_value_w_m2k": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Thermal transmittance W/m²K"
+        },
+        "fire_rating_min": {
+          "type": "integer",
+          "enum": [
+            0,
+            30,
+            45,
+            60,
+            90,
+            120,
+            180
+          ]
+        },
+        "f_star": {
+          "type": "string",
+          "enum": [
+            "F1",
+            "F2",
+            "F3",
+            "F4"
+          ],
+          "description": "Sick House F☆ grade (F4=F☆☆☆☆, lowest VOC)"
+        }
+      }
+    },
+    "Structural": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "load_bearing": {
+          "type": "boolean"
+        },
+        "axial_capacity_kn": {
+          "type": "number",
+          "minimum": 0
+        },
+        "shear_capacity_kn_m": {
+          "type": "number",
+          "minimum": 0
+        },
+        "seismic_grade": {
+          "type": "string",
+          "enum": [
+            "1",
+            "2",
+            "3"
+          ]
+        }
+      }
+    },
+    "Signature": {
+      "type": "object",
+      "required": [
+        "signer",
+        "alg",
+        "pubkey",
+        "signed_at",
+        "digest",
+        "signature"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "signer": {
+          "type": "object",
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "kenchikushi_class": {
+              "type": "string",
+              "enum": [
+                "一級建築士",
+                "二級建築士",
+                "木造建築士",
+                "構造設計一級建築士",
+                "設備設計一級建築士"
+              ]
+            },
+            "kenchikushi_number": {
+              "type": "string"
+            },
+            "organization": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        },
+        "alg": {
+          "type": "string",
+          "enum": [
+            "Ed25519",
+            "ECDSA-P256",
+            "RSA-PSS-SHA256"
+          ]
+        },
+        "pubkey": {
+          "type": "string",
+          "description": "Base64 (or hex) encoded public key"
+        },
+        "signed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "design-of-record",
+            "peer-review",
+            "audit",
+            "draft"
+          ],
+          "description": "Legal/responsibility scope of this signature"
+        },
+        "hash_alg": {
+          "type": "string",
+          "enum": [
+            "SHA-256",
+            "SHA-384",
+            "SHA-512"
+          ]
+        },
+        "digest": {
+          "type": "string",
+          "description": "Hex-encoded hash of canonical JSON (RFC 8785) excluding this signatures field"
+        },
+        "signature": {
+          "type": "string",
+          "description": "Base64-encoded signature over the digest"
+        }
+      }
     }
   }
 }

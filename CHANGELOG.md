@@ -2,6 +2,25 @@
 
 すべての重要な変更を記録する。形式は Keep a Changelog、バージョニングは SemVer。
 
+## [Unreleased]
+
+### Added
+- `bim/v1.json` を bim.house の完全スキーマ (`https://bim.house/spec/v1.json`) と統合。
+  `project` (applicant / designer / supervisor / contractor / road_access /
+  drainage / ground_investigation / permit / rooms / mep 等)、`elements`
+  (IFC クラス・素材・構造)、`audit`、`attachments`、`$defs` (Element / IFCClass /
+  Material / Structural / Signature) を収録。共通フィールドは
+  `core/envelope/v1.json` を `$ref` で継承する。
+- `examples/sample.bim.json`: bim.house 完全スキーマの実例 (project/rooms/mep/
+  elements/audit/attachments/署名)。
+- `signatures` は openformats の Ed25519 補助署名 (`public_key`/`signature`) と
+  bim.house の建築士署名 (`pubkey`/`digest`/`signature`) の両形式を `anyOf` で許容。
+
+### Changed
+- `tools/of.py verify` / `core.verify_signatures`: bim.house 形式の署名は
+  content_hash と別 basis のため `valid: null` (検証対象外) として扱い、失敗にしない。
+- `tests/test_core.py`: 上記に合わせ、署名検証は `valid is not False` で判定。
+
 ## [1.1.0] - 2026-11-08
 
 ### Added
