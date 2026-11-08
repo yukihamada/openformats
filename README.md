@@ -83,7 +83,7 @@ shasum -a 256 works/episode-001.mp3
 ### JSON も検証できる
 
 ```bash
-pip install jsonschema   # 最初に一度だけ
+# 依存は「使い方」の venv 手順で導入済みならそのまま実行できる
 python3 tools/validate.py radio/v1.json works/yuki-podcast-001.radio.json
 # → OK  works/yuki-podcast-001.radio.json
 ```
@@ -130,9 +130,10 @@ python3 tools/validate.py radio/v1.json works/yuki-podcast-001.radio.json
 ## 使い方（3 つのツール・4 ステップ）
 
 ```bash
-# 0. 依存を入れる（最初に一度だけ。Homebrew の Python は venv 推奨）
-python3 -m venv .venv && .venv/bin/pip install jsonschema
-# 以降は .venv/bin/python で実行する（例: .venv/bin/python tools/validate.py …）
+# 0. 依存を入れる（最初に一度だけ）
+python3 -m venv .venv
+source .venv/bin/activate          # venv に入る（以降 python3 は venv の Python）
+pip install jsonschema
 
 # 1. 検証 — JSON Schema で作品をチェック
 python3 tools/validate.py music/v1.json examples/sample.music.json
@@ -150,10 +151,12 @@ python3 tools/of.py verify works/my-song.music.json
 python3 tools/render.py examples/sample.music.json --kind audio --format wav --dry-run
 ```
 
+> `source .venv/bin/activate` を使わない場合は、各コマンドの `python3` を `.venv/bin/python` に置き換えれば同じです。
+
 使うツールはこの 3 つです。
 
 - [tools/validate.py](tools/validate.py) — JSON Schema (Draft 2020-12) で作品を検証する。`--all` でリポジトリ全体。
-- [tools/of.py](tools/of.py) — ハッシュ・Ed25519 署名・検証・改訂（`revise`）・モデル移行（`migrate`）の CLI。`verify` は `content_hash` と署名・チェーンを検証する（音源実体の照合は下の `shasum` で行う）。
+- [tools/of.py](tools/of.py) — ハッシュ・Ed25519 署名・検証・改訂（`revise`）・モデル移行（`migrate`）の CLI。`verify` は `content_hash`・署名・チェーンに加え、`renditions[].path` の実体存在と SHA-256 一致まで検証する（音源が欠けていれば `ok: false`）。
 - [tools/render.py](tools/render.py) — JSON を媒体化し、実体の SHA-256 で作品に紐づける（`--dry-run` で安全に試せる）。
 
 ---
