@@ -35,24 +35,34 @@ openformats のファイルは、あなたの `git` の中に残る。だから�
 
 ---
 
-## 3. 原価の考え方（推定・要実測）
+## 3. 原価（`tools/of.py cost` で実測・再計算できる）
 
-ホスト型の原価は主に 3 つ。数値は **2026 年時点の概算で、契約前に必ず実測で置き換える**。
+原価は推測で書かず、ツールで計算する。単価は既定値（2026 概算）を持つが、必ず実測で上書きする。
 
-| 項目 | 概算 | 備考 |
-|---|---|---|
-| オブジェクトストレージ | 約 $0.015 / GB / 月 | content-addressed。重複排除で実効容量は見かけより小さい |
-| 配信（egress） | 約 $0.01〜0.09 / GB | 人気作品ほど効く。CDN キャッシュで圧縮 |
-| 課金手数料 | 3.6% + 固定 | Stripe 日本 |
+```bash
+# プランの原価・粗利・損益分岐（容量・配信を指定）
+python3 tools/of.py cost --plan personal --egress-gb 20
+# 実ストアの実測容量で計算
+python3 tools/of.py cost --store .ofstore --price-jpy 500
+# 単価を実測値に差し替え
+python3 tools/of.py cost --plan personal --egress-gb 20 \
+    --storage-price 0.015 --egress-price 0.05 --usd-jpy 150
+```
 
-**Personal（¥500 / 20 GB）の粗利イメージ**（推定）:
-- 収入 ¥500 ≒ $3.3
-- ストレージ 20 GB ≒ $0.30
-- 配信 仮に 20 GB/月 ≒ $0.2〜1.8
-- 課金手数料 ≒ $0.15
-- → 粗利 **$1〜2.6 / 月**。全員が容量をフルに使う最悪ケースでも赤字にしない設計。
+**実測値（既定単価・¥150/$ で計算）:**
 
-> この表は「儲かる証明」ではなく「赤字にしない下限の確認」。実測前の数字を確定値として扱わない。
+| プラン | 容量 / 配信 | 原価 | 粗利 | 粗利率 | 損益分岐配信量 |
+|---|---|---|---|---|---|
+| Personal ¥500 | 20GB / 20GB | ¥213 | ¥287 | 57.4% | 58.3 GB |
+| Personal ¥500 | 20GB / 58GB（分岐点） | ¥498 | ¥2 | 0.4% | — |
+| Studio ¥3,000 | 200GB / 200GB | ¥2,058 | ¥942 | 31.4% | 325.6 GB |
+
+- 原価の内訳: ストレージ + 配信（egress）+ Stripe 手数料（3.6%）。
+- **配信量が損益分岐（Personal で約 58GB/月）を超えると赤字**。ここが唯一の危険域。
+- 全員が容量フルでも、配信が常識的な範囲なら黒字。配信だけを監視する。
+
+> 出力の `source` が `estimate` の間は「推定」。実測単価に置き換えたときだけ確定値として扱う。
+> 為替・単価・配信量は変わる。契約前に必ず実測で再計算する。
 
 ---
 
@@ -89,12 +99,44 @@ python3 tools/of.py verify examples/sample.book.json
 
 ---
 
-## 6. 未確定・これから決めること
+## 6. 課金導線（`tools/of.py billing`）
 
-- [ ] 原価の実測（ストレージ・配信・課金手数料の実額）
-- [ ] 「1 万個」の上限に達したときの課金導線
+使用量を計量し、プラン上限と照合して状態（ok / warning / over）と次の一手を返す。
+課金の確定（請求・サブスク作成）はここでは行わない。判定と案内の下書きまで。
+
+```bash
+python3 tools/of.py billing --plan personal --works-dir works --store .ofstore --overage
+```
+
+- **作品数**（JSON 件数）と**容量**（ストアのユニークバイト）を別枠で判定。
+- 上限の 90% で `warning`、超過で `over`。`over` は終了コード 2。
+- `next_plan`（free→personal→studio）と超過請求（¥100/10GB）を提示。
+- 課金の確定は別承認。ここは「いつ・誰に・いくら案内するか」を決める材料。
+
+## 7. 声クローンの同意フロー（`tools/of.py consent`）
+
+声の再現は、話者の同意が前提。口約束でなく状態機械として記録する。
+
+```bash
+python3 tools/of.py consent request work.voice.json --subject 濱田優貴 --doc internal:consent-2026 --write
+python3 tools/of.py consent grant   work.voice.json --by self --scope tts --scope render --write
+python3 tools/of.py consent status  work.voice.json
+python3 tools/of.py consent revoke  work.voice.json --by self --note 配布停止 --write
+```
+
+- 状態: `requested → granted → revoked`（`denied` も）。各遷移は `events` に追記のみ。
+- **撤回（revoked）後は合成・配布を禁止**（`can_synthesize=false`）。撤回後に再 grant は不可。
+- 用途（scope: tts / render / distribute）ごとに許諾範囲を検査。
+- 同意なきクローンは `validate` が検出し、`voice-args` が引数生成を拒否する。
+
+> 法務確認（同意書の文言・撤回の実効性・未成年の扱い）は別途必要。仕組みは用意済み。
+
+## 8. 未確定・これから決めること
+
+- [ ] 実測単価（ストレージ・配信の実契約額）での再計算
 - [ ] 無料プランの悪用対策（容量・帯域の濫用）
-- [ ] 声クローンの作成・配布・撤回の同意フロー（法務確認）
+- [ ] 声クローン同意書の法務確認（文言・撤回の実効性・未成年）
 - [ ] 年払い・チーム割引の具体額
+- [ ] Stripe 実接続（サブスク作成・Webhook・請求）の本番実装
 
 **確定前の数字を、確定した価格として案内しない。**
