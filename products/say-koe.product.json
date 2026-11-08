@@ -1,0 +1,45 @@
+{
+  "$schema": "https://openformats.dev/product/v1.json",
+  "spec_version": "1.0.0",
+  "kind": "product",
+  "id": "say-koe",
+  "name": "say.koe",
+  "group": "声・音楽・メディア",
+  "description": "ランチャーに掲載される声の関連サービス。",
+  "url": "https://say.koe.live",
+  "status": "beta",
+  "license": "all-rights-reserved",
+  "formats": [
+    "music",
+    "radio",
+    "voice",
+    "movie",
+    "image"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://enablerdao.com/products",
+        "note": "社内カタログ 2026-09-15 棚卸し"
+      },
+      {
+        "ref": "all-products.json",
+        "note": "source=launcher"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-08T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "カタログから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "ベータ表記。現行用途・機能の動作は未確認。"
+}

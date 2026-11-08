@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openformats.dev/product/v1.json",
+  "title": "product.json v1 — open product / service catalog format",
+  "description": "1 製品 = 1 JSON。サービス・アプリ・ブランドの公開情報を記述。稼働状態・権限は保証しない (確認時点を正直に記録)。openformats core envelope を継承。MIT。",
+  "allOf": [{ "$ref": "https://openformats.dev/core/envelope/v1.json" }],
+  "type": "object",
+  "required": ["kind", "id", "name"],
+  "properties": {
+    "kind": { "const": "product" },
+    "name": { "type": "string" },
+    "group": { "type": "string", "description": "製品群 (AI・仕事 / 声・音楽・メディア 等)。" },
+    "tagline": { "type": "string" },
+    "description": { "type": "string" },
+    "url": { "type": ["string", "null"], "format": "uri" },
+    "platforms": { "type": "array", "items": { "type": "string" }, "examples": [["web", "ios", "macos", "cli", "api"]] },
+    "status": {
+      "type": "string",
+      "enum": ["live", "beta", "development", "registered-only", "archived", "unknown"],
+      "default": "unknown",
+      "description": "確認時点の状態。未確認は unknown。"
+    },
+    "verified_at": { "type": "string", "format": "date", "description": "状態を確認した日。未確認なら省略。" },
+    "related": { "type": "array", "items": { "type": "string" }, "description": "関連製品の id。" },
+    "formats": {
+      "type": "array",
+      "description": "この製品が入出力する openformats の kind。",
+      "items": { "type": "string", "examples": [["music", "radio", "voice", "movie"]] }
+    },
+    "note": { "type": "string", "description": "未確認事項・注意。誇張を避け、事実と推測を分ける。" }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://openformats.dev/product/v1.json",
+  "spec_version": "1.0.0",
+  "kind": "product",
+  "id": "koe",
+  "name": "KOE",
+  "group": "声・音楽・メディア",
+  "description": "本人の登録済み声による音声生成と声の表現。",
+  "url": "https://koe.live",
+  "status": "live",
+  "license": "all-rights-reserved",
+  "formats": [
+    "music",
+    "radio",
+    "voice",
+    "movie",
+    "image"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://enablerdao.com/products",
+        "note": "社内カタログ 2026-09-15 棚卸し"
+      },
+      {
+        "ref": "all-products.json",
+        "note": "source=prior"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-08T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "カタログから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "公開サンプル音声あり。一般口座の本人鍵連携から生成までは未確認。"
+}

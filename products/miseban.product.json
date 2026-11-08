@@ -1,0 +1,41 @@
+{
+  "$schema": "https://openformats.dev/product/v1.json",
+  "spec_version": "1.0.0",
+  "kind": "product",
+  "id": "miseban",
+  "name": "ミセバンAI",
+  "group": "事業・お金・契約",
+  "description": "店舗運営・カメラ分析の支援として掲載。",
+  "url": "https://misebanai.com",
+  "status": "live",
+  "license": "all-rights-reserved",
+  "formats": [
+    "article"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://enablerdao.com/products",
+        "note": "社内カタログ 2026-09-15 棚卸し"
+      },
+      {
+        "ref": "all-products.json",
+        "note": "source=company"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-08T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "カタログから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "店舗導入・計数精度・無人運営の成立は未確認。"
+}

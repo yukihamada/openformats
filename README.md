@@ -45,8 +45,15 @@
 | `collection.json` | collection | アルバム/プレイリスト/シリーズ | music/movie/book |
 | `person.json` | person | 作者・話者・ペルソナ | voice/作品 |
 | `place.json` | place | 場所・会場・POI | land/event/media |
+| `product.json` | product | 製品・サービス・ブランド | カタログ/作品連携 |
 
 すべて `core/envelope.json` を継承する。
+
+## 収録データ
+
+- `products/` — Enabler の製品カタログ 61 件 (`*.product.json`)。状態は確認時点を `status` に記録し、未確認は `unknown`。
+- `events/` — イベント (`zamna-hawaii-2026.event.json` 等)。
+- `places/` — 会場・POI (`echoa-ridge.place.json` 等)。
 
 ## 共通エンベロープ (`core/envelope.json`)
 

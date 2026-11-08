@@ -16,7 +16,7 @@
     "kind": {
       "type": "string",
       "description": "フォーマット種別。ファイル名の拡張子と一致する。",
-      "enum": ["book", "device", "radio", "movie", "music", "land", "country", "image", "voice", "article", "event", "bim"]
+      "enum": ["book", "device", "radio", "movie", "music", "land", "country", "image", "voice", "article", "event", "bim", "collection", "person", "place", "product"]
     },
     "id": {
       "type": "string",

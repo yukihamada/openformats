@@ -1,0 +1,45 @@
+{
+  "$schema": "https://openformats.dev/product/v1.json",
+  "spec_version": "1.0.0",
+  "kind": "product",
+  "id": "koe-mcp",
+  "name": "声メッセンジャー MCP",
+  "group": "声・音楽・メディア",
+  "description": "AIツールから声を扱うための関連入口。",
+  "url": "https://mcp.koe.live",
+  "status": "beta",
+  "license": "all-rights-reserved",
+  "formats": [
+    "music",
+    "radio",
+    "voice",
+    "movie",
+    "image"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://enablerdao.com/products",
+        "note": "社内カタログ 2026-09-15 棚卸し"
+      },
+      {
+        "ref": "all-products.json",
+        "note": "source=launcher"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-08T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "カタログから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "API入口のGETは機能テストではない。KOEの関連サービス。"
+}

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://openformats.dev/event/v1.json",
+  "spec_version": "1.0.0",
+  "kind": "event",
+  "id": "zamna-hawaii-2026",
+  "title": "ZAMNA HAWAII / SOLUNA FEST",
+  "lang": "en",
+  "license": "all-rights-reserved",
+  "created_at": "2026-11-08T00:00:00Z",
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://wetnwildhawaii.com/venue/echoa-ridge/",
+        "note": "会場公式"
+      },
+      {
+        "ref": "~/workspace/zamna-hawaii/master-plan-20260813.md",
+        "note": "開催マスタープラン"
+      },
+      {
+        "ref": "~/workspace/zamna-hawaii/venue-echoa-ridge-info-2026-08-14.md",
+        "note": "会場情報"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-08T00:00:00Z",
+        "action": "create",
+        "by": "openformats",
+        "note": "既存資料からデータ化"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "schedule": {
+    "start": "2026-11-13T00:00:00-10:00",
+    "timezone": "Pacific/Honolulu"
+  },
+  "venue": {
+    "name": "Echoa Ridge @ Wet'n'Wild Hawaii",
+    "address": "400 Farrington Highway, Kapolei, HI 96707",
+    "capacity": 5000,
+    "indoor": false,
+    "land_id": "echoa-ridge"
+  },
+  "performers": [],
+  "tickets": {
+    "currency": "USD"
+  },
+  "streaming": {
+    "live": false,
+    "platforms": []
+  },
+  "related_media": [],
+  "note": "2026-11-13 開催予定。会場は2026年2月オープンの5,000人キャパ野外ステージ (オアフ島カポレイ)。チケットはEventim独占。出演者・チケット価格・配信は未確定のため空。詳細は master-plan-20260813.md を正本とする。"
+}

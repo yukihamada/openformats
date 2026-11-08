@@ -1,0 +1,44 @@
+{
+  "$schema": "https://openformats.dev/product/v1.json",
+  "spec_version": "1.0.0",
+  "kind": "product",
+  "id": "zumen",
+  "name": "ZUMEN.HOUSE",
+  "group": "住まい・滞在",
+  "description": "図面提供を扱う建築関連ブランド。",
+  "url": "https://zumen.house",
+  "status": "live",
+  "license": "all-rights-reserved",
+  "formats": [
+    "bim",
+    "land",
+    "place",
+    "event"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://enablerdao.com/products",
+        "note": "社内カタログ 2026-09-15 棚卸し"
+      },
+      {
+        "ref": "all-products.json",
+        "note": "source=hq"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-08T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "カタログから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "実納品・図面精度・即日対応は未確認。"
+}

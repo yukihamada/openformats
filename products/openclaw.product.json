@@ -1,0 +1,42 @@
+{
+  "$schema": "https://openformats.dev/product/v1.json",
+  "spec_version": "1.0.0",
+  "kind": "product",
+  "id": "openclaw",
+  "name": "OpenClaw関連開発",
+  "group": "AI・仕事",
+  "description": "会社一覧で案内されているコードリポジトリ。",
+  "url": "https://github.com/yukihamada/openclaw",
+  "status": "live",
+  "license": "all-rights-reserved",
+  "formats": [
+    "article",
+    "book"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://enablerdao.com/products",
+        "note": "社内カタログ 2026-09-15 棚卸し"
+      },
+      {
+        "ref": "all-products.json",
+        "note": "source=hq"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-08T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "カタログから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "独立した自社新製品ではなく関連開発として掲載。上流との関係・提供範囲は未確認。"
+}
