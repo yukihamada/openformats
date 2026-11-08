@@ -213,5 +213,221 @@
       "duration_sec": 178.61
     }
   ],
-  "content_hash": "bfa6ce17b33cfb69efc241bb368a02d59d3d37e9c4202158f9f9bb3b690bac78"
+  "content_hash": "bfa6ce17b33cfb69efc241bb368a02d59d3d37e9c4202158f9f9bb3b690bac78",
+  "revisions": [
+    {
+      "at": "2026-11-08T08:14:23Z",
+      "action": "create",
+      "content_hash": "bfa6ce17b33cfb69efc241bb368a02d59d3d37e9c4202158f9f9bb3b690bac78",
+      "patch": [],
+      "snapshot": {
+        "$schema": "https://yukihamada.github.io/openformats/music/v1.json",
+        "spec_version": "1.1.0",
+        "kind": "music",
+        "id": "hitotsu-saki-e",
+        "title": "ひとつ先へ",
+        "lang": "ja",
+        "license": "all-rights-reserved",
+        "created_at": "2026-09-15T00:00:00+09:00",
+        "authors": [
+          {
+            "name": "濱田優貴",
+            "role": "author"
+          },
+          {
+            "name": "Sente / 先手",
+            "role": "performer"
+          }
+        ],
+        "provenance": {
+          "generator": {
+            "name": "Suno",
+            "version": "v4"
+          },
+          "human_involvement": "ai-assisted"
+        },
+        "access": {
+          "visibility": "public",
+          "embeddable": false,
+          "derivatives": "ask"
+        },
+        "meta": {
+          "genre": [
+            "electro-pop"
+          ],
+          "mood": [
+            "hopeful",
+            "calm"
+          ],
+          "bpm": 104,
+          "key": "F major",
+          "time_signature": "4/4",
+          "duration_sec": 130,
+          "instrumental": false,
+          "duration_note": "sections の編成は 130 秒。実テイクは前後の間奏・余韻を含み take1=194.77s / take2=178.61s（renditions[].duration_sec に実測値）。"
+        },
+        "sections": [
+          {
+            "name": "intro",
+            "start_sec": 0,
+            "duration_sec": 12
+          },
+          {
+            "name": "verse1",
+            "start_sec": 12,
+            "duration_sec": 22
+          },
+          {
+            "name": "prechorus",
+            "start_sec": 34,
+            "duration_sec": 10
+          },
+          {
+            "name": "chorus",
+            "start_sec": 44,
+            "duration_sec": 22
+          },
+          {
+            "name": "verse2",
+            "start_sec": 66,
+            "duration_sec": 22
+          },
+          {
+            "name": "prechorus2",
+            "start_sec": 88,
+            "duration_sec": 10
+          },
+          {
+            "name": "bridge",
+            "start_sec": 98,
+            "duration_sec": 18
+          },
+          {
+            "name": "outro",
+            "start_sec": 116,
+            "duration_sec": 14
+          }
+        ],
+        "tracks": [
+          {
+            "id": "vox",
+            "instrument": "voice",
+            "role": "lead"
+          },
+          {
+            "id": "piano",
+            "instrument": "piano",
+            "role": "lead"
+          },
+          {
+            "id": "bass",
+            "instrument": "bass",
+            "role": "bass"
+          },
+          {
+            "id": "drums",
+            "instrument": "drums",
+            "role": "drums"
+          }
+        ],
+        "lyrics": [
+          {
+            "section": "intro",
+            "lines": [
+              "（ピアノ、ひとつぶの音）",
+              "朝の光が、画面のむこうで待っている"
+            ],
+            "lang": "ja"
+          },
+          {
+            "section": "verse1",
+            "lines": [
+              "言葉にする前に、もう動いている",
+              "Mac の向こうで、仕事が走っている",
+              "鍵のかかったドアも、予定のすきまも",
+              "あなたの代わりに、確かめておくよ"
+            ],
+            "lang": "ja"
+          },
+          {
+            "section": "prechorus",
+            "lines": [
+              "迷う時間を、あなたに返すために",
+              "ぼくは先に、一歩だけ出る"
+            ],
+            "lang": "ja"
+          },
+          {
+            "section": "chorus",
+            "lines": [
+              "先手、先手、ひとつ先へ",
+              "声をかければ、もう動きだす",
+              "先手、先手、ひとつ先へ",
+              "あなたは、あなたの一日を",
+              "（One move ahead, always）",
+              "言葉が、建つ"
+            ],
+            "lang": "ja"
+          },
+          {
+            "section": "verse2",
+            "lines": [
+              "読みちがえたら、そのまま言って",
+              "消さないでおくよ、途中のことば",
+              "ミュートにしても、待っているから",
+              "話したい時に、また話せばいい"
+            ],
+            "lang": "ja"
+          },
+          {
+            "section": "prechorus2",
+            "lines": [
+              "急がせない、せかさない",
+              "あなたの間で、待っている"
+            ],
+            "lang": "ja"
+          },
+          {
+            "section": "bridge",
+            "lines": [
+              "外に届くことは、いちど立ち止まって",
+              "「これでいい？」と、あなたに訊く",
+              "それ以外は、静かに終わらせる",
+              "それが、先手"
+            ],
+            "lang": "ja"
+          },
+          {
+            "section": "outro",
+            "lines": [
+              "声で、ひとつずつ",
+              "先手、先手",
+              "（ピアノ、ひとつぶの音）"
+            ],
+            "lang": "ja"
+          }
+        ],
+        "generation": {
+          "provider": "suno",
+          "prompt": "Bright Japanese electro-pop, warm upright piano and soft four-on-the-floor, airy synth pads, gentle male-female unison vocal, BPM 104, key F major, hopeful and calm, clean modern mix, radio-ready, no rap, no distortion"
+        }
+      },
+      "by": "yuki",
+      "note": "初版"
+    },
+    {
+      "at": "2026-11-08T08:14:23Z",
+      "action": "edit",
+      "content_hash": "0d751f6c05ff020eea7e73411714b299a92ef96eabf5a3fe751601f1a1fbef58",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/lyrics/0/lines/-",
+          "value": "新しい一行を足した"
+        }
+      ],
+      "by": "yuki",
+      "note": "歌詞を追加"
+    }
+  ]
 }

@@ -40,11 +40,92 @@
       "type": "object",
       "description": "合成パラメータ。再現性のため記録。",
       "properties": {
-        "provider": { "type": "string", "examples": ["koe", "teai", "local-tts"] },
+        "provider": { "type": "string", "examples": ["koe", "teai", "local-tts", "qwen-tts"] },
         "voice_id": { "type": "string" },
         "speed": { "type": "number", "default": 1.0 },
         "pitch": { "type": "number", "default": 0 },
         "style": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "clone": {
+      "type": "object",
+      "description": "声の再現(ボイスクローン)情報。qwen-tts 等の zero-shot クローンに必要な参照音声・参照テキスト・話者埋め込みを、テキスト(base64)で自己完結して持つ。フォークした人がこの JSON だけで同じ声を再現できることを目的とする。実体をリポジトリに置きたくない場合は blob 参照 (sha256/manifest) を使う。同意 (speaker.consent) が前提。",
+      "properties": {
+        "engine": {
+          "type": "string",
+          "examples": ["qwen-tts", "cosyvoice", "f5-tts", "xtts"],
+          "description": "クローンを作る TTS エンジン。"
+        },
+        "engine_version": { "type": "string" },
+        "method": {
+          "type": "string",
+          "enum": ["zero-shot", "embedding", "finetune", "hybrid"],
+          "description": "zero-shot=参照音声+参照テキストのみ, embedding=話者埋め込み, finetune=微調整済み重み, hybrid=併用。"
+        },
+        "reference": {
+          "type": "object",
+          "description": "参照音声と参照テキスト (zero-shot クローンの入力)。",
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "参照音声で実際に話している内容 (書き起こし)。qwen-tts の ref_text に渡す。"
+            },
+            "lang": { "type": "string", "description": "参照音声の言語 (BCP-47)。" },
+            "audio_b64": {
+              "type": "string",
+              "description": "参照音声の実体を base64 で内包 (小さいクリップ ~3-10秒推奨)。自己完結させる場合に使う。大きい場合は audio_sha256/audio_manifest を参照。"
+            },
+            "audio_format": { "type": "string", "examples": ["wav", "mp3", "m4a", "flac"] },
+            "audio_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$",
+              "description": "参照音声の SHA-256。blob ストア (content-addressed) の実体を指す。"
+            },
+            "audio_manifest": {
+              "type": "string",
+              "description": "チャンク化した参照音声の目録ハッシュ (大きい音声用)。"
+            },
+            "duration_sec": { "type": "number" },
+            "sample_rate": { "type": "integer" }
+          },
+          "additionalProperties": true
+        },
+        "embedding": {
+          "type": "object",
+          "description": "話者埋め込み (embedding 方式)。ベクトルを base64(float32) で持つ。",
+          "properties": {
+            "audio_b64": {
+              "type": "string",
+              "description": "話者埋め込みベクトル (float32 を base64)。"
+            },
+            "dim": { "type": "integer", "description": "次元数。" },
+            "dtype": { "type": "string", "enum": ["float32", "float16", "int8"], "default": "float32" },
+            "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          },
+          "additionalProperties": true
+        },
+        "params": {
+          "type": "object",
+          "description": "クローン合成のパラメータ (エンジン固有)。",
+          "properties": {
+            "temperature": { "type": "number" },
+            "top_p": { "type": "number" },
+            "repetition_penalty": { "type": "number" },
+            "seed": { "type": "integer" },
+            "x_vector_only": { "type": "boolean", "description": "qwen-tts: 埋め込みのみで合成するか (参照テキスト不要)。" }
+          },
+          "additionalProperties": true
+        },
+        "consent_ref": {
+          "type": "string",
+          "description": "このクローンの同意根拠 (speaker.consent_doc への参照)。同意なきクローンは作らない。"
+        },
+        "revocable": {
+          "type": "boolean",
+          "default": true,
+          "description": "話者による撤回が可能か。撤回時はこのクローンを無効化する。"
+        }
       },
       "additionalProperties": true
     },
