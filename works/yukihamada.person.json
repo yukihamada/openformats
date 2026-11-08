@@ -1,0 +1,36 @@
+{
+  "$schema": "https://openformats.dev/person/v1.json",
+  "spec_version": "1.0.0",
+  "kind": "person",
+  "id": "yukihamada",
+  "title": "濱田優貴",
+  "license": "CC-BY-4.0",
+  "display_name": "濱田優貴",
+  "persona_type": "real",
+  "bio": "Sente / KOE / teai を作る。声で人をつなぐ、脱SNS・脱スマホの道具を開発。AIと一緒に音楽・ラジオ・記事を作る。",
+  "roles": [
+    "author",
+    "composer",
+    "director",
+    "developer"
+  ],
+  "links": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/yukihamada"
+    }
+  ],
+  "voices": [
+    "yuki"
+  ],
+  "works": [
+    "yuki-podcast-001",
+    "moco-news-20261009",
+    "hitotsu-saki-e"
+  ],
+  "privacy": {
+    "public_contact": false,
+    "real_identity_linked": true
+  },
+  "content_hash": "e6c1c606023a47e95110115209d0bcc84f434aa05db3dc80ab66a2332d2580b1"
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://openformats.dev/collection/v1.json",
+  "spec_version": "1.0.0",
+  "kind": "collection",
+  "id": "yuki-works-2026",
+  "title": "濱田優貴の作品集 2026",
+  "lang": "ja",
+  "license": "all-rights-reserved",
+  "collection_type": "series",
+  "description": "openformats で公開する実作品。ラジオ・音楽を同じ語彙で束ねる。",
+  "items": [
+    {
+      "ref": "yuki-podcast-001",
+      "kind": "radio",
+      "order": 1,
+      "note": "本人声ポッドキャスト 第1回"
+    },
+    {
+      "ref": "moco-news-20261009",
+      "kind": "radio",
+      "order": 2,
+      "note": "モコの週次AIニュース"
+    },
+    {
+      "ref": "hitotsu-saki-e",
+      "kind": "music",
+      "order": 3,
+      "note": "Senteテーマソング"
+    }
+  ],
+  "content_hash": "167c62a23a2f9b01d79021309a649a0b368a2951cc2d8a569cbe6ea1e904689f"
+}

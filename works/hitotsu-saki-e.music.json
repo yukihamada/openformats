@@ -1,0 +1,212 @@
+{
+  "$schema": "https://openformats.dev/music/v1.json",
+  "spec_version": "1.0.0",
+  "kind": "music",
+  "id": "hitotsu-saki-e",
+  "title": "ひとつ先へ",
+  "lang": "ja",
+  "license": "all-rights-reserved",
+  "created_at": "2026-09-15T00:00:00+09:00",
+  "authors": [
+    {
+      "name": "濱田優貴",
+      "role": "author"
+    },
+    {
+      "name": "Sente / 先手",
+      "role": "performer"
+    }
+  ],
+  "provenance": {
+    "generator": {
+      "name": "Suno",
+      "version": "v4"
+    },
+    "human_involvement": "ai-assisted",
+    "history": [
+      {
+        "at": "2026-09-15T00:00:00+09:00",
+        "action": "create",
+        "by": "yuki",
+        "note": "歌詞・Style完成。Sunoで2テイク生成。"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "private",
+    "embeddable": false,
+    "derivatives": "ask"
+  },
+  "meta": {
+    "genre": [
+      "electro-pop"
+    ],
+    "mood": [
+      "hopeful",
+      "calm"
+    ],
+    "bpm": 104,
+    "key": "F major",
+    "time_signature": "4/4",
+    "duration_sec": 130,
+    "instrumental": false
+  },
+  "sections": [
+    {
+      "name": "intro",
+      "start_sec": 0,
+      "duration_sec": 12
+    },
+    {
+      "name": "verse1",
+      "start_sec": 12,
+      "duration_sec": 22
+    },
+    {
+      "name": "prechorus",
+      "start_sec": 34,
+      "duration_sec": 10
+    },
+    {
+      "name": "chorus",
+      "start_sec": 44,
+      "duration_sec": 22
+    },
+    {
+      "name": "verse2",
+      "start_sec": 66,
+      "duration_sec": 22
+    },
+    {
+      "name": "prechorus2",
+      "start_sec": 88,
+      "duration_sec": 10
+    },
+    {
+      "name": "bridge",
+      "start_sec": 98,
+      "duration_sec": 18
+    },
+    {
+      "name": "outro",
+      "start_sec": 116,
+      "duration_sec": 14
+    }
+  ],
+  "tracks": [
+    {
+      "id": "vox",
+      "instrument": "voice",
+      "role": "lead"
+    },
+    {
+      "id": "piano",
+      "instrument": "piano",
+      "role": "lead"
+    },
+    {
+      "id": "bass",
+      "instrument": "bass",
+      "role": "bass"
+    },
+    {
+      "id": "drums",
+      "instrument": "drums",
+      "role": "drums"
+    }
+  ],
+  "lyrics": [
+    {
+      "section": "intro",
+      "lines": [
+        "（ピアノ、ひとつぶの音）",
+        "朝の光が、画面のむこうで待っている"
+      ],
+      "lang": "ja"
+    },
+    {
+      "section": "verse1",
+      "lines": [
+        "言葉にする前に、もう動いている",
+        "Mac の向こうで、仕事が走っている",
+        "鍵のかかったドアも、予定のすきまも",
+        "あなたの代わりに、確かめておくよ"
+      ],
+      "lang": "ja"
+    },
+    {
+      "section": "prechorus",
+      "lines": [
+        "迷う時間を、あなたに返すために",
+        "ぼくは先に、一歩だけ出る"
+      ],
+      "lang": "ja"
+    },
+    {
+      "section": "chorus",
+      "lines": [
+        "先手、先手、ひとつ先へ",
+        "声をかければ、もう動きだす",
+        "先手、先手、ひとつ先へ",
+        "あなたは、あなたの一日を",
+        "（One move ahead, always）",
+        "言葉が、建つ"
+      ],
+      "lang": "ja"
+    },
+    {
+      "section": "verse2",
+      "lines": [
+        "読みちがえたら、そのまま言って",
+        "消さないでおくよ、途中のことば",
+        "ミュートにしても、待っているから",
+        "話したい時に、また話せばいい"
+      ],
+      "lang": "ja"
+    },
+    {
+      "section": "prechorus2",
+      "lines": [
+        "急がせない、せかさない",
+        "あなたの間で、待っている"
+      ],
+      "lang": "ja"
+    },
+    {
+      "section": "bridge",
+      "lines": [
+        "外に届くことは、いちど立ち止まって",
+        "「これでいい？」と、あなたに訊く",
+        "それ以外は、静かに終わらせる",
+        "それが、先手"
+      ],
+      "lang": "ja"
+    },
+    {
+      "section": "outro",
+      "lines": [
+        "声で、ひとつずつ",
+        "先手、先手",
+        "（ピアノ、ひとつぶの音）"
+      ],
+      "lang": "ja"
+    }
+  ],
+  "generation": {
+    "provider": "suno",
+    "prompt": "Bright Japanese electro-pop, warm upright piano and soft four-on-the-floor, airy synth pads, gentle male-female unison vocal, BPM 104, key F major, hopeful and calm, clean modern mix, radio-ready, no rap, no distortion"
+  },
+  "renditions": [
+    {
+      "format": "m4a",
+      "path": "takes/take1_full.m4a",
+      "sha256": "627961020ae8f9fc416da064fd3977447a6d24d9f93a9ec5bc9afcd35e795dea"
+    },
+    {
+      "format": "m4a",
+      "path": "takes/take2_full.m4a",
+      "sha256": "dc49a5ae41c7eb7264d9f0e563e845c6c3038e29b330f48e09aa20dd82a725ef"
+    }
+  ],
+  "content_hash": "fc694d25c38b4e0c0f6ac6a2c1ed060639e97d816e66203ca88c4b2fb3169799"
+}
