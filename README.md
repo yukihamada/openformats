@@ -144,8 +144,10 @@ python3 tools/of.py hash examples/sample.music.json --write
 
 # 3. 署名 — Ed25519 で content_hash に補助署名し、検証する
 python3 tools/of.py keygen --key-out ~/.openformats/secret.b64
-python3 tools/of.py sign works/my-song.music.json --key ~/.openformats/secret.b64 --signer yuki --write
-python3 tools/of.py verify works/my-song.music.json
+cp works/hitotsu-saki-e.music.json works/try.music.json   # 同じフォルダ内に複製（renditions の相対パスを保つ）
+python3 tools/of.py sign works/try.music.json --key ~/.openformats/secret.b64 --signer yuki --write
+python3 tools/of.py verify works/try.music.json
+rm works/try.music.json
 
 # 4. レンダリング — JSON から媒体を作り、SHA-256 で作品に紐づける
 python3 tools/render.py examples/sample.music.json --kind audio --format wav --dry-run

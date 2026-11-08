@@ -147,5 +147,14 @@
       "kind": "video"
     }
   ],
-  "content_hash": "43ed24b99ca0c9062a53daf8218dc64bf18175292dbde5ac16f53328706de539"
+  "content_hash": "43ed24b99ca0c9062a53daf8218dc64bf18175292dbde5ac16f53328706de539",
+  "signatures": [
+    {
+      "alg": "Ed25519",
+      "public_key": "nRLFpgBPvNxWaffMaXAlaEq/fHYX3m/J8pOjOmi/gsU=",
+      "signature": "5MRxV7zKRC7hMnhalMll/nxPb51oNfQsfHwLK+COHosgus+QUngaah5d8puH6/ibdk9MrBebegEPPClfhylVBA==",
+      "signer": "yukihamada",
+      "signed_at": "2026-11-08T08:41:55Z"
+    }
+  ]
 }

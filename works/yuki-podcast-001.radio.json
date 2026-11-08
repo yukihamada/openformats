@@ -168,5 +168,14 @@
       "kind": "audio"
     }
   ],
-  "content_hash": "b1a4d4e6c5a29fffa6022790e6379d48d895ef9b4131bee61ab2c94ebbfa0c92"
+  "content_hash": "b1a4d4e6c5a29fffa6022790e6379d48d895ef9b4131bee61ab2c94ebbfa0c92",
+  "signatures": [
+    {
+      "alg": "Ed25519",
+      "public_key": "nRLFpgBPvNxWaffMaXAlaEq/fHYX3m/J8pOjOmi/gsU=",
+      "signature": "4/XCZtoeOozATTAEv0nR8CuPlnWzwRo57yB+o5STIisWwWarMqR00Mvw25LumOXhL3QIKMQuR2H0hQ4c3cg+CQ==",
+      "signer": "yukihamada",
+      "signed_at": "2026-11-08T08:41:54Z"
+    }
+  ]
 }

@@ -429,5 +429,14 @@
       "by": "yuki",
       "note": "歌詞を追加"
     }
+  ],
+  "signatures": [
+    {
+      "alg": "Ed25519",
+      "public_key": "nRLFpgBPvNxWaffMaXAlaEq/fHYX3m/J8pOjOmi/gsU=",
+      "signature": "2otTORyp5vdPRlaImHwmGYpb8AItL8OPkNaBdM7RPAmQxxwq/7SwVat9pZQ2gksEe2BGPMtaFOBq1IA3GM1gBg==",
+      "signer": "yukihamada",
+      "signed_at": "2026-11-08T08:41:55Z"
+    }
   ]
 }

@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>openformats — 1 作品 = 1 JSON</title>
 <meta name="description" content="あらゆる創作の最小単位を、人間が読める JSON で定義するオープンな仕様。音楽・ラジオ・本・声・動画・製品・場所を同じ語彙で。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="openformats — あなたの作品は、あなたの手元に残るか？">
+<meta property="og:description" content="1 作品 = 1 JSON。音楽も本もラジオも、テキストで、あなたの Git の中に。実音源つき。">
+<meta property="og:url" content="https://yukihamada.github.io/openformats/">
+<meta property="og:site_name" content="openformats">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="openformats — あなたの作品は、あなたの手元に残るか？">
+<meta name="twitter:description" content="1 作品 = 1 JSON。音楽も本もラジオも、テキストで、あなたの Git の中に。実音源つき。">
 <style>
   :root { --fg:#1a1a1a; --muted:#6b6b6b; --line:#e5e5e5; --bg:#fbfbf9; --accent:#2b5cff; }
   @media (prefers-color-scheme: dark){ :root{ --fg:#e8e8e6; --muted:#9a9a96; --line:#2a2a28; --bg:#141413; --accent:#7aa0ff; } }
@@ -34,6 +42,11 @@
   .work strong { display:block; font-size:15px; }
   .work .meta { display:block; color:var(--muted); font-size:13px; margin:2px 0 10px; }
   .work audio { width:100%; height:40px; }
+  .cta { display:inline-block; background:var(--accent); color:#fff; padding:11px 20px; border-radius:9px;
+    font-weight:600; font-size:15px; margin:4px 8px 4px 0; }
+  .cta:hover { text-decoration:none; filter:brightness(1.08); }
+  .cta.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+  .work .dl { font-size:13px; margin-top:6px; }
   footer { margin-top:72px; padding-top:24px; border-top:1px solid var(--line); color:var(--muted); font-size:14px; }
 </style>
 </head>
@@ -41,6 +54,8 @@
 <main>
   <h1>あなたの作品は、<br>あなたの手元に残るか？</h1>
   <p class="lede">1 作品 = 1 JSON。音楽も、本も、ラジオも、声も、動画も、製品も、場所も。ぜんぶ同じ語彙で、テキストで、あなたの Git の中に。</p>
+
+  <p><a class="cta" href="#start">自分の作品を残す →</a> <a class="cta ghost" href="#works">実作品を聴く</a></p>
 
   <p>openformats は、あらゆる創作の「最小単位」を、人間が読める JSON で定義するオープンな仕様です。特定のアプリに閉じ込められない。100 年後も <code>cat</code> で読める。</p>
 
@@ -75,31 +90,48 @@
   </div>
   <p>すべて <a href="core/envelope/v1.json">core/envelope/v1.json</a> を継承します。</p>
 
+  <h2 id="start">自分の作品を残す（3 行から）</h2>
+  <p>手元の音源（例: <code>my-song.mp3</code>）を残す最短手順です。JSON を 1 枚つくり、音源の指紋（SHA-256）を書き込みます。</p>
+  <pre><code># 1. ひな形をコピー
+cp examples/sample.music.json my-song.music.json
+
+# 2. 中身を自分の作品に書き換え（title / id / renditions[].path を my-song.mp3 に）
+
+# 3. 音源の指紋を計算して JSON に書き込む
+python3 tools/of.py hash my-song.music.json --write
+
+# 4. 音源が本物か検証（実体と SHA-256 を照合）
+python3 tools/of.py verify my-song.music.json</code></pre>
+  <p>これだけで、あなたの作品は「JSON（設計図）」と「音源（本体）」の 2 層で、あなたの Git に残ります。</p>
+
   <h2>はじめる</h2>
   <pre><code>git clone https://github.com/yukihamada/openformats
 cd openformats
 python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
 .venv/bin/python tools/validate.py --all</code></pre>
 
-  <h2>本物の作品 — その場で聴けます</h2>
+  <h2 id="works">本物の作品 — その場で聴けます</h2>
   <p>この仕組みで作った実作品。音源の SHA-256 は JSON の <code>renditions[].sha256</code> と一致します（詳細は <a href="https://github.com/yukihamada/openformats/tree/main/works">works/</a>）。</p>
 
   <div class="work">
     <strong>AIが賢くなるほど、なぜ僕らは忙しいのか？</strong>
     <span class="meta">本人声ポッドキャスト・第1回</span>
     <audio controls preload="none" src="https://cdn.jsdelivr.net/gh/yukihamada/openformats@main/works/episode-001.mp3"></audio>
+    <div class="dl"><a href="https://cdn.jsdelivr.net/gh/yukihamada/openformats@main/works/episode-001.mp3">mp3 をダウンロード</a> ・ <a href="https://github.com/yukihamada/openformats/blob/main/works/yuki-podcast-001.radio.json">JSON</a></div>
   </div>
 
   <div class="work">
     <strong>モコの、ひと息AIニュース</strong>
     <span class="meta">週次AIニュース・3本</span>
     <audio controls preload="none" src="https://cdn.jsdelivr.net/gh/yukihamada/openformats@main/works/Moco-News.wav"></audio>
+    <div class="dl"><a href="https://cdn.jsdelivr.net/gh/yukihamada/openformats@main/works/Moco-News.wav">wav をダウンロード</a> ・ <a href="https://github.com/yukihamada/openformats/blob/main/works/moco-news-20261009.radio.json">JSON</a></div>
   </div>
 
   <div class="work">
     <strong>ひとつ先へ</strong>
     <span class="meta">Sente テーマソング・take1</span>
     <audio controls preload="none" src="https://cdn.jsdelivr.net/gh/yukihamada/openformats@main/works/takes/take1_full.m4a"></audio>
+    <div class="dl"><a href="https://cdn.jsdelivr.net/gh/yukihamada/openformats@main/works/takes/take1_full.m4a">m4a をダウンロード</a> ・ <a href="https://github.com/yukihamada/openformats/blob/main/works/hitotsu-saki-e.music.json">JSON</a></div>
   </div>
 
   <footer>
