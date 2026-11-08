@@ -153,7 +153,7 @@ python3 tools/render.py examples/sample.music.json --kind audio --format wav --d
 使うツールはこの 3 つです。
 
 - [tools/validate.py](tools/validate.py) — JSON Schema (Draft 2020-12) で作品を検証する。`--all` でリポジトリ全体。
-- [tools/of.py](tools/of.py) — ハッシュ・Ed25519 署名・検証・改訂（`revise`）・モデル移行（`migrate`）の CLI。`verify` は `content_hash` と署名・チェーンを検証する（音源実体の照合は下の `shasum` で行う）。
+- [tools/of.py](tools/of.py) — ハッシュ・Ed25519 署名・検証・改訂（`revise`）・モデル移行（`migrate`）の CLI。`verify` は `content_hash`・署名・チェーンに加え、`renditions[].path` の実体存在と SHA-256 一致まで検証する（音源が欠けていれば `ok: false`）。
 - [tools/render.py](tools/render.py) — JSON を媒体化し、実体の SHA-256 で作品に紐づける（`--dry-run` で安全に試せる）。
 
 ---
