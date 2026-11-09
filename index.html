@@ -26,6 +26,21 @@
   "isBasedOn": "https://github.com/yukihamada/openformats"
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "遅筋と速筋 — スポーツと筋肉のエネルギー代謝",
+  "description": "遅筋と速筋の違いと、スポーツ・トレーニングとの関係を本人の声で解説する2分38秒の動画。台本・タイムライン・字幕・声の来歴を openformats の movie.json に記録。",
+  "thumbnailUrl": "https://yukihamada.github.io/openformats/assets/works/muscle-fibers-sports.png",
+  "uploadDate": "2026-11-09T00:00:00+09:00",
+  "duration": "PT2M38S",
+  "contentUrl": "https://yukihamada.github.io/openformats/works/muscle-fibers-sports-2026-11.mp4",
+  "embedUrl": "https://www.youtube.com/embed/f8wm8bD6uC8",
+  "sameAs": "https://youtu.be/f8wm8bD6uC8",
+  "author": {"@type": "Person", "name": "濱田優貴", "url": "https://yukihamada.jp"}
+}
+</script>
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -236,7 +251,7 @@
     <div>
       <h1>あなたの作品は、<br>あなたの手元に残るか？</h1>
       <p class="lede">サービスが終わっても、作品はあなたの Git に残る。音楽・本・ラジオ・声・動画まで、同じ書き方でテキストに。</p>
-      <p><a class="cta" href="#builder">作品の設計図をつくる（無料・ブラウザ内）→</a> <a class="hero-sub" href="#works">実作品を聴く</a></p>
+      <p><a class="cta" href="#builder">作品の設計図をつくる（無料・ブラウザ内）→</a> <a class="hero-sub" href="#works">実作品を聴く・観る</a></p>
     </div>
     <div class="hero-art">
       <img class="light" src="assets/hero.svg" width="960" height="560" fetchpriority="high" alt="1つの作品が1つのJSONになり、音楽・ラジオ・本・声・動画・建築などへ広がる様子のイラスト" decoding="async">
@@ -322,8 +337,8 @@
   </section>
 
   <section id="works" aria-labelledby="h-works">
-    <h2 id="h-works">本物の作品 — その場で聴けます</h2>
-    <p class="sub">この仕組みで作った実作品。音源の SHA-256 は JSON の <code>renditions[].sha256</code> と一致します（詳細は <a href="https://github.com/yukihamada/openformats/tree/main/works">works/</a>）。<br><small>実測ログ（2026-11-08）: 3 作品とも <code>of.py verify</code> → <code>content_hash_match: true</code> / <code>renditions[].ok: true</code>（Moco-News.wav = <code>2ec98f8a…</code>）</small></p>
+    <h2 id="h-works">本物の作品 — その場で聴けます・観られます</h2>
+    <p class="sub">この仕組みで作った実作品。実ファイルの SHA-256 は JSON の <code>renditions[].sha256</code> と一致します（詳細は <a href="https://github.com/yukihamada/openformats/tree/main/works">works/</a>）。<br><small>実測ログ（2026-11-09）: 4 作品とも <code>of.py verify</code> → <code>content_hash_match: true</code> / <code>renditions[].ok: true</code>（解説動画 mp4 = <code>82915572…</code>）</small></p>
     <div class="works">
       <div class="work">
         <div class="cover"><img src="assets/works/moco-news.webp" width="640" height="400" alt="「モコの、ひと息AIニュース」のカバー" loading="lazy" decoding="async"></div>
@@ -353,6 +368,16 @@
           <audio controls preload="none" aria-label="ひとつ先へ（Sente テーマソング take1）" src="works/takes/take1_full.m4a"></audio>
           <div class="asize">M4A ・ 3.5 MB ・ 3:15</div>
           <div class="dl"><a href="works/takes/take1_full.m4a">m4a をダウンロード</a> ・ <a href="works/hitotsu-saki-e.music.json">JSON</a></div>
+        </div>
+      </div>
+      <div class="work">
+        <div class="cover"><img src="assets/works/muscle-fibers-sports.png" width="640" height="400" alt="『遅筋と速筋 — スポーツと筋肉のエネルギー代謝』のサムネイル" loading="lazy" decoding="async"></div>
+        <div class="body">
+          <h3 class="work-title">遅筋と速筋 — スポーツと筋肉のエネルギー代謝</h3>
+          <span class="meta">本人声の解説動画・10場面 ・ mp4 ・ 2分38秒</span>
+          <video controls preload="none" playsinline aria-label="遅筋と速筋 — スポーツと筋肉のエネルギー代謝" src="works/muscle-fibers-sports-2026-11.mp4" poster="assets/works/muscle-fibers-sports.png" style="width:100%;border-radius:8px;margin-top:6px"></video>
+          <div class="asize">MP4 ・ 7.6 MB ・ 2:38</div>
+          <div class="dl"><a href="https://youtu.be/f8wm8bD6uC8">YouTube で観る</a> ・ <a href="works/muscle-fibers-sports-2026-11.mp4">mp4 をダウンロード</a> ・ <a href="works/muscle-fibers-sports-2026-11.movie.json">JSON</a></div>
         </div>
       </div>
     </div>

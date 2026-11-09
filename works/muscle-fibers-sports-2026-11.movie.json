@@ -1,0 +1,422 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/movie/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "movie",
+  "id": "muscle-fibers-sports-2026-11",
+  "title": "遅筋と速筋 — スポーツと筋肉のエネルギー代謝",
+  "lang": "ja",
+  "license": "all-rights-reserved",
+  "created_at": "2026-11-09T00:00:00+09:00",
+  "updated_at": "2026-11-09T00:00:00+09:00",
+  "authors": [
+    {
+      "name": "濱田優貴",
+      "role": "author",
+      "url": "https://teai.io"
+    }
+  ],
+  "provenance": {
+    "generator": {
+      "name": "teai/explainer",
+      "version": "2026.11",
+      "url": "https://teai.io"
+    },
+    "human_involvement": "ai-assisted",
+    "sources": [
+      {
+        "ref": "story.json",
+        "note": "台本(遅筋と速筋・スポーツ版)"
+      },
+      {
+        "ref": "narration.wav",
+        "sha256": "effb583bb9cf84bc83df935ea3b7b3df8694098c83a95a32eb08b3fbfba5feb6",
+        "note": "本人の声(yukihamada)・KOE/teai TTS"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-09T00:00:00+09:00",
+        "action": "create",
+        "by": "yuki",
+        "note": "台本作成"
+      },
+      {
+        "at": "2026-11-09T00:00:00+09:00",
+        "action": "render",
+        "by": "sente",
+        "note": "voice 10場面 → align → render → check (157.7s, 1080p)"
+      },
+      {
+        "at": "2026-11-09T00:00:00+09:00",
+        "action": "publish",
+        "by": "yuki",
+        "note": "YouTube公開 https://youtu.be/f8wm8bD6uC8"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "embeddable": true,
+    "derivatives": "ask"
+  },
+  "format": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration_sec": 157.723,
+    "aspect": "16:9"
+  },
+  "timeline": [
+    {
+      "id": "video",
+      "type": "video",
+      "clips": [
+        {
+          "start_sec": 0.0,
+          "duration_sec": 13.758,
+          "src": "scene01",
+          "transition": "fade",
+          "transition_sec": 0.3
+        },
+        {
+          "start_sec": 14.358,
+          "duration_sec": 12.955,
+          "src": "scene02",
+          "transition": "fade",
+          "transition_sec": 0.3
+        },
+        {
+          "start_sec": 27.912,
+          "duration_sec": 13.387,
+          "src": "scene03",
+          "transition": "fade",
+          "transition_sec": 0.3
+        },
+        {
+          "start_sec": 41.9,
+          "duration_sec": 9.601,
+          "src": "scene04",
+          "transition": "fade",
+          "transition_sec": 0.3
+        },
+        {
+          "start_sec": 52.101,
+          "duration_sec": 12.278,
+          "src": "scene05",
+          "transition": "fade",
+          "transition_sec": 0.3
+        },
+        {
+          "start_sec": 64.979,
+          "duration_sec": 15.505,
+          "src": "scene06",
+          "transition": "fade",
+          "transition_sec": 0.3
+        },
+        {
+          "start_sec": 81.084,
+          "duration_sec": 15.577,
+          "src": "scene07",
+          "transition": "fade",
+          "transition_sec": 0.3
+        },
+        {
+          "start_sec": 97.261,
+          "duration_sec": 17.161,
+          "src": "scene08",
+          "transition": "fade",
+          "transition_sec": 0.3
+        },
+        {
+          "start_sec": 115.022,
+          "duration_sec": 19.619,
+          "src": "scene09",
+          "transition": "fade",
+          "transition_sec": 0.3
+        },
+        {
+          "start_sec": 135.241,
+          "duration_sec": 21.882,
+          "src": "scene10",
+          "transition": "fade",
+          "transition_sec": 0.3
+        }
+      ]
+    },
+    {
+      "id": "narration",
+      "type": "audio",
+      "clips": [
+        {
+          "start_sec": 0.0,
+          "duration_sec": 157.723,
+          "src": "narration.wav"
+        }
+      ]
+    },
+    {
+      "id": "subs",
+      "type": "subtitle",
+      "clips": [
+        {
+          "start_sec": 0.0,
+          "duration_sec": 5.324,
+          "text": "走る、投げる、持ち上げる。スポーツの動きは、すべて筋肉が生み出しています。"
+        },
+        {
+          "start_sec": 5.324,
+          "duration_sec": 4.343,
+          "text": "でも、その力の出し方は筋肉の種類でまったく違います。"
+        },
+        {
+          "start_sec": 9.667,
+          "duration_sec": 4.091,
+          "text": "今日は、遅筋と速筋、そしてスポーツとの関係を見ていきます。"
+        },
+        {
+          "start_sec": 14.358,
+          "duration_sec": 3.403,
+          "text": "筋肉には、遅筋と速筋の2種類があります。"
+        },
+        {
+          "start_sec": 17.761,
+          "duration_sec": 4.162,
+          "text": "遅筋は、脂肪と糖を酸素でゆっくり燃やす持久型です。"
+        },
+        {
+          "start_sec": 21.923,
+          "duration_sec": 5.389,
+          "text": "速筋は、酸素を使わずに糖を素早く分解して、強い力を出す瞬発型です。"
+        },
+        {
+          "start_sec": 27.912,
+          "duration_sec": 4.315,
+          "text": "食事で摂った糖は、血液に乗って全身へ運ばれます。"
+        },
+        {
+          "start_sec": 32.228,
+          "duration_sec": 3.869,
+          "text": "遅筋は、酸素を使って脂肪と糖をゆっくり燃やします。"
+        },
+        {
+          "start_sec": 36.097,
+          "duration_sec": 5.203,
+          "text": "速筋は、酸素を使わずに糖を一気に分解して、短時間に大きな力を出します。"
+        },
+        {
+          "start_sec": 41.9,
+          "duration_sec": 5.523,
+          "text": "短距離走や重量挙げのように、一瞬で大きな力を出す競技では、速筋が主役になります。"
+        },
+        {
+          "start_sec": 47.423,
+          "duration_sec": 4.078,
+          "text": "マラソンのように、長く動き続ける競技では、遅筋が主役になります。"
+        },
+        {
+          "start_sec": 52.101,
+          "duration_sec": 3.909,
+          "text": "短距離選手は、速筋の割合が高い傾向があります。"
+        },
+        {
+          "start_sec": 56.01,
+          "duration_sec": 4.771,
+          "text": "マラソン選手は、遅筋の割合が高く、疲れにくい体を持っています。"
+        },
+        {
+          "start_sec": 60.781,
+          "duration_sec": 3.598,
+          "text": "これは生まれつきだけでなく、日々のトレーニングでも変わります。"
+        },
+        {
+          "start_sec": 64.979,
+          "duration_sec": 5.323,
+          "text": "速筋は、酸素を使わずに糖を分解して、素早くエネルギーを作ります。"
+        },
+        {
+          "start_sec": 70.302,
+          "duration_sec": 5.755,
+          "text": "この方法は速い反面、水素イオンなどがたまり、筋肉が酸性に傾きます。"
+        },
+        {
+          "start_sec": 76.057,
+          "duration_sec": 4.427,
+          "text": "酸性に傾くと力が出にくくなり、これが疲労感につながります。"
+        },
+        {
+          "start_sec": 81.084,
+          "duration_sec": 5.921,
+          "text": "持久系のトレーニングを続けると、遅筋のミトコンドリア（細胞のエネルギー工場）が増えます。"
+        },
+        {
+          "start_sec": 87.005,
+          "duration_sec": 4.399,
+          "text": "ミトコンドリアが増えると、酸素を使って長く動けるようになります。"
+        },
+        {
+          "start_sec": 91.404,
+          "duration_sec": 5.256,
+          "text": "高強度のトレーニングでは、速筋が動員され、強い力を出す能力が鍛えられます。"
+        },
+        {
+          "start_sec": 97.261,
+          "duration_sec": 7.493,
+          "text": "呼吸を整えると、血液中の二酸化炭素が適度に保たれ、ヘモグロビンから酸素が筋肉に届きやすくなります。"
+        },
+        {
+          "start_sec": 104.754,
+          "duration_sec": 2.82,
+          "text": "ウォームアップで体温と血流を上げると、筋肉が動きやすくなります。"
+        },
+        {
+          "start_sec": 107.574,
+          "duration_sec": 6.848,
+          "text": "インターバル走のように強度を上げ下げすると、遅筋と速筋の両方を鍛えられます。"
+        },
+        {
+          "start_sec": 115.022,
+          "duration_sec": 7.383,
+          "text": "リップロールで呼気をゆっくり延ばすと、副交感神経が優位になり、リラックス効果が得られます。"
+        },
+        {
+          "start_sec": 122.405,
+          "duration_sec": 7.549,
+          "text": "運動後の柔軟ストレッチは、気持ちよく伸びる範囲でゆっくり行います。痛みを感じたらすぐに緩めてください。"
+        },
+        {
+          "start_sec": 129.954,
+          "duration_sec": 4.686,
+          "text": "呼気を吸気の2倍程度に延ばすと、副交感神経が優位になる目安です。"
+        },
+        {
+          "start_sec": 135.241,
+          "duration_sec": 4.335,
+          "text": "遅筋は、脂肪と糖を酸素でゆっくり燃やす持久型の筋肉。"
+        },
+        {
+          "start_sec": 139.576,
+          "duration_sec": 3.913,
+          "text": "速筋は、酸素を使わずに糖を素早く分解する瞬発型の筋肉。"
+        },
+        {
+          "start_sec": 143.489,
+          "duration_sec": 7.312,
+          "text": "競技やトレーニングの内容によって、使われる筋肉と鍛えられ方が変わります。"
+        },
+        {
+          "start_sec": 150.801,
+          "duration_sec": 6.323,
+          "text": "呼吸を整え、ウォームアップとストレッチを組み合わせることが、スポーツのパフォーマンスを支える鍵です。"
+        }
+      ]
+    }
+  ],
+  "renditions": [
+    {
+      "format": "mp4",
+      "path": "muscle-fibers-sports-2026-11.mp4",
+      "sha256": "829155722ca6b231930e75f65d95ec46c6b8dc4f15c48eee3409b67657852ba4",
+      "duration_sec": 157.723,
+      "kind": "video"
+    }
+  ],
+  "scenes": [
+    {
+      "type": "title",
+      "title": "",
+      "lines": [
+        "走る、投げる、持ち上げる。スポーツの動きは、すべて筋肉が生み出しています。",
+        "でも、その力の出し方は筋肉の種類でまったく違います。",
+        "今日は、遅筋と速筋、そしてスポーツとの関係を見ていきます。"
+      ]
+    },
+    {
+      "type": "compare",
+      "title": "2種類の筋肉",
+      "lines": [
+        "筋肉には、遅筋と速筋の2種類があります。",
+        "遅筋は、脂肪と糖を酸素でゆっくり燃やす持久型です。",
+        "速筋は、酸素を使わずに糖を素早く分解して、強い力を出す瞬発型です。"
+      ]
+    },
+    {
+      "type": "steps",
+      "title": "エネルギーの流れ",
+      "lines": [
+        "食事で摂った糖は、血液に乗って全身へ運ばれます。",
+        "遅筋は、酸素を使って脂肪と糖をゆっくり燃やします。",
+        "速筋は、酸素を使わずに糖を一気に分解して、短時間に大きな力を出します。"
+      ]
+    },
+    {
+      "type": "big",
+      "title": "競技で使う筋肉は違う",
+      "lines": [
+        "短距離走や重量挙げのように、一瞬で大きな力を出す競技では、速筋が主役になります。",
+        "マラソンのように、長く動き続ける競技では、遅筋が主役になります。"
+      ]
+    },
+    {
+      "type": "bars",
+      "title": "競技ごとの筋肉バランス",
+      "lines": [
+        "短距離選手は、速筋の割合が高い傾向があります。",
+        "マラソン選手は、遅筋の割合が高く、疲れにくい体を持っています。",
+        "これは生まれつきだけでなく、日々のトレーニングでも変わります。"
+      ]
+    },
+    {
+      "type": "steps",
+      "title": "速筋が疲れやすい理由",
+      "lines": [
+        "速筋は、酸素を使わずに糖を分解して、素早くエネルギーを作ります。",
+        "この方法は速い反面、水素イオンなどがたまり、筋肉が酸性に傾きます。",
+        "酸性に傾くと力が出にくくなり、これが疲労感につながります。"
+      ]
+    },
+    {
+      "type": "steps",
+      "title": "トレーニングで筋肉は変わる",
+      "lines": [
+        "持久系のトレーニングを続けると、遅筋のミトコンドリア（細胞のエネルギー工場）が増えます。",
+        "ミトコンドリアが増えると、酸素を使って長く動けるようになります。",
+        "高強度のトレーニングでは、速筋が動員され、強い力を出す能力が鍛えられます。"
+      ]
+    },
+    {
+      "type": "steps",
+      "title": "呼吸とウォームアップ",
+      "lines": [
+        "呼吸を整えると、血液中の二酸化炭素が適度に保たれ、ヘモグロビンから酸素が筋肉に届きやすくなります。",
+        "ウォームアップで体温と血流を上げると、筋肉が動きやすくなります。",
+        "インターバル走のように強度を上げ下げすると、遅筋と速筋の両方を鍛えられます。"
+      ]
+    },
+    {
+      "type": "steps",
+      "title": "リップロール＋柔軟ストレッチ",
+      "lines": [
+        "リップロールで呼気をゆっくり延ばすと、副交感神経が優位になり、リラックス効果が得られます。",
+        "運動後の柔軟ストレッチは、気持ちよく伸びる範囲でゆっくり行います。痛みを感じたらすぐに緩めてください。",
+        "呼気を吸気の2倍程度に延ばすと、副交感神経が優位になる目安です。"
+      ]
+    },
+    {
+      "type": "statements",
+      "title": "まとめ",
+      "lines": [
+        "遅筋は、脂肪と糖を酸素でゆっくり燃やす持久型の筋肉。",
+        "速筋は、酸素を使わずに糖を素早く分解する瞬発型の筋肉。",
+        "競技やトレーニングの内容によって、使われる筋肉と鍛えられ方が変わります。",
+        "呼吸を整え、ウォームアップとストレッチを組み合わせることが、スポーツのパフォーマンスを支える鍵です。"
+      ]
+    }
+  ],
+  "content_hash": "5fd6295419e6c757b65d0ec855821ec6553b65a0e2f6ede2b8542ba124427113",
+  "youtube": {
+    "url": "https://youtu.be/f8wm8bD6uC8",
+    "video_id": "f8wm8bD6uC8",
+    "channel": "https://www.youtube.com/@hamadao",
+    "published_at": "2026-11-09T00:00:00+09:00"
+  }
+}
