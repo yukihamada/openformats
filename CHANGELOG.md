@@ -5,6 +5,15 @@
 ## [Unreleased]
 
 ### Added
+- `works/` に全 16 kind の実データを充足。未収録だった 3 kind を追加:
+  - `works/bim-deterministic-scoring-2026-11.article.json` — teai-blog の実記事
+    (bim.house 決定論採点・442 件実測・方式比較) を 71 ブロックで収録、出典 2 件。
+  - `works/bim-house-iso-day.image.json` + `works/bim-house-iso-day.png` —
+    bim.house の住宅 BIM アイソメ日景 (1201×728)。実体を同梱し SHA-256 一致。
+  - `works/macbook-pro-m5-max-2026.device.json` — 制作端末の実測スペック
+    (`system_profiler` / `sw_vers`)。
+- `works/collection-2026.collection.json` / `works/yukihamada.person.json` に
+  動画・記事・画像を追加。
 - `bim/v1.json` を bim.house の完全スキーマ (`https://bim.house/spec/v1.json`) と統合。
   `project` (applicant / designer / supervisor / contractor / road_access /
   drainage / ground_investigation / permit / rooms / mep 等)、`elements`
