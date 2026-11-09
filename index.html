@@ -338,7 +338,7 @@
 
   <section id="works" aria-labelledby="h-works">
     <h2 id="h-works">本物の作品 — その場で聴けます・観られます</h2>
-    <p class="sub">この仕組みで作った実作品。実ファイルの SHA-256 は JSON の <code>renditions[].sha256</code> と一致します（詳細は <a href="https://github.com/yukihamada/openformats/tree/main/works">works/</a>）。<br><small>実測ログ（2026-11-09）: 4 作品とも <code>of.py verify</code> → <code>content_hash_match: true</code> / <code>renditions[].ok: true</code>（解説動画 mp4 = <code>82915572…</code>）</small></p>
+    <p class="sub">この仕組みで作った実作品。実ファイルの SHA-256 は JSON の <code>renditions[].sha256</code> と一致します（詳細は <a href="https://github.com/yukihamada/openformats/tree/main/works">works/</a>）。<br><small>実測ログ（2026-11-09）: 7 作品とも <code>of.py verify</code> → <code>content_hash_match: true</code> / <code>renditions[].ok: true</code>（解説動画 mp4 = <code>82915572…</code>、画像 png = <code>54b83b15…</code>）</small></p>
     <div class="works">
       <div class="work">
         <div class="cover"><img src="assets/works/moco-news.webp" width="640" height="400" alt="「モコの、ひと息AIニュース」のカバー" loading="lazy" decoding="async"></div>
@@ -378,6 +378,34 @@
           <video controls preload="none" playsinline aria-label="遅筋と速筋 — スポーツと筋肉のエネルギー代謝" src="works/muscle-fibers-sports-2026-11.mp4" poster="assets/works/muscle-fibers-sports.png" style="width:100%;border-radius:8px;margin-top:6px"></video>
           <div class="asize">MP4 ・ 7.6 MB ・ 2:38</div>
           <div class="dl"><a href="https://youtu.be/f8wm8bD6uC8">YouTube で観る</a> ・ <a href="works/muscle-fibers-sports-2026-11.mp4">mp4 をダウンロード</a> ・ <a href="works/muscle-fibers-sports-2026-11.movie.json">JSON</a></div>
+        </div>
+      </div>
+      <div class="work">
+        <div class="cover placeholder"><svg aria-hidden="true"><use href="assets/icons.svg#i-image"/></svg></div>
+        <div class="body">
+          <h3 class="work-title">bim.house — 住宅BIMのアイソメ日景</h3>
+          <span class="meta">画像・1201×728 PNG ・ 太陽光パネル付き住宅</span>
+          <img src="works/bim-house-iso-day.png" width="1201" height="728" alt="白い箱型の住宅を斜め上から見たアイソメ図。屋根に太陽光パネル、庭に植栽とアプローチが見える。" loading="lazy" decoding="async" style="width:100%;border-radius:8px;margin-top:6px">
+          <div class="asize">PNG ・ 248 KB ・ 1201×728</div>
+          <div class="dl"><a href="works/bim-house-iso-day.png">png をダウンロード</a> ・ <a href="works/bim-house-iso-day.image.json">JSON</a></div>
+        </div>
+      </div>
+      <div class="work">
+        <div class="cover placeholder"><svg aria-hidden="true"><use href="assets/icons.svg#i-article"/></svg></div>
+        <div class="body">
+          <h3 class="work-title">LLMに「何点ですか」と聞くのをやめた</h3>
+          <span class="meta">記事・建築設計AIの決定論採点 ・ 442件の実測 ・ 方式比較 $0.675</span>
+          <div class="asize">article ・ 71 ブロック ・ 表4・コード2</div>
+          <div class="dl"><a href="works/bim-deterministic-scoring-2026-11.article.json">JSON を読む</a></div>
+        </div>
+      </div>
+      <div class="work">
+        <div class="cover placeholder"><svg aria-hidden="true"><use href="assets/icons.svg#i-device"/></svg></div>
+        <div class="body">
+          <h3 class="work-title">MacBook Pro (M5 Max, 2026)</h3>
+          <span class="meta">端末・制作機材 ・ 18コア / 128GB / Metal 4</span>
+          <div class="asize">device ・ macOS 26.4.1 ・ 実測スペック</div>
+          <div class="dl"><a href="works/macbook-pro-m5-max-2026.device.json">JSON を読む</a></div>
         </div>
       </div>
     </div>

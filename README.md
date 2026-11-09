@@ -25,7 +25,7 @@
 
 これだけ。`kind` を変えれば、ラジオにも、本にも、動画にもなります。同じ道具（検証・ハッシュ・署名・レンダリング）が、ぜんぶの作品にそのまま効きます。
 
-> この README の最後に、**この仕組みで作った 4 つの本物の作品**があります。音源・動画も同梱しているので、そのまま聴けます・観られます。でも、なぜこの設計なのかは、順番に読むと腹に落ちます。
+> この README の最後に、**この仕組みで作った 7 つの本物の作品**があります。音源・動画・画像も同梱しているので、そのまま聴けます・観られます。でも、なぜこの設計なのかは、順番に読むと腹に落ちます。
 
 ---
 
@@ -60,7 +60,7 @@ shasum -a 256 works/takes/take1_full.m4a
 
 ## 実際の作品（この仕組みで作った・音源も同梱）
 
-4 作品とも、**実ファイルそのもの**をこのリポジトリの `works/` に入れてあります。JSON と実ファイルの SHA-256 は一致します。ダウンロードして、そのまま聴けます・観られます。
+7 作品とも、**実ファイルそのもの**をこのリポジトリの `works/` に入れてあります。JSON と実ファイルの SHA-256 は一致します。ダウンロードして、そのまま聴けます・観られます。
 
 | 作品 | 種類 | 中身 | 実ファイル | JSON |
 |---|---|---|---|---|
@@ -68,8 +68,11 @@ shasum -a 256 works/takes/take1_full.m4a
 | **モコの、ひと息AIニュース** | ラジオ | 週次AIニュース3本・5章・79秒 | [wav](works/Moco-News.wav) / [mp4](works/Moco-News.mp4) | [radio.json](works/moco-news-20261009.radio.json) |
 | **ひとつ先へ** | 音楽 | Senteテーマソング・BPM104・F major・2テイク | [take1](works/takes/take1_full.m4a) / [take2](works/takes/take2_full.m4a) | [music.json](works/hitotsu-saki-e.music.json) |
 | **遅筋と速筋 — スポーツと筋肉のエネルギー代謝** | 動画 | 本人声の解説動画・10場面・2分38秒・字幕付き | [mp4](works/muscle-fibers-sports-2026-11.mp4) ・ [YouTube](https://youtu.be/f8wm8bD6uC8) | [movie.json](works/muscle-fibers-sports-2026-11.movie.json) |
+| **LLMに「何点ですか」と聞くのをやめた** | 記事 | 建築設計AIの決定論採点・442件の実測・方式比較 | —（本文は JSON 内） | [article.json](works/bim-deterministic-scoring-2026-11.article.json) |
+| **bim.house — 住宅BIMのアイソメ日景** | 画像 | 1201×728 PNG・太陽光パネル付き住宅 | [png](works/bim-house-iso-day.png) | [image.json](works/bim-house-iso-day.image.json) |
+| **MacBook Pro (M5 Max, 2026)** | 端末 | 制作端末の実測スペック（18コア/128GB/Metal 4） | —（`system_profiler` 出力） | [device.json](works/macbook-pro-m5-max-2026.device.json) |
 
-JSON には音源の SHA-256 と制作履歴が入り、出典はラジオ 2 作に付いています。あわせて作者情報（[yukihamada.person.json](works/yukihamada.person.json)）と作品集（[collection-2026.collection.json](works/collection-2026.collection.json)）も同梱しています。設計根拠は [works/RESEARCH.md](works/RESEARCH.md)。
+JSON には音源の SHA-256 と制作履歴が入り、出典はラジオ 2 作と記事 1 作に付いています。あわせて作者情報（[yukihamada.person.json](works/yukihamada.person.json)）と作品集（[collection-2026.collection.json](works/collection-2026.collection.json)）も同梱しています。設計根拠は [works/RESEARCH.md](works/RESEARCH.md)。
 
 ### 音源が本物か、自分で確かめる
 
@@ -116,11 +119,13 @@ python3 tools/validate.py radio/v1.json works/yuki-podcast-001.radio.json
 | [place/v1.json](place/v1.json) | place | 場所・会場・POI | land/event/media |
 | [product/v1.json](product/v1.json) | product | 製品・サービス・ブランド | カタログ/作品連携 |
 
+**16 種類すべてに実データが入っています。** 内訳: music 2・radio 3・product 61、ほか article / bim / book / collection / country / device / event / image / land / movie / person / place / voice が各 1 件以上（`python3 tools/validate.py --all` で全件 PASS）。
+
 ---
 
 ## 収録データ
 
-- [works/](works/) — 実作品（ポッドキャスト・ラジオ・楽曲・解説動画・作者・作品集）。**音源・動画ファイル本体も同梱**、JSON の SHA-256 と一致。
+- [works/](works/) — 実作品（ポッドキャスト・ラジオ・楽曲・解説動画・記事・画像・端末・作者・作品集）。**音源・動画・画像ファイル本体も同梱**、JSON の SHA-256 と一致。
 - [products/](products/) — Enabler の製品カタログ 61 件 (`*.product.json`)。状態は確認時点を `status` に記録し、未確認は `unknown`。
 - [events/](events/) — イベント（[zamna-hawaii-2026.event.json](events/zamna-hawaii-2026.event.json) 等）。
 - [places/](places/) — 会場・POI（[echoa-ridge.place.json](places/echoa-ridge.place.json) 等）。
