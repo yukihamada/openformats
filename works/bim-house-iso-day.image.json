@@ -1,0 +1,84 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/image/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "image",
+  "id": "bim-house-iso-day",
+  "title": "bim.house — 住宅BIMのアイソメ日景",
+  "lang": "ja",
+  "license": "all-rights-reserved",
+  "created_at": "2026-09-30T00:00:00+09:00",
+  "authors": [
+    {
+      "name": "濱田優貴",
+      "role": "author",
+      "url": "https://bim.house"
+    }
+  ],
+  "provenance": {
+    "generator": {
+      "name": "bim.house",
+      "url": "https://bim.house"
+    },
+    "human_involvement": "ai-assisted",
+    "history": [
+      {
+        "at": "2026-09-30T00:00:00+09:00",
+        "action": "create",
+        "by": "yuki",
+        "note": "bim.house で生成した住宅BIMのアイソメ日景。生成スクリプトは現存せず、PNG のみ残存。"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "embeddable": true,
+    "derivatives": "ask"
+  },
+  "source": {
+    "path": "bim-house-iso-day.png",
+    "format": "png",
+    "width": 1201,
+    "height": 728,
+    "color_space": "sRGB",
+    "sha256": "54b83b15a2ecc6fd869bf7281c279526268a8890d785259a781fbbd61582e1d9"
+  },
+  "composition": {
+    "alt": "白い箱型の住宅を斜め上から見たアイソメ図。屋根に太陽光パネル、庭に植栽とアプローチが見える。",
+    "subject": [
+      "住宅BIM",
+      "アイソメ図",
+      "太陽光パネル",
+      "外構"
+    ],
+    "tags": [
+      "bim",
+      "architecture",
+      "iso",
+      "render"
+    ]
+  },
+  "rights": {
+    "subject_release": false,
+    "model_release": false,
+    "ai_generated": true
+  },
+  "renditions": [
+    {
+      "kind": "image",
+      "format": "png",
+      "path": "bim-house-iso-day.png",
+      "sha256": "54b83b15a2ecc6fd869bf7281c279526268a8890d785259a781fbbd61582e1d9",
+      "bytes": 254164
+    }
+  ],
+  "content_hash": "1be76fc00317d05e4d02353ef1fdac5dab0a94a4ddd93350206fac9d4ac0e238",
+  "signatures": [
+    {
+      "alg": "Ed25519",
+      "public_key": "f/NPZdENXk1dAVXqB+QWn1mIx6LUdhoJWuYWA4hnTPY=",
+      "signature": "n5DMTi6pAyVT0sBPLTj4DzIEWWpPsC1Wr2d3UIxujD4+jMglrduP9iqeTW0YG0rNZARSuK1MhmUE5jZu2dX+Cg==",
+      "signer": "openformats-maintainer",
+      "signed_at": "2026-11-09T12:47:00Z"
+    }
+  ]
+}

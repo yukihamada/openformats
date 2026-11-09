@@ -1,0 +1,130 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/device/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "device",
+  "id": "macbook-pro-m5-max-2026",
+  "title": "MacBook Pro (M5 Max, 2026)",
+  "lang": "ja",
+  "license": "CC0-1.0",
+  "created_at": "2026-11-09T00:00:00+09:00",
+  "authors": [
+    {
+      "name": "濱田優貴",
+      "role": "author"
+    }
+  ],
+  "provenance": {
+    "generator": {
+      "name": "system_profiler",
+      "version": "macOS 26.4.1 (25E253)"
+    },
+    "human_involvement": "human",
+    "history": [
+      {
+        "at": "2026-11-09T00:00:00+09:00",
+        "action": "create",
+        "by": "yuki",
+        "note": "制作端末の実測スペックを記録。値は system_profiler / sw_vers の出力。"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "embeddable": true,
+    "derivatives": "allow"
+  },
+  "device_class": "computer",
+  "manufacturer": "Apple",
+  "model": "MacBook Pro (Mac17,7, Z1MN001A7J/A)",
+  "firmware": "macOS 26.4.1 (25E253)",
+  "capabilities": [
+    {
+      "name": "capture",
+      "params": {
+        "channels": 1,
+        "sample_rate": 48000
+      },
+      "reversible": true,
+      "safety": "safe"
+    },
+    {
+      "name": "play",
+      "params": {
+        "channels": 2,
+        "sample_rate": 48000
+      },
+      "reversible": true,
+      "safety": "safe"
+    },
+    {
+      "name": "display",
+      "params": {
+        "width": 3024,
+        "height": 1964,
+        "type": "Liquid Retina XDR"
+      },
+      "reversible": true,
+      "safety": "safe"
+    },
+    {
+      "name": "compute",
+      "params": {
+        "cpu_cores": 18,
+        "gpu_cores": 40,
+        "memory_gb": 128,
+        "metal": "Metal 4"
+      },
+      "reversible": true,
+      "safety": "safe"
+    }
+  ],
+  "connectivity": {
+    "protocols": [
+      "usb4",
+      "thunderbolt5",
+      "wifi",
+      "bluetooth"
+    ],
+    "local_first": true
+  },
+  "media_io": {
+    "input": [
+      {
+        "kind": "audio",
+        "channels": 1,
+        "sample_rate": 48000,
+        "device": "MacBook Proのマイク"
+      }
+    ],
+    "output": [
+      {
+        "kind": "audio",
+        "channels": 2,
+        "sample_rate": 48000,
+        "device": "MacBook Proのスピーカー"
+      },
+      {
+        "kind": "video",
+        "width": 3024,
+        "height": 1964,
+        "device": "Color LCD"
+      }
+    ]
+  },
+  "state": {
+    "os": "macOS 26.4.1",
+    "build": "25E253",
+    "chip": "Apple M5 Max",
+    "memory_gb": 128
+  },
+  "content_hash": "a4c0fe115b19e498ba47bce0d4f710b7c33b2c756280a8796ae81fe90dfbe7ce",
+  "signatures": [
+    {
+      "alg": "Ed25519",
+      "public_key": "f/NPZdENXk1dAVXqB+QWn1mIx6LUdhoJWuYWA4hnTPY=",
+      "signature": "/ktwVvfVi1/HR9/AXDktkG++IXB5F6e60dMZ6cgR7KzaIIoIy8NMhXDJr1mZlr4fYNOe6gGtstTJa8KzH58XAw==",
+      "signer": "openformats-maintainer",
+      "signed_at": "2026-11-09T12:47:00Z"
+    }
+  ]
+}

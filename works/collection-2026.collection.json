@@ -7,7 +7,7 @@
   "lang": "ja",
   "license": "all-rights-reserved",
   "collection_type": "series",
-  "description": "openformats で公開する実作品。ラジオ・音楽を同じ語彙で束ねる。",
+  "description": "openformats で公開する実作品。ラジオ・音楽・動画・記事・画像を同じ語彙で束ねる。",
   "items": [
     {
       "ref": "yuki-podcast-001",
@@ -26,7 +26,34 @@
       "kind": "music",
       "order": 3,
       "note": "Senteテーマソング"
+    },
+    {
+      "ref": "muscle-fibers-sports-2026-11",
+      "kind": "movie",
+      "order": 4,
+      "note": "本人声の解説動画"
+    },
+    {
+      "ref": "bim-deterministic-scoring-2026-11",
+      "kind": "article",
+      "order": 5,
+      "note": "建築設計AIの決定論採点の実測記事"
+    },
+    {
+      "ref": "bim-house-iso-day",
+      "kind": "image",
+      "order": 6,
+      "note": "bim.house の住宅BIMアイソメ日景"
     }
   ],
-  "content_hash": "2b74c6232f55c0c4e2812c1a2ddb02b476caa2bf63d42f185ff9fd1a49887303"
+  "content_hash": "525db6b4f5644a3716568a6d6f6f7da1766830228d9dcc7d6d7bba3e683e4d84",
+  "signatures": [
+    {
+      "alg": "Ed25519",
+      "public_key": "f/NPZdENXk1dAVXqB+QWn1mIx6LUdhoJWuYWA4hnTPY=",
+      "signature": "sqN1IAHldLcY7tpN532v88sO6mBAJMOp6GafSKz3o7jocADodTgmQsyo3sm5S7NxI0oC8KYv5lNA4ClGxI/xAQ==",
+      "signer": "openformats-maintainer",
+      "signed_at": "2026-11-09T12:48:20Z"
+    }
+  ]
 }

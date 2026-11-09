@@ -26,11 +26,23 @@
   "works": [
     "yuki-podcast-001",
     "moco-news-20261009",
-    "hitotsu-saki-e"
+    "hitotsu-saki-e",
+    "muscle-fibers-sports-2026-11",
+    "bim-deterministic-scoring-2026-11",
+    "bim-house-iso-day"
   ],
   "privacy": {
     "public_contact": false,
     "real_identity_linked": true
   },
-  "content_hash": "7c029cb1df40d80b6f66eb2f8cee97a33e6e461616ecee8374ca2ee7f06ff89f"
+  "content_hash": "96923d8a6bcf5ee10a297fc15ef9af7bffa4f8c3fd32fb6f8c412228d91cac87",
+  "signatures": [
+    {
+      "alg": "Ed25519",
+      "public_key": "f/NPZdENXk1dAVXqB+QWn1mIx6LUdhoJWuYWA4hnTPY=",
+      "signature": "E5xUsF7lrc+T76jEtkkcCTyCCdUMEILBYlkViladt90JISBdo3kRno6VzAVmO8Sts1S6Lr33TMYhr5TGF6YIAg==",
+      "signer": "openformats-maintainer",
+      "signed_at": "2026-11-09T12:48:24Z"
+    }
+  ]
 }
