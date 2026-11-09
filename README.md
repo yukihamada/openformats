@@ -25,7 +25,7 @@
 
 これだけ。`kind` を変えれば、ラジオにも、本にも、動画にもなります。同じ道具（検証・ハッシュ・署名・レンダリング）が、ぜんぶの作品にそのまま効きます。
 
-> この README の最後に、**この仕組みで作った 3 つの本物の作品**があります。音源も同梱しているので、そのまま聴けます。でも、なぜこの設計なのかは、順番に読むと腹に落ちます。
+> この README の最後に、**この仕組みで作った 4 つの本物の作品**があります。音源・動画も同梱しているので、そのまま聴けます・観られます。でも、なぜこの設計なのかは、順番に読むと腹に落ちます。
 
 ---
 
@@ -60,13 +60,14 @@ shasum -a 256 works/takes/take1_full.m4a
 
 ## 実際の作品（この仕組みで作った・音源も同梱）
 
-3 作品とも、**音源ファイルそのもの**をこのリポジトリの `works/` に入れてあります。JSON と音源の SHA-256 は一致します。ダウンロードして、そのまま聴けます。
+4 作品とも、**実ファイルそのもの**をこのリポジトリの `works/` に入れてあります。JSON と実ファイルの SHA-256 は一致します。ダウンロードして、そのまま聴けます・観られます。
 
-| 作品 | 種類 | 中身 | 音源 | JSON |
+| 作品 | 種類 | 中身 | 実ファイル | JSON |
 |---|---|---|---|---|
 | **AIが賢くなるほど、なぜ僕らは忙しいのか？** | ラジオ | 本人声ポッドキャスト第1回・8分58秒・出典3本 | [mp3](works/episode-001.mp3) / [m4a](works/episode-001.m4a) ・ [YouTube](https://youtu.be/EGPYDJIyQ4U) | [radio.json](works/yuki-podcast-001.radio.json) |
 | **モコの、ひと息AIニュース** | ラジオ | 週次AIニュース3本・5章・79秒 | [wav](works/Moco-News.wav) / [mp4](works/Moco-News.mp4) | [radio.json](works/moco-news-20261009.radio.json) |
 | **ひとつ先へ** | 音楽 | Senteテーマソング・BPM104・F major・2テイク | [take1](works/takes/take1_full.m4a) / [take2](works/takes/take2_full.m4a) | [music.json](works/hitotsu-saki-e.music.json) |
+| **遅筋と速筋 — スポーツと筋肉のエネルギー代謝** | 動画 | 本人声の解説動画・10場面・2分38秒・字幕付き | [mp4](works/muscle-fibers-sports-2026-11.mp4) ・ [YouTube](https://youtu.be/f8wm8bD6uC8) | [movie.json](works/muscle-fibers-sports-2026-11.movie.json) |
 
 JSON には音源の SHA-256 と制作履歴が入り、出典はラジオ 2 作に付いています。あわせて作者情報（[yukihamada.person.json](works/yukihamada.person.json)）と作品集（[collection-2026.collection.json](works/collection-2026.collection.json)）も同梱しています。設計根拠は [works/RESEARCH.md](works/RESEARCH.md)。
 
@@ -119,7 +120,7 @@ python3 tools/validate.py radio/v1.json works/yuki-podcast-001.radio.json
 
 ## 収録データ
 
-- [works/](works/) — 実作品（ポッドキャスト・ラジオ・楽曲・作者・作品集）。**音源ファイル本体も同梱**、JSON の SHA-256 と一致。
+- [works/](works/) — 実作品（ポッドキャスト・ラジオ・楽曲・解説動画・作者・作品集）。**音源・動画ファイル本体も同梱**、JSON の SHA-256 と一致。
 - [products/](products/) — Enabler の製品カタログ 61 件 (`*.product.json`)。状態は確認時点を `status` に記録し、未確認は `unknown`。
 - [events/](events/) — イベント（[zamna-hawaii-2026.event.json](events/zamna-hawaii-2026.event.json) 等）。
 - [places/](places/) — 会場・POI（[echoa-ridge.place.json](places/echoa-ridge.place.json) 等）。
