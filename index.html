@@ -138,7 +138,6 @@
   @media (max-width:600px){ .toc{flex-wrap:nowrap; overflow-x:auto; gap:0 16px; padding:4px 16px; -webkit-overflow-scrolling:touch; scrollbar-width:none; -webkit-mask-image:linear-gradient(to right,#000 92%,transparent); mask-image:linear-gradient(to right,#000 92%,transparent);}
     .toc::-webkit-scrollbar{display:none;}
     .toc a{white-space:nowrap; padding:10px 2px; min-height:44px; line-height:24px; font-size:14px;} .toc .toc-gh{margin-left:0;} }
-  @media (max-width:360px){ .toc{flex-wrap:wrap; overflow-x:visible; -webkit-mask-image:none; mask-image:none;} }
   .toc .toc-gh { margin-left:auto; color:var(--accent); font-weight:600; }
 
   .builder { margin-top:18px; }
@@ -279,7 +278,7 @@
       <h1>あなたの作品は、<br>あなたの手元に残るか？</h1>
       <p class="lede">サービスが終わっても、作品はあなたの手元に残る。ブラウザで作って、ダウンロードして保存できる。音楽・本・ラジオ・声・動画まで、同じ書き方でテキストに。</p>
       <p><a class="cta" href="#builder">作品の設計図をつくる<span class="cta-note">（無料・ブラウザ内）</span> →</a> <a class="hero-sub" href="#works">実作品を聴く・観る</a></p>
-      <p class="cta-sub" style="margin:6px 0 0;font-size:12.5px;color:var(--muted)">無料・ブラウザ内で完結（ファイルは送信しません）</p>
+      <p class="cta-sub" style="margin:6px 0 0;font-size:12.5px;color:var(--muted)">無料・ブラウザ内（送信なし）</p>
       <p class="hero-badge"><b>作者本人が7作品で実運用中</b>・MIT 公開・個人仕様（外部採用 0 件）</p>
       <p class="hint" style="margin:10px 0 0;font-size:13px;color:var(--muted)">かんたんに言うと：作品の情報を「設計図（JSON）」1枚にまとめ、音源や画像と一緒に自分の手元へ保存する仕組みです。</p>
     </div>
@@ -297,7 +296,7 @@
   </div>
 
   <details class="status-note" role="note" style="max-width:var(--maxw);margin:14px auto 0;padding:12px 16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);color:var(--muted);font-size:.9rem;line-height:1.6">
-    <summary style="cursor:pointer;color:var(--fg);font-weight:600">現在の位置づけ（正直に）— 個人仕様・外部採用 0 件</summary>
+    <summary style="cursor:pointer;color:var(--fg);font-weight:600;display:flex;align-items:center;min-height:44px">現在の位置づけ（正直に）— 個人仕様・外部採用 0 件</summary>
     <p style="margin:10px 0 0">これは作者1人の制作物に使っている<strong style="color:var(--fg)">個人仕様</strong>です。MIT で公開し、誰でも使えますが、外部採用はまだ 0 件（2026-11-11 時点）。既存標準（C2PA・schema.org・MusicXML・OpenTimelineIO 等）を置き換えるものではなく、それらへ変換する<strong style="color:var(--fg)">ハブ</strong>を目指しています。標準を名乗るのは外部採用が出てから、という方針です。</p>
   </details>
 
