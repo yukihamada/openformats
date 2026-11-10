@@ -17,6 +17,8 @@ jobs:
         run: pip install jsonschema
       - name: Unit tests (JCS / Ed25519 / hash / chain / migration)
         run: python3 tests/test_core.py
+      - name: Browser/JS conversion parity (assets/convert.js vs tools/export.py)
+        run: node tests/convert.test.mjs
       - name: Validate every sample and catalog against its schema
         run: python3 tools/validate.py --all
       - name: Verify content_hash, signatures and hash_chain on all data
