@@ -145,6 +145,18 @@
       "path": "Moco-News.mp4",
       "sha256": "810a8f25e2c027232363e047c0d421044034a1127a47359b0a65ed15c7f90780",
       "kind": "video"
+    },
+    {
+      "kind": "audio",
+      "format": "mp3",
+      "sha256": "46c3ac532f51ae6e1d6b7890b6e3e7e686b0f7ee64dee129b2bd53e12d314e37",
+      "bytes": 2117613,
+      "generated_at": "2026-11-10T18:35:53Z",
+      "model": "yukihamada",
+      "provider": "teai",
+      "voice": "yukihamada",
+      "note": "teai /api/v1/voice 経路で実生成 (8cr)",
+      "path": "Moco-News-yukihamada.mp3"
     }
   ],
   "content_hash": "43ed24b99ca0c9062a53daf8218dc64bf18175292dbde5ac16f53328706de539",
