@@ -166,6 +166,19 @@
       "path": "episode-001.m4a",
       "sha256": "cb72f2a5a5e7687a2e415b9947368d18b3e7fde8e0f8f6e9c683997ec8b07ef3",
       "kind": "audio"
+    },
+    {
+      "kind": "audio",
+      "format": "mp3",
+      "sha256": "876f4891371f9789ee038c5603f72feb29867a9eea7034409a60bf74744477e9",
+      "bytes": 12190196,
+      "generated_at": "2026-11-10T19:02:48Z",
+      "model": "yukihamada",
+      "provider": "teai",
+      "voice": "yukihamada",
+      "note": "long-form: 9 chunks, 32cr",
+      "path": "Yuki-Podcast-001-yukihamada.mp3",
+      "chunk_count": 9
     }
   ],
   "content_hash": "b1a4d4e6c5a29fffa6022790e6379d48d895ef9b4131bee61ab2c94ebbfa0c92",

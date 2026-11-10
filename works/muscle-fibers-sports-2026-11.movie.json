@@ -318,6 +318,19 @@
       "sha256": "829155722ca6b231930e75f65d95ec46c6b8dc4f15c48eee3409b67657852ba4",
       "duration_sec": 157.723,
       "kind": "video"
+    },
+    {
+      "kind": "audio",
+      "format": "mp3",
+      "sha256": "6a3171ddf818acb9f552232b9f9fddac3ad0b42cbd5160e536cd15a779d41456",
+      "bytes": 4179884,
+      "generated_at": "2026-11-10T18:55:00Z",
+      "model": "yukihamada",
+      "provider": "teai",
+      "voice": "yukihamada",
+      "note": "long-form: 10 chunks, 80cr",
+      "path": "Muscle-Fibers-yukihamada.mp3",
+      "chunk_count": 10
     }
   ],
   "scenes": [
