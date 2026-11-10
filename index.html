@@ -102,6 +102,9 @@
   .who { margin:22px 0 6px; font-size:14px; color:var(--muted); }
   .who a { color:var(--fg); }
   .hero-sub { display:inline-block; margin-left:14px; font-size:14px; color:var(--muted); text-decoration:underline; padding:12px 4px; }
+  .hero-badge { display:inline-flex; align-items:center; gap:6px; margin-top:16px; font-size:13px; color:var(--muted);
+    background:var(--card); border:1px solid var(--line); border-radius:999px; padding:6px 12px; line-height:1.4; }
+  .hero-badge b { color:var(--fg); font-weight:600; }
   @media (max-width:820px){ .hero{grid-template-columns:1fr; gap:16px; padding:20px 0 16px;} }
 
   .cta { display:inline-block; background:var(--cta-bg); color:var(--cta-fg); padding:12px 22px; border-radius:10px;
@@ -202,8 +205,7 @@
   .work .work-title { font-size:15px; margin:0; }
   .work .meta { color:var(--muted); font-size:14px; }
   .work .asize { color:var(--muted); font-size:13px; font-family:ui-monospace,Menlo,monospace; }
-  .work audio { width:100%; height:40px; margin-top:6px; accent-color:var(--accent); }
-  .work audio { width:100%; height:38px; margin-top:8px; }
+  .work audio { width:100%; height:38px; margin-top:8px; accent-color:var(--accent); }
   .work .dl { font-size:14px; margin-top:auto; padding-top:8px; }
   .work .dl a { display:inline-block; padding:10px 8px; min-height:44px; min-width:44px; }
   footer a { display:inline-block; padding:10px 2px; min-height:44px; }
@@ -255,6 +257,7 @@
       <h1>あなたの作品は、<br>あなたの手元に残るか？</h1>
       <p class="lede">サービスが終わっても、作品はあなたの Git に残る。音楽・本・ラジオ・声・動画まで、同じ書き方でテキストに。</p>
       <p><a class="cta" href="#builder">作品の設計図をつくる（無料・ブラウザ内）→</a> <a class="hero-sub" href="#works">実作品を聴く・観る</a></p>
+      <p class="hero-badge"><b>個人仕様</b>・外部採用 0 件（2026-11-10 時点）・MIT 公開</p>
     </div>
     <div class="hero-art">
       <img class="light" src="assets/hero.svg" width="960" height="560" fetchpriority="high" alt="1つの作品が1つのJSONになり、音楽・ラジオ・本・声・動画・建築などへ広がる様子のイラスト" decoding="async">
@@ -308,7 +311,7 @@
         <p class="hint" id="b-filehint">選ぶと、指紋（SHA-256）をこのブラウザ内で計算して JSON に入れます。ファイルはどこにも送信しません。</p>
       </div>
       <div>
-        <span class="outlabel" id="b-outlabel">できあがる JSON（設計図）</span>
+        <span class="outlabel" id="b-outlabel">できあがる JSON（設計図）<span id="b-sample" style="color:var(--accent);font-weight:600"> — サンプル表示（タイトルを入れるとあなたの作品に変わります）</span></span>
         <pre class="out" id="b-out" aria-labelledby="b-outlabel"></pre>
         <p class="hint" id="b-legend"><code>id</code>=作品の一意な名前 / <code>kind</code>=種類 / <code>renditions</code>=本体ファイルと指紋 / <code>provenance</code>=作り方の履歴 / <code>license</code>=再利用の条件</p>
       </div>
@@ -389,11 +392,10 @@
         </div>
       </div>
       <div class="work">
-        <div class="cover placeholder"><svg aria-hidden="true"><use href="assets/icons.svg#i-image"/></svg></div>
+        <div class="cover"><img src="works/bim-house-iso-day.png" width="1201" height="728" alt="白い箱型の住宅を斜め上から見たアイソメ図。屋根に太陽光パネル、庭に植栽とアプローチが見える。" loading="lazy" decoding="async"></div>
         <div class="body">
           <h3 class="work-title">bim.house — 住宅BIMのアイソメ日景</h3>
           <span class="meta">画像・1201×728 PNG ・ 太陽光パネル付き住宅</span>
-          <img src="works/bim-house-iso-day.png" width="1201" height="728" alt="白い箱型の住宅を斜め上から見たアイソメ図。屋根に太陽光パネル、庭に植栽とアプローチが見える。" loading="lazy" decoding="async" style="width:100%;height:auto;border-radius:8px;margin-top:6px">
           <div class="asize">PNG ・ 248 KB ・ 1201×728</div>
           <div class="dl"><a href="works/bim-house-iso-day.png">png をダウンロード</a> ・ <a href="works/bim-house-iso-day.image.json">JSON</a></div>
         </div>
@@ -604,6 +606,9 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
     [t,a,idf].forEach(function(el){ if(el) el.addEventListener('input',render); });
     k.addEventListener('change',render);
     if(lic) lic.addEventListener('change',render);
+    var sampleEl=document.getElementById('b-sample');
+    function markTouched(){ if(sampleEl){ sampleEl.style.display='none'; sampleEl=null; } }
+    [t,a,idf,k,lic,f].forEach(function(el){ if(el) el.addEventListener('input',markTouched); if(el) el.addEventListener('change',markTouched); });
     render();
     if(f){
       f.addEventListener('change',function(){
