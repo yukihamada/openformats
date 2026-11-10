@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>openformats — 1 作品 = 1 JSON</title>
-<meta name="description" content="あらゆる創作の最小単位を、人間が読める JSON で定義するオープンな仕様。音楽・ラジオ・本・声・動画・製品・場所を同じ語彙で。">
+<meta name="description" content="あらゆる創作の最小単位を、人間が読める JSON で定義する個人仕様（MIT・公開）。音楽・ラジオ・本・声・動画・製品・場所を同じ語彙で。既存標準を置き換えずハブを目指す実証段階。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="openformats — あなたの作品は、あなたの手元に残るか？">
 <meta property="og:description" content="1 作品 = 1 JSON。音楽も本もラジオも、テキストで、あなたの Git の中に。実音源つき。">
@@ -18,8 +18,8 @@
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "name": "openformats",
-  "headline": "1 作品 = 1 JSON のオープン仕様",
-  "description": "あらゆる創作の最小単位を人間が読める JSON で定義するオープンな仕様。音楽・ラジオ・本・声・動画・製品・場所を同じ語彙で。",
+  "headline": "1 作品 = 1 JSON の個人仕様（MIT・公開）",
+  "description": "あらゆる創作の最小単位を人間が読める JSON で定義する個人仕様。音楽・ラジオ・本・声・動画・製品・場所を同じ語彙で。既存標準を置き換えずハブを目指す実証段階。",
   "url": "https://yukihamada.github.io/openformats/",
   "author": {"@type": "Person", "name": "濱田優貴", "url": "https://yukihamada.jp"},
   "license": "https://github.com/yukihamada/openformats/blob/main/LICENSE",
@@ -200,6 +200,7 @@
   .work .body { padding:14px 16px 16px; display:flex; flex-direction:column; gap:6px; flex:1; }
   .work .work-title { font-size:15px; margin:0; }
   .work .meta { color:var(--muted); font-size:14px; }
+  .work .asize { color:var(--muted); font-size:13px; font-family:ui-monospace,Menlo,monospace; }
   .work audio { width:100%; height:40px; margin-top:6px; accent-color:var(--accent); }
   .work audio { width:100%; height:38px; margin-top:8px; }
   .work .dl { font-size:14px; margin-top:auto; padding-top:8px; }
@@ -236,6 +237,7 @@
     <a href="#works">実作品</a>
     <a href="#start">3ステップ</a>
     <a href="#products">プロダクト</a>
+    <a href="#standards">既存標準</a>
     <a class="toc-gh" href="https://github.com/yukihamada/openformats">GitHub ↗</a>
   </nav>
 </header>
@@ -243,7 +245,7 @@
   <div class="brand">
     <span class="mark" aria-hidden="true">{}</span>
     <span class="name">openformats</span>
-    <span class="tag">— 創作の最小単位を JSON で定義するオープン仕様</span>
+    <span class="tag">— 創作の最小単位を JSON で定義する個人仕様（実証段階）</span>
     <span class="ver">v1.0</span>
   </div>
 
@@ -265,6 +267,10 @@
     <div class="stat"><b>SHA-256</b><span>で本体と照合</span></div>
     <div class="stat"><b>MIT</b><span>仕様はオープン</span></div>
   </div>
+
+  <p class="status-note" role="note" style="max-width:var(--maxw);margin:14px auto 0;padding:12px 16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);color:var(--muted);font-size:.9rem;line-height:1.6">
+    <strong style="color:var(--fg)">現在の位置づけ（正直に）：</strong> これは作者1人の制作物に使っている<strong style="color:var(--fg)">個人仕様</strong>です。MIT で公開し、誰でも使えますが、外部採用はまだ 0 件（2026-11-10 時点）。既存標準（C2PA・schema.org・MusicXML・OpenTimelineIO 等）を置き換えるものではなく、それらへ変換する<strong style="color:var(--fg)">ハブ</strong>を目指しています。標準を名乗るのは外部採用が出てから、という方針です。
+  </p>
 
   <section id="builder" class="builder" aria-labelledby="h-builder">
     <h2 id="h-builder">ブラウザだけで、今すぐ 1 作品を残す</h2>
@@ -442,6 +448,7 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
 .venv/bin/python tools/validate.py --all</code></pre>
     </div>
     <p><small>Git が苦手なら、GitHub の自分のリポジトリ画面に、ダウンロードした JSON と本体ファイルをそのままドラッグ＆ドロップするだけでも残せます。</small></p>
+    <p><small>既存標準へ書き出したいときは <code>python3 tools/export.py schema.org &lt;file&gt;</code> で schema.org の JSON-LD に変換できます（実装済み）。C2PA・MusicXML・OpenTimelineIO・EPUB への書き出しは未実装です。</small></p>
     <p class="who">作っているのは <a href="https://github.com/yukihamada">濱田優貴（@yukihamada）</a> です。仕様も実装も GitHub で公開しています。</p>
     <h2 id="h-faq">よくある質問</h2>
     <div class="faq" aria-labelledby="h-faq">
@@ -470,9 +477,20 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
       <a class="prod" href="https://takibi.wtf" target="_blank" rel="noopener"><span class="thumb"><img src="assets/products/takibi.webp" width="640" height="400" alt="焚き火 / ATSM のスクリーンショット" loading="lazy" decoding="async"></span><span class="pbody"><h3>焚き火 / ATSM</h3><span>article/event</span></span></a>
     </div>
     <div class="early" role="note">
-      <strong>初期採用者を募集しています。</strong> この仕様で作品を残したら、GitHub の <a href="https://github.com/yukihamada/openformats/issues">Issues</a> に作品リンクを貼ってください。ここに実例として掲載します（架空の実績は載せません）。
+      <strong>初期採用者を募集しています（現在 0 件）。</strong> この仕様で作品を残したら、GitHub の <a href="https://github.com/yukihamada/openformats/issues">Issues</a> に作品リンクを貼ってください。ここに実例として掲載します（架空の実績は載せません）。外部採用が 1 件出るまでは「オープン標準」ではなく「公開された個人仕様」として扱います。
     </div>
     <p style="margin-top:22px"><a class="cta ghost" href="#builder">今すぐ作る →</a> <a class="cta ghost" href="https://github.com/yukihamada/openformats">仕様を読む</a></p>
+  </section>
+
+  <section id="standards" aria-labelledby="h-standards">
+    <h2 id="h-standards">既存標準との関係</h2>
+    <p class="sub">openformats は既存標準を置き換えず、それらへの<strong>ハブ</strong>を目指します。「標準」を名乗るのは外部採用が出てから、という方針です（規範は <a href="https://github.com/yukihamada/openformats/blob/main/SPEC.md">SPEC.md §9</a>）。</p>
+    <div class="glossary" aria-label="既存標準との対応と実装状況">
+      <div><b>schema.org</b> — 作品メタデータ。<strong>実装済み</strong>（<code>tools/export.py schema.org</code> で JSON-LD へ）。</div>
+      <div><b>C2PA</b> — 来歴・改ざん検知。同じことを <code>content_hash</code>／<code>hash_chain</code>／Ed25519 で JSON 内で行う。C2PA マニフェストへの変換は未実装。</div>
+      <div><b>MusicXML / OpenTimelineIO / EPUB</b> — 楽譜・動画タイムライン・本。書き出しは未実装（方向性のみ）。</div>
+    </div>
+    <p><small>実装済みの変換は schema.org のみです（<code>python3 tools/export.py --list</code> で確認できます）。実装したものから順に「実装済み」と明記します。</small></p>
   </section>
 
   <footer>

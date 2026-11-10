@@ -150,13 +150,20 @@ RFC 2119 に従います。
 
 openformats は既存標準を置き換えず、それらへの**ハブ**を目指す。
 
-| kind | 変換先の例 |
+> **実装状況（2026-11-10）**: 実装済みの変換は **schema.org のみ**
+> （`python3 tools/export.py schema.org <file>`）。下記の C2PA・MusicXML・
+> OpenTimelineIO・EPUB・PDF への書き出しは**未実装**で、表は「目指す方向」。
+> 実装したものから「実装済み」と明記する。
+> 「標準 (standard)」を名乗るのは外部採用が確認できてからとし、現状は
+> 「公開された個人仕様 (public personal spec)」として扱う。
+
+| kind | 変換先の例（schema.org 以外は未実装・方向性） |
 |---|---|
 | book | EPUB / PDF |
 | movie | OpenTimelineIO / ffmpeg / Remotion |
 | music | MusicXML / DAW / Suno・MUREKA プロンプト |
 | voice / radio | KOE / teai TTS |
-| product | schema.org / 社内カタログ |
+| product | schema.org（実装済み） / 社内カタログ |
 
 ### bim と bim.house
 

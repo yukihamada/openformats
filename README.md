@@ -3,9 +3,11 @@
 > 1 作品 = 1 JSON。音楽も、本も、ラジオも、声も、動画も、製品も、場所も。
 > ぜんぶ同じ語彙で、テキストで、あなたの Git の中に。
 
-**結論から。** openformats は、あらゆる創作の「最小単位」を、人間が読める JSON で定義するオープンな仕様です。曲のメタも、ラジオの台本も、本の章も、声の同意も、1 ファイルに構造として残ります。
+**結論から。** openformats は、あらゆる創作の「最小単位」を、人間が読める JSON で定義する**個人仕様**です。曲のメタも、ラジオの台本も、本の章も、声の同意も、1 ファイルに構造として残ります。
 
 特定のアプリに閉じ込められない。100 年後も `cat` で読める。
+
+> **現在の位置づけ（正直に）** — これは作者1人の制作物に使っている個人仕様です。MIT で公開し誰でも使えますが、**外部採用はまだ 0 件**（2026-11-10 時点）。既存標準（C2PA・schema.org・MusicXML・OpenTimelineIO 等）を置き換えるものではなく、それらへ変換する**ハブ**を目指しています。標準を名乗るのは外部採用が出てから、という方針です。詳細は [§既存標準との関係](#既存標準との関係)。
 
 **なぜ作ったか。** あなたが今日つくった曲や記事は、そのアプリがサービスを終えた瞬間に、開けなくなるかもしれません。openformats はその不安への答えです。作品を、あなたの手元のプレーンテキストに戻します。
 
@@ -161,7 +163,7 @@ python3 tools/validate.py radio/v1.json works/yuki-podcast-001.radio.json
 
 ---
 
-## 使い方（3 つのツール・4 ステップ）
+## 使い方（4 つのツール・5 ステップ）
 
 ```bash
 # 0. 依存を入れる（最初に一度だけ）
@@ -186,15 +188,19 @@ rm works/try.music.json
 
 # 4. レンダリング — JSON から媒体を作り、SHA-256 で作品に紐づける
 python3 tools/render.py examples/sample.music.json --kind audio --format wav --dry-run
+
+# 5. 書き出し — 既存標準 (schema.org JSON-LD) へ変換する
+python3 tools/export.py schema.org works/hitotsu-saki-e.music.json
 ```
 
 > `source .venv/bin/activate` を使わない場合は、各コマンドの `python3` を `.venv/bin/python` に置き換えれば同じです。
 
-使うツールはこの 3 つです。
+使うツールはこの 4 つです。
 
 - [tools/validate.py](tools/validate.py) — JSON Schema (Draft 2020-12) で作品を検証する。`--all` でリポジトリ全体。
 - [tools/of.py](tools/of.py) — ハッシュ・Ed25519 署名・検証・改訂（`revise`）・モデル移行（`migrate`）の CLI。`verify` は `content_hash`・署名・チェーンに加え、`renditions[].path` の実体存在と SHA-256 一致まで検証する（音源が欠けていれば `ok: false`）。
 - [tools/render.py](tools/render.py) — JSON を媒体化し、実体の SHA-256 で作品に紐づける（`--dry-run` で安全に試せる）。
+- [tools/export.py](tools/export.py) — 作品 JSON を既存標準へ書き出す。現時点で **schema.org JSON-LD** に対応（`--list` で実装済み・予定を確認できる）。
 
 ---
 
@@ -245,6 +251,22 @@ python3 tools/render.py examples/sample.music.json --kind audio --format wav --d
 各スキーマの `$id` は `https://yukihamada.github.io/openformats/...`（GitHub Pages）を指し、**公開されています**。バリデータはこの URL をリポジトリ内の実ファイルへローカル解決するので、ネットワークなしでも検証できます。仕様の規範文書は [SPEC.md](SPEC.md)、版管理の方針は [VERSIONING.md](VERSIONING.md)、変更履歴は [CHANGELOG.md](CHANGELOG.md) を参照してください。
 
 </details>
+
+---
+
+## 既存標準との関係
+
+openformats は既存標準を置き換えず、それらへの**ハブ**を目指します（規範は [SPEC.md §9](SPEC.md)）。「標準」を名乗るのは外部採用が確認できてから、という方針です。
+
+| 領域 | 既存標準 | openformats の役割 | 実装状況 |
+|---|---|---|---|
+| 作品メタデータ | [schema.org](https://schema.org/) | 作品 JSON から JSON-LD へ書き出す | **実装済み**（`tools/export.py schema.org`） |
+| 来歴・署名・改ざん検知 | [C2PA](https://c2pa.org/) | `content_hash` / `hash_chain` / Ed25519 で同じことを JSON 内で行う。C2PA マニフェストへの変換を将来対応。 | 未実装 |
+| 楽譜 | MusicXML / MIDI | `music` から書き出す。 | 未実装 |
+| 動画編集 | [OpenTimelineIO](https://opentimeline.io/) / ffmpeg / Remotion | `movie` のタイムラインを変換する。 | 未実装 |
+| 本 | EPUB / PDF | `book` から書き出す。 | 未実装 |
+
+**現状の限界** — 実装済みの変換は schema.org のみ（`python3 tools/export.py --list` で確認できる）。C2PA・MusicXML・OpenTimelineIO・EPUB への書き出しは未実装です。実装したものからこの表に「実装済み」と明記していきます。
 
 ---
 

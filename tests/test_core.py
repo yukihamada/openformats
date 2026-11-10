@@ -427,6 +427,23 @@ def test_large_reference_requires_store():
     assert voiceclone.validate_clone(voice, store=st) == []
 
 
+def test_export_schema_org_maps_kinds():
+    sys.path.insert(0, str(ROOT / "tools"))
+    import importlib
+    export = importlib.import_module("export")
+    music = {"kind": "music", "id": "x", "title": "T", "authors": [{"name": "A"}],
+             "content_hash": "abc", "renditions": [{"path": "a.m4a", "sha256": "d"}]}
+    ld = export.to_schema_org(music)
+    assert ld["@type"] == "MusicComposition", ld
+    assert ld["name"] == "T" and ld["sha256"] == "abc"
+    assert ld["author"]["name"] == "A"
+    assert ld["associatedMedia"][0]["contentUrl"] == "a.m4a"
+    prod = export.to_schema_org({"kind": "product", "id": "p", "name": "P", "status": "live"})
+    assert prod["@type"] == "Product" and prod["additionalProperty"]["value"] == "live"
+    # 未知 kind は CreativeWork にフォールバック
+    assert export.to_schema_org({"kind": "zzz", "id": "z"})["@type"] == "CreativeWork"
+
+
 def _run():
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     failed = 0
