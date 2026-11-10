@@ -107,6 +107,7 @@
     background:var(--card); border:1px solid var(--line); border-radius:999px; padding:6px 12px; line-height:1.4; }
   .hero-badge b { color:var(--fg); font-weight:600; }
   @media (max-width:820px){ .hero{grid-template-columns:1fr; gap:16px; padding:20px 0 16px;} .hero-art img{max-height:34vh; object-fit:contain;} }
+  @media (max-width:600px){ .brand{padding:12px 0 0;} .hero{padding:12px 0 12px;} .hero h1{margin-bottom:10px;} .hero .lede{margin-bottom:18px;} }
 
   .cta { display:inline-block; background:var(--cta-bg); color:var(--cta-fg); padding:12px 22px; border-radius:10px;
     font-weight:600; font-size:15px; margin:4px 10px 4px 0; box-shadow:var(--shadow); transition:transform .15s,filter .15s; }
@@ -283,7 +284,7 @@
 
   <div class="stats" aria-label="このリポジトリの規模">
     <div class="stat"><b>16</b><span>種類（うち8種はブラウザで即生成）</span></div>
-    <div class="stat"><b>89</b><span>対応プロダクト</span></div>
+    <div class="stat"><b>89</b><span>構想プロダクト（変換実装は schema.org のみ）</span></div>
     <div class="stat"><b>SHA-256</b><span>で本体と照合</span></div>
     <div class="stat"><b>MIT</b><span>仕様はオープン</span></div>
   </div>
@@ -372,7 +373,7 @@
         <div class="body">
           <h3 class="work-title">モコの、ひと息AIニュース</h3>
           <span class="meta">週次AIニュース・3本 ・ wav ・ 1分19秒</span>
-          <audio controls preload="none" aria-label="モコの、ひと息AIニュース（週次AIニュース）" src="works/Moco-News.wav"></audio>
+          <audio controls preload="metadata" aria-label="モコの、ひと息AIニュース（週次AIニュース）" src="works/Moco-News.wav"></audio>
           <div class="asize">WAV ・ 3.8 MB ・ 1:19</div>
           <div class="dl"><a href="works/Moco-News.wav">wav をダウンロード</a> ・ <a href="works/moco-news-20261009.radio.json">JSON</a></div>
         </div>
@@ -509,11 +510,11 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
     <h2 id="h-standards">既存標準との関係</h2>
     <p class="sub">openformats は既存標準を置き換えず、それらへの<strong>ハブ</strong>を目指します。「標準」を名乗るのは外部採用が出てから、という方針です（規範は <a href="https://github.com/yukihamada/openformats/blob/main/SPEC.md">SPEC.md §9</a>）。</p>
     <div class="glossary" aria-label="既存標準との対応と実装状況">
-      <div><b>schema.org</b> — 作品メタデータ。<strong>実装済み</strong>（<code>tools/export.py schema.org</code> で JSON-LD へ）。</div>
-      <div><b>C2PA</b> — 来歴・改ざん検知。同じことを <code>content_hash</code>／<code>hash_chain</code>／Ed25519 で JSON 内で行う。C2PA マニフェストへの変換は未実装。</div>
-      <div><b>MusicXML / OpenTimelineIO / EPUB</b> — 楽譜・動画タイムライン・本。書き出しは未実装（方向性のみ）。</div>
+      <div><b>schema.org</b>（検索エンジン向けの作品情報の共通形式） — <strong>実装済み</strong>（<code>tools/export.py schema.org</code> で JSON-LD へ）。</div>
+      <div><b>C2PA</b>（写真や動画の「本物・改ざんされていない」を証明する仕組み） — 同じことを <code>content_hash</code>／<code>hash_chain</code>／Ed25519 で JSON 内で行う。C2PA マニフェストへの変換は未実装。</div>
+      <div><b>MusicXML</b>（楽譜の共通形式）<b> / OpenTimelineIO</b>（動画編集のタイムライン形式）<b> / EPUB</b>（電子書籍の共通形式） — 書き出しは未実装（方向性のみ）。</div>
     </div>
-    <p><small>実装済みの変換は schema.org のみです（<code>python3 tools/export.py --list</code> で確認できます）。実装したものから順に「実装済み」と明記します。</small></p>
+    <p><small>むずかしい用語が多いと感じたら、ここは読み飛ばして構いません。要点は「既存の共通形式へ変換して橋渡しする」ことだけです。実装済みの変換は schema.org のみです（<code>python3 tools/export.py --list</code> で確認できます）。実装したものから順に「実装済み」と明記します。</small></p>
   </section>
 
   <footer>
