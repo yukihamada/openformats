@@ -29,6 +29,7 @@ import importlib.util
 import json
 import os
 import pathlib
+import shutil
 import struct
 import sys
 import wave
@@ -119,6 +120,15 @@ def main(argv):
     stored_sha = manifest["sha256"]
     size = manifest["bytes"]
 
+    # 媒体を作品 JSON と同じフォルダへ置き、相対 path を記録する。
+    # verify は作品 JSON からの相対パスで実体と sha256 を照合する。
+    work_dir = work_path.resolve().parent
+    if out.resolve().parent != work_dir:
+        dest = work_dir / out.name
+        shutil.copyfile(out, dest)
+        out = dest
+    rel_path = os.path.relpath(out.resolve(), work_dir)
+
     core.add_rendition(
         data, str(out), kind=args.kind, format=args.format,
         model=model, model_version=args.model_version, provider=provider,
@@ -126,6 +136,7 @@ def main(argv):
         note=f"content-addressed: manifest {manifest['manifest_sha256'][:12]}",
     )
     r = data["renditions"][-1]
+    r["path"] = rel_path
     r["sha256"] = stored_sha
     r["bytes"] = size
     r["manifest_sha256"] = manifest["manifest_sha256"]

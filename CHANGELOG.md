@@ -5,6 +5,12 @@
 ## [Unreleased]
 
 ### Added
+- `tools/renderers/koe.py` を teai の正規非同期経路 (quote → generate →
+  poll → audio) に書き換え。従来の単発 POST は実 API と噛み合っていなかった。
+  `TEAI_API_KEY` / `KOE_VOICE` / `KOE_LANG` / `KOE_SPEED` を使用。
+- `works/Moco-News-yukihamada.mp3` — 実際の radio 作品を本人声で音声化した
+  実レンダリング (80.7s / 48kHz / 2.1MB / 8cr)。rendition として作品 JSON に
+  path・sha256 付きで紐づき、`of.py verify` が全項目 true。
 - `tools/export.py` — 作品 JSON を既存標準へ書き出す最初の変換。現時点で
   **schema.org JSON-LD** に対応 (`python3 tools/export.py schema.org <file>`、
   `--out-dir` で一括、`--list` で実装済み/予定を確認)。kind ごとに
@@ -16,6 +22,9 @@
 ### Changed
 - 「オープンな仕様」→「個人仕様（実証段階）」へ表現を修正。外部採用 0 件
   (2026-11-10) を LP・README に明記し、「標準」を名乗るのは採用後とする方針を追加。
+- `tools/render.py` が媒体の `path` を記録するよう修正。出力を作品 JSON と
+  同じフォルダへ置き、相対 path を rendition に保存する。従来は path 未設定で
+  `of.py verify` の rendition 照合が失敗していた。
 
 - `products/` に公開 GitHub リポジトリ 28 件を実データで追加 (61 → 89 件)。
   KOE OSS / Koe-swift / koe-device / koe-wake-train / BuildPeek / Mamori /
