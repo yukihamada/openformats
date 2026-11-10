@@ -1,0 +1,42 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "product",
+  "id": "teai-docs",
+  "name": "teai docs",
+  "group": "AI・仕事",
+  "description": "teai.io のドキュメント・ブログ・MCP スターターテンプレート。",
+  "url": "https://teai.io",
+  "status": "live",
+  "license": "all-rights-reserved",
+  "platforms": [
+    "web"
+  ],
+  "formats": [
+    "article",
+    "book"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://github.com/yukihamada/teai-docs",
+        "note": "GitHub リポジトリ 2026-11-10 実読"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-10T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "公開リポジトリから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "公開サイトのソース。",
+  "content_hash": "d819d986bc16ecee63c013857bf0fe9b8039bf6cc6b57f4eb6d9fbd131f210fd"
+}

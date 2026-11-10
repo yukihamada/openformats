@@ -1,0 +1,42 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "product",
+  "id": "sente-browser",
+  "name": "先手ブラウザ (Sente Browser)",
+  "group": "AI・仕事",
+  "description": "普段の Chrome のログイン状態のまま、共有したタブを AI が確認・入力・クリックするローカル拡張。",
+  "url": "https://yukihamada.github.io/sente-browser/",
+  "status": "live",
+  "license": "MIT",
+  "platforms": [
+    "macos",
+    "web"
+  ],
+  "formats": [
+    "article"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://github.com/yukihamada/sente-browser",
+        "note": "GitHub リポジトリ 2026-11-10 実読"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-10T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "公開リポジトリから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "明示共有が前提。拡張単体では自律操作しない。",
+  "content_hash": "ac2fa9e5fad3575b6f35f0202417cfac86ed2827bf64088226675e59a09320ae"
+}

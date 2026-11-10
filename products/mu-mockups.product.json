@@ -1,0 +1,42 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "product",
+  "id": "mu-mockups",
+  "name": "MU Mockups",
+  "group": "創作・買い物",
+  "description": "MU 商品のモックアップ画像を生成・確認するための作業リポジトリ。",
+  "url": "https://github.com/yukihamada/mu-mockups",
+  "status": "development",
+  "license": "all-rights-reserved",
+  "platforms": [
+    "web"
+  ],
+  "formats": [
+    "image",
+    "product"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://github.com/yukihamada/mu-mockups",
+        "note": "GitHub リポジトリ 2026-11-10 実読"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-10T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "公開リポジトリから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "README なし。生成画像とHTMLを確認。",
+  "content_hash": "c37da4120e8bc6507641c8d66036cf9daf59a33abfcfc50fbd8850e47db3aa15"
+}

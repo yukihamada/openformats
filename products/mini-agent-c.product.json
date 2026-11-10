@@ -1,0 +1,44 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "product",
+  "id": "mini-agent-c",
+  "name": "Evo (mini-agent-c)",
+  "group": "AI・仕事",
+  "description": "C言語で書かれた自己進化型ローカルAIエージェント。MLX で動作し Web UI・iOS・CLI を1バイナリに束ねる。",
+  "url": "https://mini-agent.yukihamada.jp",
+  "status": "live",
+  "license": "MIT",
+  "platforms": [
+    "macos",
+    "ios",
+    "cli",
+    "web"
+  ],
+  "formats": [
+    "article"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://github.com/yukihamada/mini-agent-c",
+        "note": "GitHub リポジトリ 2026-11-10 実読"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-10T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "公開リポジトリから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "Apple Silicon の MLX 前提。",
+  "content_hash": "fb9a65d2b1b53cf38eeaa8cd638cc43025da32dc8387cdaacd7da9b7a257840d"
+}

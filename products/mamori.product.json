@@ -1,0 +1,42 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "product",
+  "id": "mamori",
+  "name": "守 Mamori",
+  "group": "AI・仕事",
+  "description": "中小企業向けの脅威インテルと端末点検。CISA KEV / JPCERT/CC を照合し対策下書きまで出す。",
+  "url": "https://mamori.teai.io/",
+  "status": "live",
+  "license": "MIT",
+  "platforms": [
+    "web",
+    "api"
+  ],
+  "formats": [
+    "article"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://github.com/yukihamada/mamori",
+        "note": "GitHub リポジトリ 2026-11-10 実読"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-10T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "公開リポジトリから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "2026-11-10 から招待制。",
+  "content_hash": "0f1c38f83e236a3ec3560e3c8811e267389967808eaaf984533e11a0ff62d2b4"
+}

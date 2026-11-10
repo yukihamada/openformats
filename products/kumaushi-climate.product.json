@@ -1,0 +1,42 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "product",
+  "id": "kumaushi-climate",
+  "name": "KUMAUSHI CLIMATE",
+  "group": "住まい・滞在",
+  "description": "屈斜路湖畔 KUMAUSHI BASE の換気・空調制御。ESP32-S3 センサーノード + Raspberry Pi を完全Rustで実装。",
+  "url": "https://github.com/yukihamada/kumaushi-climate",
+  "status": "live",
+  "license": "all-rights-reserved",
+  "platforms": [
+    "device",
+    "api"
+  ],
+  "formats": [
+    "device"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://github.com/yukihamada/kumaushi-climate",
+        "note": "GitHub リポジトリ 2026-11-10 実読"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-10T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "公開リポジトリから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "12コンテナ施設向け。CO2/温湿度/水温を計測。",
+  "content_hash": "57c173b6d30d1af44c894061a62953d7e2095302711e38e8f5b26b164698f933"
+}

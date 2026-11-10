@@ -1,0 +1,57 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "product",
+  "id": "openformats",
+  "name": "openformats",
+  "group": "研究・関連サイト",
+  "description": "あらゆる創作の最小単位を人間が読める JSON で定義するオープン仕様。1作品=1 JSON。",
+  "url": "https://yukihamada.github.io/openformats/",
+  "status": "live",
+  "license": "MIT",
+  "platforms": [
+    "cli",
+    "web"
+  ],
+  "formats": [
+    "article",
+    "bim",
+    "book",
+    "collection",
+    "country",
+    "device",
+    "event",
+    "image",
+    "land",
+    "movie",
+    "music",
+    "person",
+    "place",
+    "product",
+    "radio",
+    "voice"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://github.com/yukihamada/openformats",
+        "note": "GitHub リポジトリ 2026-11-10 実読"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-10T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "公開リポジトリから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "MIT。16 kind を定義。",
+  "content_hash": "39995446ba8a525317f685b376b1d851034846df77771a9a3986c39d8bc65609"
+}
