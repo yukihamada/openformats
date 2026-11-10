@@ -106,7 +106,8 @@
 </header>
 <main id="main" tabindex="-1">
   <h1>変換ツール</h1>
-  <p class="lede">openformats の作品 JSON を、<strong>schema.org の JSON-LD</strong> や <strong>C2PA マニフェスト</strong>へ変換します。schema.org から作品 JSON への<strong>逆変換</strong>もできます。すべてこのブラウザ内で完結し、ファイルはどこにも送信しません。</p>
+  <p class="lede">openformats の作品 JSON を、<strong>schema.org</strong>（検索エンジンや他アプリが作品情報を読める共通の書き方）や <strong>C2PA</strong>（誰が・いつ・どう作ったかの証明書）へ変換します。schema.org から作品 JSON への<strong>逆変換</strong>もできます。すべてこのブラウザ内で完結し、ファイルはどこにも送信しません。</p>
+  <p class="hint" style="margin:-12px 0 20px">かんたんに言うと：作品の設計図（JSON）を、他の世界が読める形に翻訳する道具です。<code>content_hash</code> は作品の「指紋」、<code>JSON-LD</code> は JSON で書く機械向けの意味づけ、と考えてください。</p>
 
   <section class="panel" aria-labelledby="h-in">
     <h2 id="h-in" class="sr-only">入力</h2>
@@ -126,15 +127,15 @@
       <button class="cta" type="button" id="btn-convert">変換する</button>
       <span class="hint" id="detect">入力待ち</span>
     </div>
-    <div id="in-status" class="status info" hidden></div>
+    <div id="in-status" class="status info" role="status" aria-live="polite" hidden></div>
   </section>
 
   <section style="margin-top:24px" aria-labelledby="h-out">
     <h2 id="h-out" class="sr-only">出力</h2>
     <div class="tabs" role="tablist" aria-label="出力形式">
-      <button role="tab" id="tab-schema" aria-controls="pane" aria-selected="true">schema.org</button>
-      <button role="tab" id="tab-c2pa" aria-controls="pane" aria-selected="false">C2PA</button>
-      <button role="tab" id="tab-import" aria-controls="pane" aria-selected="false">作品 JSON（逆変換）</button>
+      <button role="tab" id="tab-schema" aria-controls="pane" aria-selected="true" tabindex="0">schema.org</button>
+      <button role="tab" id="tab-c2pa" aria-controls="pane" aria-selected="false" tabindex="-1">C2PA</button>
+      <button role="tab" id="tab-import" aria-controls="pane" aria-selected="false" tabindex="-1">作品 JSON（逆変換）</button>
     </div>
     <div class="panel">
       <div class="row" style="margin-top:0; margin-bottom:12px">
@@ -144,8 +145,8 @@
         <button class="cta ghost" type="button" id="btn-copy">コピー</button>
         <button class="cta" type="button" id="btn-dl">ダウンロード</button>
       </div>
-      <pre class="out" id="pane" tabindex="0">— 変換すると結果がここに出ます —</pre>
-      <div id="out-status" class="status info" hidden></div>
+      <pre class="out" id="pane" role="tabpanel" aria-labelledby="tab-schema" tabindex="0">— 変換すると結果がここに出ます —</pre>
+      <div id="out-status" class="status info" role="status" aria-live="polite" hidden></div>
     </div>
   </section>
 
@@ -160,7 +161,7 @@
   </section>
 
   <footer>
-    <p>openformats は MIT 公開の個人仕様です。このツールは外部送信なし・オフラインでも動作します。</p>
+    <p>openformats は MIT 公開の個人仕様です。このツールは変換をすべてブラウザ内で行い、ファイルを外部へ送信しません（このページ自体は初回に読み込む必要があります）。</p>
   </footer>
 </main>
 
@@ -201,16 +202,24 @@
     return null;
   }
 
+  function clearOutput(msg) {
+    pane.textContent = msg || "— 変換すると結果がここに出ます —";
+    outKind.innerHTML = "";
+    showStatus(outStatus, null);
+  }
+
   function tryParse() {
     var text = input.value.trim();
     results = {};
     parsed = null; parsedKind = null;
-    if (!text) { detect.textContent = "入力待ち"; showStatus(inStatus, null); return false; }
+    if (!text) { detect.textContent = "入力待ち"; showStatus(inStatus, null); clearOutput(); return false; }
     try {
       parsed = JSON.parse(text);
     } catch (e) {
       detect.textContent = "JSON として読めません";
       showStatus(inStatus, "err", "JSON の構文エラー: " + e.message);
+      showStatus(outStatus, "err", "入力にエラーがあるため変換できません。JSON を直してください。");
+      clearOutput("— 入力にエラーがあります —");
       return false;
     }
     // @graph 配列にも対応
@@ -221,6 +230,8 @@
     if (!parsedKind) {
       detect.textContent = "形式を判別できません";
       showStatus(inStatus, "warn", "openformats 作品 JSON（kind と id を持つ）でも schema.org JSON-LD（@type を持つ）でもないようです。");
+      showStatus(outStatus, "warn", "形式を判別できないため変換できません。");
+      clearOutput("— 形式を判別できません —");
       return false;
     }
     detect.textContent = parsedKind === "work" ? "作品 JSON を検出" : "schema.org JSON-LD を検出";
@@ -228,10 +239,11 @@
       var msg = "作品「" + (parsed.title || parsed.id) + "」（kind: " + parsed.kind + "）を読み込みました。";
       if (parsed.content_hash) {
         var calc = OF.contentHash(parsed);
-        msg += calc === parsed.content_hash
-          ? " content_hash は再計算と一致します。"
-          : " 注意: content_hash が再計算値と一致しません（変換は可能です）。";
-        showStatus(inStatus, calc === parsed.content_hash ? "ok" : "warn", msg);
+        if (calc === parsed.content_hash) {
+          showStatus(inStatus, "ok", msg + " content_hash は再計算と一致します。");
+        } else {
+          showStatus(inStatus, "warn", msg + " content_hash が再計算値と一致しません。逆変換で戻した JSON は、元の content_hash（作品の同一性）を保つ設計のため、中身が欠落していて再計算値とずれることがあります。変換自体は可能です。");
+        }
       } else {
         showStatus(inStatus, "info", msg + " content_hash は未設定です。");
       }
@@ -272,22 +284,49 @@
 
   function selectTab(name) {
     current = name;
-    Object.keys(tabs).forEach(function (k) { tabs[k].setAttribute("aria-selected", k === name ? "true" : "false"); });
+    Object.keys(tabs).forEach(function (k) { tabs[k].setAttribute("aria-selected", k === name ? "true" : "false"); tabs[k].setAttribute("tabindex", k === name ? "0" : "-1"); });
+    pane.setAttribute("aria-labelledby", tabs[name].id);
     convert(name);
   }
 
-  // タブ
+  // 入力形式に合わないタブを選んでいたら、適切なタブへ自動で切り替える
+  function autoSelectTab() {
+    if (parsedKind === "schema" && (current === "schema" || current === "c2pa")) return "import";
+    if (parsedKind === "work" && current === "import") return "schema";
+    return current;
+  }
+
+  function parseAndConvert() {
+    if (!tryParse()) return;
+    var target = autoSelectTab();
+    if (target !== current) { selectTab(target); } else { convert(current); }
+  }
+
+  // タブ（クリック＋矢印キー）
   Object.keys(tabs).forEach(function (k) { tabs[k].addEventListener("click", function () { selectTab(k); }); });
+  var tabOrder = ["schema", "c2pa", "import"];
+  Object.keys(tabs).forEach(function (k) {
+    tabs[k].addEventListener("keydown", function (e) {
+      var i = tabOrder.indexOf(k);
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        var next = e.key === "ArrowRight" ? (i + 1) % tabOrder.length : (i - 1 + tabOrder.length) % tabOrder.length;
+        selectTab(tabOrder[next]);
+        tabs[tabOrder[next]].focus();
+      } else if (e.key === "Home") { e.preventDefault(); selectTab("schema"); tabs.schema.focus(); }
+      else if (e.key === "End") { e.preventDefault(); selectTab("import"); tabs.import.focus(); }
+    });
+  });
 
   // 入力変化で自動変換（デバウンス）
   var t = null;
   input.addEventListener("input", function () {
     if (t) clearTimeout(t);
-    t = setTimeout(function () { if (tryParse()) convert(current); }, 350);
+    t = setTimeout(parseAndConvert, 350);
   });
 
   // 変換ボタン
-  $("btn-convert").addEventListener("click", function () { if (tryParse()) convert(current); });
+  $("btn-convert").addEventListener("click", parseAndConvert);
 
   // ファイル選択 / ドロップ
   var drop = $("drop"), fileInput = $("file");
@@ -300,7 +339,7 @@
     var reader = new FileReader();
     reader.onload = function () {
       input.value = String(reader.result);
-      if (tryParse()) convert(current);
+      parseAndConvert();
     };
     reader.onerror = function () { showStatus(inStatus, "err", "ファイルを読めませんでした。"); };
     reader.readAsText(file, "utf-8");
@@ -322,9 +361,9 @@
   });
   $("btn-clear").addEventListener("click", function () {
     input.value = ""; parsed = null; parsedKind = null; results = {};
-    pane.textContent = "— 変換すると結果がここに出ます —";
-    outKind.innerHTML = ""; detect.textContent = "入力待ち";
-    showStatus(inStatus, null); showStatus(outStatus, null);
+    clearOutput();
+    detect.textContent = "入力待ち";
+    showStatus(inStatus, null);
     input.focus();
   });
 

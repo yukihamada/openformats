@@ -1,9 +1,10 @@
 /* Python (tools/export.py) と JS (assets/convert.js) の出力一致テスト。
  * 使い方: node tests/convert.test.mjs
  */
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync, mkdtempSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
+import { tmpdir } from "node:os";
 import path from "node:path";
 
 const require = createRequire(import.meta.url);
@@ -22,6 +23,15 @@ function py(target, file) {
   const out = execFileSync("python3", [path.join(root, "tools/export.py"), target, path.join(root, file)], { encoding: "utf8" });
   const j = JSON.parse(out);
   return target === "schema.org" ? j.jsonld : target === "c2pa" ? j.manifest : j.work;
+}
+
+// schema.org の JSON-LD を一時ファイルに書き、Python の import で逆変換した結果を返す
+const tmp = mkdtempSync(path.join(tmpdir(), "of-import-"));
+function pyImport(ld, name) {
+  const p = path.join(tmp, name.replace(/[\/]/g, "_") + ".schemaorg.json");
+  writeFileSync(p, JSON.stringify(ld));
+  const out = execFileSync("python3", [path.join(root, "tools/export.py"), "import", p], { encoding: "utf8" });
+  return JSON.parse(out).work;
 }
 
 // JSON のキー順を無視して比較
@@ -47,12 +57,15 @@ for (const f of files) {
   const jsC = OF.toC2PA(work);
   const pyC = py("c2pa", f);
   if (eq(jsC, pyC)) pass++; else { fail++; console.log("c2pa MISMATCH", f); }
-  // roundtrip: schema.org -> import
+  // roundtrip: schema.org -> import。JS の逆変換が Python の逆変換と完全一致すること。
   const jsBack = OF.fromSchemaOrg(jsLd);
-  const pyBack = py("import", f); // py import reads the work file's schema? no — reads json directly
-  // py import expects a schema.org file; skip direct compare, instead verify id/kind/content_hash stable
+  const pyBack = pyImport(jsLd, f);
+  if (eq(jsBack, pyBack)) pass++; else { fail++; console.log("roundtrip JS/Python MISMATCH", f); }
+  // 同一性の保持: id・kind は必ず戻る。元が content_hash を持つなら同じ値が保持される。
   if (jsBack.id === work.id && jsBack.kind === work.kind) pass++;
   else { fail++; console.log("roundtrip id/kind MISMATCH", f, jsBack.id, work.id); }
+  if (work.content_hash && jsBack.content_hash !== work.content_hash) { fail++; console.log("roundtrip content_hash NOT preserved", f); }
+  else pass++;
 }
 
 // content_hash 一致
