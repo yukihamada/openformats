@@ -106,9 +106,10 @@
   .hero-badge { display:inline-flex; align-items:center; gap:6px; margin-top:16px; font-size:13px; color:var(--muted);
     background:var(--card); border:1px solid var(--line); border-radius:999px; padding:6px 12px; line-height:1.4; }
   .hero-badge b { color:var(--fg); font-weight:600; }
+  .hero .cta-sub { display:none; }
   @media (max-width:820px){ .hero{grid-template-columns:1fr; gap:16px; padding:20px 0 16px;} .hero-art img{max-height:34vh; object-fit:contain;} }
   @media (max-width:600px){ .brand{padding:12px 0 0;} .hero{padding:12px 0 12px;} .hero h1{margin-bottom:10px;} .hero .lede{margin-bottom:18px;}
-    .hero .cta{white-space:nowrap;} .hero .cta-note{display:none;} }
+    .hero .cta{white-space:nowrap;} .hero .cta-note{display:none;} .hero .cta-sub{display:block;} }
 
   .cta { display:inline-block; background:var(--cta-bg); color:var(--cta-fg); padding:12px 22px; border-radius:10px;
     font-weight:600; font-size:15px; margin:4px 10px 4px 0; box-shadow:var(--shadow); transition:transform .15s,filter .15s; }
@@ -278,6 +279,7 @@
       <h1>あなたの作品は、<br>あなたの手元に残るか？</h1>
       <p class="lede">サービスが終わっても、作品はあなたの手元に残る。ブラウザで作って、ダウンロードして保存できる。音楽・本・ラジオ・声・動画まで、同じ書き方でテキストに。</p>
       <p><a class="cta" href="#builder">作品の設計図をつくる<span class="cta-note">（無料・ブラウザ内）</span> →</a> <a class="hero-sub" href="#works">実作品を聴く・観る</a></p>
+      <p class="cta-sub" style="margin:6px 0 0;font-size:12.5px;color:var(--muted)">無料・ブラウザ内で完結（ファイルは送信しません）</p>
       <p class="hero-badge"><b>作者本人が7作品で実運用中</b>・MIT 公開・個人仕様（外部採用 0 件）</p>
       <p class="hint" style="margin:10px 0 0;font-size:13px;color:var(--muted)">かんたんに言うと：作品の情報を「設計図（JSON）」1枚にまとめ、音源や画像と一緒に自分の手元へ保存する仕組みです。</p>
     </div>
@@ -294,9 +296,10 @@
     <div class="stat"><b>MIT</b><span>仕様はオープン</span></div>
   </div>
 
-  <p class="status-note" role="note" style="max-width:var(--maxw);margin:14px auto 0;padding:12px 16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);color:var(--muted);font-size:.9rem;line-height:1.6">
-    <strong style="color:var(--fg)">現在の位置づけ（正直に）：</strong> これは作者1人の制作物に使っている<strong style="color:var(--fg)">個人仕様</strong>です。MIT で公開し、誰でも使えますが、外部採用はまだ 0 件（2026-11-10 時点）。既存標準（C2PA・schema.org・MusicXML・OpenTimelineIO 等）を置き換えるものではなく、それらへ変換する<strong style="color:var(--fg)">ハブ</strong>を目指しています。標準を名乗るのは外部採用が出てから、という方針です。
-  </p>
+  <details class="status-note" role="note" style="max-width:var(--maxw);margin:14px auto 0;padding:12px 16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);color:var(--muted);font-size:.9rem;line-height:1.6">
+    <summary style="cursor:pointer;color:var(--fg);font-weight:600">現在の位置づけ（正直に）— 個人仕様・外部採用 0 件</summary>
+    <p style="margin:10px 0 0">これは作者1人の制作物に使っている<strong style="color:var(--fg)">個人仕様</strong>です。MIT で公開し、誰でも使えますが、外部採用はまだ 0 件（2026-11-11 時点）。既存標準（C2PA・schema.org・MusicXML・OpenTimelineIO 等）を置き換えるものではなく、それらへ変換する<strong style="color:var(--fg)">ハブ</strong>を目指しています。標準を名乗るのは外部採用が出てから、という方針です。</p>
+  </details>
 
   <section id="builder" class="builder" aria-labelledby="h-builder">
     <h2 id="h-builder">ブラウザだけで、今すぐ 1 作品を残す</h2>
@@ -476,7 +479,7 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
 .venv/bin/python tools/validate.py --all</code></pre>
       </div>
       <p><small>Git が苦手なら、GitHub の自分のリポジトリ画面に、ダウンロードした JSON と本体ファイルをそのままドラッグ＆ドロップするだけでも残せます。</small></p>
-      <p><small>既存標準へ書き出したいときは <code>python3 tools/export.py schema.org &lt;file&gt;</code>（JSON-LD）と <code>python3 tools/export.py c2pa &lt;file&gt;</code>（C2PA マニフェスト）に変換できます（どちらも実装済み）。MusicXML・OpenTimelineIO・EPUB への書き出しは未実装です。</small></p>
+      <p><small>既存標準へ書き出したいときは <code>python3 tools/export.py schema.org &lt;file&gt;</code>（JSON-LD）と <code>python3 tools/export.py c2pa &lt;file&gt;</code>（C2PA マニフェスト JSON）に変換できます（どちらも実装済み）。C2PA はマニフェスト JSON の書き出しまでで、バイナリへの埋め込み（JUMBF/COSE 署名）は未実装です。MusicXML・OpenTimelineIO・EPUB への書き出しも未実装です。</small></p>
     </details>
     <p class="who">作っているのは <a href="https://github.com/yukihamada">濱田優貴（@yukihamada）</a> です。仕様も実装も GitHub で公開しています。</p>
     <h2 id="h-faq">よくある質問</h2>
@@ -516,7 +519,7 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
     <p class="sub">openformats は既存標準を置き換えず、それらへの<strong>ハブ</strong>を目指します。「標準」を名乗るのは外部採用が出てから、という方針です（規範は <a href="https://github.com/yukihamada/openformats/blob/main/SPEC.md">SPEC.md §9</a>）。</p>
     <div class="glossary" aria-label="既存標準との対応と実装状況">
       <div><b>schema.org</b>（検索エンジン向けの作品情報の共通形式） — <strong>実装済み</strong>（<code>tools/export.py schema.org</code> で JSON-LD へ）。</div>
-      <div><b>C2PA</b>（写真や動画の「本物・改ざんされていない」を証明する仕組み） — 同じことを <code>content_hash</code>／<code>hash_chain</code>／Ed25519 で JSON 内でも行う。<strong>実装済み</strong>（<code>tools/export.py c2pa</code> で C2PA マニフェストへ書き出し）。</div>
+      <div><b>C2PA</b>（写真や動画の「本物・改ざんされていない」を証明する仕組み） — 同じことを <code>content_hash</code>／<code>hash_chain</code>／Ed25519 で JSON 内でも行う。<strong>実装済み</strong>（<code>tools/export.py c2pa</code> で C2PA マニフェスト JSON へ書き出し。バイナリ埋め込み JUMBF/COSE は未実装）。</div>
       <div><b>MusicXML</b>（楽譜の共通形式）<b> / OpenTimelineIO</b>（動画編集のタイムライン形式）<b> / EPUB</b>（電子書籍の共通形式） — 書き出しは未実装（方向性のみ）。</div>
     </div>
     <p><small>むずかしい用語が多いと感じたら、ここは読み飛ばして構いません。要点は「既存の共通形式へ変換して橋渡しする」ことだけです。実装済みの変換は schema.org と C2PA の2種です（<code>python3 tools/export.py --list</code> で確認できます）。実装したものから順に「実装済み」と明記します。</small></p>
