@@ -211,6 +211,20 @@
       "sha256": "dc49a5ae41c7eb7264d9f0e563e845c6c3038e29b330f48e09aa20dd82a725ef",
       "kind": "audio",
       "duration_sec": 178.61
+    },
+    {
+      "kind": "audio",
+      "format": "mp3",
+      "sha256": "d3d2669fbf98f1f29c04710f4b822548433190dd757783dd2f4a5cc2b1336619",
+      "bytes": 1538469,
+      "generated_at": "2026-11-10T18:48:29Z",
+      "model": "yukihamada",
+      "provider": "teai",
+      "note": "content-addressed: manifest 60480f9d0359",
+      "path": "Hitotsu-Saki-e-yukihamada.mp3",
+      "manifest_sha256": "60480f9d0359b2bc82da6e6e2fdd58123c0522e33ce40b76401bb399b6f84a29",
+      "chunk_count": 138,
+      "new_bytes": 1538469
     }
   ],
   "content_hash": "bfa6ce17b33cfb69efc241bb368a02d59d3d37e9c4202158f9f9bb3b690bac78",

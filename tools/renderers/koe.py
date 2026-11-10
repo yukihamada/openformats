@@ -80,7 +80,8 @@ def _get_bytes(path: str, key: str) -> bytes:
         return resp.read()
 
 
-def render(data, out, *, kind, format, model, voice=None, prompt=None):
+def render(data, out, *, kind, format, model, voice=None, prompt=None,
+           request_id=None):
     key = os.environ.get("TEAI_API_KEY")
     if not key:
         raise RuntimeError(
@@ -100,7 +101,7 @@ def render(data, out, *, kind, format, model, voice=None, prompt=None):
     if not isinstance(credits, int):
         raise RuntimeError(f"quote が credits を返さない: {quote}")
 
-    request_id = str(uuid.uuid4())
+    request_id = request_id or str(uuid.uuid4())
     gen = _post("/api/v1/voice/generate", key, {
         "voice": voice,
         "text": text,

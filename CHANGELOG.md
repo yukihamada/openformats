@@ -5,6 +5,15 @@
 ## [Unreleased]
 
 ### Added
+- `tools/render_long.py` — 600 字上限を超える長文を文境界で分割し、teai で
+  1 チャンクずつ合成して ffmpeg で 1 本に結合する。request_id をテキストから
+  決定的に作るので、通信切断後の再実行で二重課金しない（冪等）。生成済み
+  part は再利用して再開できる。
+- 実音声を 3 作品ぶん追加生成（本人声・48kHz）:
+  - `works/Hitotsu-Saki-e-yukihamada.mp3` — 楽曲「ひとつ先へ」58.4s / 1.4MB
+  - `works/Muscle-Fibers-yukihamada.mp3` — 動画「遅筋と速筋」152.9s / 3.9MB
+  - `works/Yuki-Podcast-001-yukihamada.mp3` — ポッドキャスト 457.0s / 11.6MB
+  いずれも rendition として path・sha256 付きで作品 JSON に紐づき verify 全 true。
 - `tools/renderers/koe.py` を teai の正規非同期経路 (quote → generate →
   poll → audio) に書き換え。従来の単発 POST は実 API と噛み合っていなかった。
   `TEAI_API_KEY` / `KOE_VOICE` / `KOE_LANG` / `KOE_SPEED` を使用。
