@@ -5,6 +5,18 @@
 ## [Unreleased]
 
 ### Added
+- `tools/export.py` — 作品 JSON を既存標準へ書き出す最初の変換。現時点で
+  **schema.org JSON-LD** に対応 (`python3 tools/export.py schema.org <file>`、
+  `--out-dir` で一括、`--list` で実装済み/予定を確認)。kind ごとに
+  MusicComposition / PodcastEpisode / Book / Movie / Article / Product 等へ写し、
+  `content_hash` を `sha256` として残すので元作品を照合できる。回帰テスト追加。
+- README / SPEC / LP に「既存標準との関係」を明記。実装済みは schema.org のみ、
+  C2PA・MusicXML・OpenTimelineIO・EPUB は未実装であることを正直に記載。
+
+### Changed
+- 「オープンな仕様」→「個人仕様（実証段階）」へ表現を修正。外部採用 0 件
+  (2026-11-10) を LP・README に明記し、「標準」を名乗るのは採用後とする方針を追加。
+
 - `products/` に公開 GitHub リポジトリ 28 件を実データで追加 (61 → 89 件)。
   KOE OSS / Koe-swift / koe-device / koe-wake-train / BuildPeek / Mamori /
   mini-agent-c (Evo) / MU (mu-brand) / mu-mockups / kenchiku-bench /
