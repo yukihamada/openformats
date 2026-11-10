@@ -108,6 +108,7 @@
   <h1>変換ツール</h1>
   <p class="lede">openformats の作品 JSON を、<strong>schema.org</strong>（検索エンジンや他アプリが作品情報を読める共通の書き方）や <strong>C2PA</strong>（誰が・いつ・どう作ったかの証明書）へ変換します。schema.org から作品 JSON への<strong>逆変換</strong>もできます。すべてこのブラウザ内で完結し、ファイルはどこにも送信しません。</p>
   <p class="hint" style="margin:-12px 0 20px">かんたんに言うと：作品の設計図（JSON）を、他の世界が読める形に翻訳する道具です。<code>content_hash</code> は作品の「指紋」、<code>JSON-LD</code> は JSON で書く機械向けの意味づけ、と考えてください。</p>
+  <p class="hint" style="margin:-12px 0 20px">※ C2PA への変換は<strong>マニフェスト JSON の書き出しまで</strong>です。バイナリへの埋め込み（JUMBF/COSE 署名）は未実装です。</p>
 
   <section class="panel" aria-labelledby="h-in">
     <h2 id="h-in" class="sr-only">入力</h2>
