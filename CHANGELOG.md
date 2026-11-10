@@ -5,6 +5,15 @@
 ## [Unreleased]
 
 ### Added
+- `products/` に公開 GitHub リポジトリ 28 件を実データで追加 (61 → 89 件)。
+  KOE OSS / Koe-swift / koe-device / koe-wake-train / BuildPeek / Mamori /
+  mini-agent-c (Evo) / MU (mu-brand) / mu-mockups / kenchiku-bench /
+  shitate-bench / sente-browser / sente-shield / teai-privacy / teai-docs /
+  asoview-c / bonding-ai / enablerhq / kumaushi-climate / miseban-ai /
+  openclaw-dashboard / openformats / password-rotate-kagi / sakutsu /
+  stayflow-care / yakiniku-university / yukihamada.jp / zenn。
+  README・GitHub メタデータ・license SPDX を実読して生成。非公開プロジェクトは
+  公開リポジトリに含めない。
 - `works/` に全 16 kind の実データを充足。未収録だった 3 kind を追加:
   - `works/bim-deterministic-scoring-2026-11.article.json` — teai-blog の実記事
     (bim.house 決定論採点・442 件実測・方式比較) を 71 ブロックで収録、出典 2 件。
