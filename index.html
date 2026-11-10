@@ -153,6 +153,15 @@
 
   /* copy button */
   .codewrap { position:relative; }
+  .term-steps { margin-top:18px; border:1px solid var(--line); border-radius:10px; background:var(--card); }
+  .term-steps > summary { display:flex; align-items:center; min-height:44px; padding:10px 16px; cursor:pointer;
+    font-weight:600; color:var(--fg); list-style:none; }
+  .term-steps > summary::-webkit-details-marker { display:none; }
+  .term-steps > summary::before { content:"▸"; margin-right:8px; color:var(--accent); transition:transform .15s; }
+  .term-steps[open] > summary::before { transform:rotate(90deg); }
+  .term-steps > summary:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .term-steps > *:not(summary) { margin-left:16px; margin-right:16px; }
+  .term-steps > .codewrap { margin-left:16px; margin-right:16px; }
   .copy { position:absolute; top:8px; right:8px; background:var(--card); color:var(--muted);
     border:1px solid var(--line); border-radius:7px; padding:5px 10px; font-size:14px; cursor:pointer; min-height:44px; min-width:44px;
     font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif; }
@@ -431,9 +440,11 @@
       <div><b>renditions</b> — 音源や映像など「本体ファイル」の一覧。</div>
       <div><b>sha256</b> — ファイルの「指紋」。本体が改ざんされていないか照合できます。</div>
     </div>
-    <div class="codewrap">
-      <button class="copy" type="button" data-copy="code-1" aria-label="手順1をコピー">コピー</button>
-      <pre><code id="code-1"># 1. ひな形をコピー（署名なし・renditions 付きの starter を使う）
+    <details class="term-steps">
+      <summary>ターミナルでの手順を開く（コピーして 3 ステップ）</summary>
+      <div class="codewrap">
+        <button class="copy" type="button" data-copy="code-1" aria-label="手順1をコピー">コピー</button>
+        <pre><code id="code-1"># 1. ひな形をコピー（署名なし・renditions 付きの starter を使う）
 cp templates/starter.music.json my-song.music.json
 
 # 2. 音源を JSON と同じフォルダに置き、title / id / renditions[].path を自分のものに書き換え
@@ -442,18 +453,19 @@ cp templates/starter.music.json my-song.music.json
 # 3. 指紋を計算して書き込み、本物か検証する（renditions の sha256 も自動で入る）
 python3 tools/of.py hash my-song.music.json --write
 python3 tools/of.py verify my-song.music.json</code></pre>
-    </div>
-    <p>これだけで、あなたの作品は「JSON（設計図）」と「音源（本体）」の 2 層で、あなたの Git に残ります。<code>verify</code> が <code>ok: true</code> なら、音源と JSON の指紋が一致しています。</p>
-    <p><small>※ ひな形は <code>sha256</code> が空なので、<code>validate</code> は <code>hash --write</code> の後に実行してください。</small></p>
-    <div class="codewrap">
-      <button class="copy" type="button" data-copy="code-2" aria-label="手順2をコピー">コピー</button>
-      <pre><code id="code-2">git clone https://github.com/yukihamada/openformats
+      </div>
+      <p>これだけで、あなたの作品は「JSON（設計図）」と「音源（本体）」の 2 層で、あなたの Git に残ります。<code>verify</code> が <code>ok: true</code> なら、音源と JSON の指紋が一致しています。</p>
+      <p><small>※ ひな形は <code>sha256</code> が空なので、<code>validate</code> は <code>hash --write</code> の後に実行してください。</small></p>
+      <div class="codewrap">
+        <button class="copy" type="button" data-copy="code-2" aria-label="手順2をコピー">コピー</button>
+        <pre><code id="code-2">git clone https://github.com/yukihamada/openformats
 cd openformats
 python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
 .venv/bin/python tools/validate.py --all</code></pre>
-    </div>
-    <p><small>Git が苦手なら、GitHub の自分のリポジトリ画面に、ダウンロードした JSON と本体ファイルをそのままドラッグ＆ドロップするだけでも残せます。</small></p>
-    <p><small>既存標準へ書き出したいときは <code>python3 tools/export.py schema.org &lt;file&gt;</code> で schema.org の JSON-LD に変換できます（実装済み）。C2PA・MusicXML・OpenTimelineIO・EPUB への書き出しは未実装です。</small></p>
+      </div>
+      <p><small>Git が苦手なら、GitHub の自分のリポジトリ画面に、ダウンロードした JSON と本体ファイルをそのままドラッグ＆ドロップするだけでも残せます。</small></p>
+      <p><small>既存標準へ書き出したいときは <code>python3 tools/export.py schema.org &lt;file&gt;</code> で schema.org の JSON-LD に変換できます（実装済み）。C2PA・MusicXML・OpenTimelineIO・EPUB への書き出しは未実装です。</small></p>
+    </details>
     <p class="who">作っているのは <a href="https://github.com/yukihamada">濱田優貴（@yukihamada）</a> です。仕様も実装も GitHub で公開しています。</p>
     <h2 id="h-faq">よくある質問</h2>
     <div class="faq" aria-labelledby="h-faq">
