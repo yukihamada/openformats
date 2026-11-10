@@ -444,6 +444,50 @@ def test_export_schema_org_maps_kinds():
     assert export.to_schema_org({"kind": "zzz", "id": "z"})["@type"] == "CreativeWork"
 
 
+def test_export_schema_org_roundtrip():
+    sys.path.insert(0, str(ROOT / "tools"))
+    import importlib
+    export = importlib.import_module("export")
+    for kind in ("music", "radio", "movie", "book", "voice", "device", "product",
+                 "article", "image", "event", "person", "place"):
+        src = {"spec_version": "1.1.0", "kind": kind, "id": "w-1", "title": "T",
+               "lang": "ja", "authors": [{"name": "A"}],
+               "content_hash": "deadbeef",
+               "renditions": [{"path": "a.bin", "format": "x", "sha256": "h"}]}
+        back = export.from_schema_org(export.to_schema_org(src))
+        assert back["kind"] == kind, f"{kind} -> {back['kind']}"
+        assert back["id"] == "w-1" and back["title"] == "T"
+        assert back["content_hash"] == "deadbeef"
+        assert back["authors"][0]["name"] == "A"
+        assert back["renditions"][0]["path"] == "a.bin"
+
+
+def test_export_c2pa_manifest():
+    sys.path.insert(0, str(ROOT / "tools"))
+    import importlib
+    export = importlib.import_module("export")
+    data = {"kind": "music", "id": "x", "title": "T", "content_hash": "abc",
+            "authors": [{"name": "A"}],
+            "provenance": {"generator": {"name": "Suno", "version": "v4"},
+                           "human_involvement": "ai-assisted",
+                           "history": [{"at": "2026-01-01T00:00:00Z", "action": "create"}]},
+            "renditions": [{"path": "a.m4a", "sha256": "d", "format": "m4a", "mime": "audio/mp4"}],
+            "signatures": [{"alg": "Ed25519", "signer": "s", "public_key": "pk",
+                            "signature": "sig", "signed_at": "2026-01-01T00:00:00Z"}]}
+    man = export.to_c2pa(data)
+    assert man["claim_generator"] == "Suno/v4"
+    assert man["format"] == "audio/mp4"
+    labels = {a["label"] for a in man["assertions"]}
+    assert "c2pa.hash.data" in labels and "c2pa.actions" in labels
+    assert man["assertions"][0]["data"]["hash"] == "abc"
+    assert man["signature_info"][0]["alg"] == "Ed25519"
+    assert man["ingredients"][0]["hash"]["hash"] == "d"
+    # 署名・来歴の無い作品でも落ちない (空の assertions は省かれる)
+    minimal = export.to_c2pa({"kind": "article", "id": "y"})
+    assert "assertions" not in minimal or minimal["assertions"] == []
+
+
+
 def _run():
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     failed = 0

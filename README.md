@@ -189,8 +189,12 @@ rm works/try.music.json
 # 4. レンダリング — JSON から媒体を作り、SHA-256 で作品に紐づける
 python3 tools/render.py examples/sample.music.json --kind audio --format wav --dry-run
 
-# 5. 書き出し — 既存標準 (schema.org JSON-LD) へ変換する
+# 5. 書き出し — 既存標準へ変換する（schema.org / C2PA）
 python3 tools/export.py schema.org works/hitotsu-saki-e.music.json
+python3 tools/export.py c2pa       works/hitotsu-saki-e.music.json
+
+# 6. 逆変換 — schema.org JSON-LD から作品 JSON を復元する
+python3 tools/export.py import /tmp/ld/hitotsu-saki-e.schemaorg.json
 ```
 
 > `source .venv/bin/activate` を使わない場合は、各コマンドの `python3` を `.venv/bin/python` に置き換えれば同じです。
@@ -200,7 +204,7 @@ python3 tools/export.py schema.org works/hitotsu-saki-e.music.json
 - [tools/validate.py](tools/validate.py) — JSON Schema (Draft 2020-12) で作品を検証する。`--all` でリポジトリ全体。
 - [tools/of.py](tools/of.py) — ハッシュ・Ed25519 署名・検証・改訂（`revise`）・モデル移行（`migrate`）の CLI。`verify` は `content_hash`・署名・チェーンに加え、`renditions[].path` の実体存在と SHA-256 一致まで検証する（音源が欠けていれば `ok: false`）。
 - [tools/render.py](tools/render.py) — JSON を媒体化し、実体の SHA-256 で作品に紐づける（`--dry-run` で安全に試せる）。
-- [tools/export.py](tools/export.py) — 作品 JSON を既存標準へ書き出す。現時点で **schema.org JSON-LD** に対応（`--list` で実装済み・予定を確認できる）。
+- [tools/export.py](tools/export.py) — 作品 JSON と既存標準の相互変換。**schema.org JSON-LD**（`schema.org`）と **C2PA マニフェスト**（`c2pa`）への書き出し、schema.org からの**逆変換**（`import`）に対応（`--list` で実装済み・予定を確認できる）。
 
 ---
 
@@ -260,13 +264,13 @@ openformats は既存標準を置き換えず、それらへの**ハブ**を目�
 
 | 領域 | 既存標準 | openformats の役割 | 実装状況 |
 |---|---|---|---|
-| 作品メタデータ | [schema.org](https://schema.org/) | 作品 JSON から JSON-LD へ書き出す | **実装済み**（`tools/export.py schema.org`） |
-| 来歴・署名・改ざん検知 | [C2PA](https://c2pa.org/) | `content_hash` / `hash_chain` / Ed25519 で同じことを JSON 内で行う。C2PA マニフェストへの変換を将来対応。 | 未実装 |
+| 作品メタデータ | [schema.org](https://schema.org/) | 作品 JSON から JSON-LD へ書き出す。逆変換（`import`）で作品 JSON に戻せる。 | **実装済み**（`tools/export.py schema.org` / `import`） |
+| 来歴・署名・改ざん検知 | [C2PA](https://c2pa.org/) | `content_hash` / `hash_chain` / Ed25519 で同じことを JSON 内で行う。C2PA マニフェスト JSON へも書き出せる。 | **実装済み**（`tools/export.py c2pa`） |
 | 楽譜 | MusicXML / MIDI | `music` から書き出す。 | 未実装 |
 | 動画編集 | [OpenTimelineIO](https://opentimeline.io/) / ffmpeg / Remotion | `movie` のタイムラインを変換する。 | 未実装 |
 | 本 | EPUB / PDF | `book` から書き出す。 | 未実装 |
 
-**現状の限界** — 実装済みの変換は schema.org のみ（`python3 tools/export.py --list` で確認できる）。C2PA・MusicXML・OpenTimelineIO・EPUB への書き出しは未実装です。実装したものからこの表に「実装済み」と明記していきます。
+**現状の限界** — 実装済みの変換は schema.org（往復可）と C2PA マニフェスト JSON（`python3 tools/export.py --list` で確認できる）。C2PA はマニフェスト JSON の書き出しまでで、バイナリへの埋め込み（JUMBF/COSE 署名）は未実装です。MusicXML・OpenTimelineIO・EPUB・PDF への書き出しも未実装です。実装したものからこの表に「実装済み」と明記していきます。
 
 ---
 

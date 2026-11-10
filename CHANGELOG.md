@@ -5,6 +5,18 @@
 ## [Unreleased]
 
 ### Added
+- `tools/export.py c2pa` — 作品 JSON を C2PA マニフェスト (JSON) へ書き出す。
+  content_hash を `c2pa.hash.data`、作者を作成 assertion、provenance.history を
+  `c2pa.actions`、renditions を ingredient、Ed25519 署名を signature_info に写す。
+  バイナリ埋め込み (JUMBF/COSE) は対象外。
+- `tools/export.py import` — schema.org JSON-LD から作品 JSON を復元する逆変換。
+  id・title・authors・lang・license・renditions・content_hash を戻す。往復で
+  元作品と一致する（全 9 作品で content_hash/id/kind 一致を確認）。
+- schema.org 書き出しに `additionalType: openformats:<kind>` を追加。schema.org
+  の型だけでは device と product が同じ Product に潰れるため、元 kind を残して
+  往復を可逆にした。
+- 回帰テスト: `test_export_schema_org_roundtrip`（12 kind の往復）、
+  `test_export_c2pa_manifest`。
 - `tools/render_long.py` — 600 字上限を超える長文を文境界で分割し、teai で
   1 チャンクずつ合成して ffmpeg で 1 本に結合する。request_id をテキストから
   決定的に作るので、通信切断後の再実行で二重課金しない（冪等）。生成済み
