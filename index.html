@@ -8,7 +8,7 @@
 <meta name="description" content="あらゆる創作の最小単位を、人間が読める JSON で定義する個人仕様（MIT・公開）。音楽・ラジオ・本・声・動画・製品・場所を同じ語彙で。既存標準を置き換えずハブを目指す実証段階。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="openformats — あなたの作品は、あなたの手元に残るか？">
-<meta property="og:description" content="1 作品 = 1 JSON。音楽も本もラジオも、テキストで、あなたの Git の中に。実音源つき。">
+<meta property="og:description" content="1 作品 = 1 JSON。音楽も本もラジオも、テキストで、あなたの手元に。ブラウザで作ってダウンロード保存。実音源つき。">
 <meta property="og:url" content="https://yukihamada.github.io/openformats/">
 <meta property="og:site_name" content="openformats">
 <meta property="og:image" content="https://yukihamada.github.io/openformats/og-image.png">
@@ -45,7 +45,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="openformats — あなたの作品は、あなたの手元に残るか？">
-<meta name="twitter:description" content="1 作品 = 1 JSON。音楽も本もラジオも、テキストで、あなたの Git の中に。実音源つき。">
+<meta name="twitter:description" content="1 作品 = 1 JSON。音楽も本もラジオも、テキストで、あなたの手元に。ブラウザで作ってダウンロード保存。実音源つき。">
 <meta name="twitter:image" content="https://yukihamada.github.io/openformats/og-image.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%232b5cff'/%3E%3Ctext x='12' y='17' font-size='13' font-family='monospace' fill='white' text-anchor='middle'%3E%7B%7D%3C/text%3E%3C/svg%3E">
 <style>
@@ -101,6 +101,7 @@
   .who { margin:22px 0 6px; font-size:14px; color:var(--muted); }
   .who a { color:var(--fg); }
   .hero-sub { display:inline-block; margin-left:14px; font-size:14px; color:var(--muted); text-decoration:underline; padding:12px 4px; }
+  .hero p a.hero-sub { display:inline-flex; align-items:center; min-height:44px; padding:0 6px; }
   .hero-badge { display:inline-flex; align-items:center; gap:6px; margin-top:16px; font-size:13px; color:var(--muted);
     background:var(--card); border:1px solid var(--line); border-radius:999px; padding:6px 12px; line-height:1.4; }
   .hero-badge b { color:var(--fg); font-weight:600; }
