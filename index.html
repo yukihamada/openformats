@@ -338,7 +338,7 @@
 
   <section id="works" aria-labelledby="h-works">
     <h2 id="h-works">本物の作品 — その場で聴けます・観られます</h2>
-    <p class="sub">この仕組みで作った実作品。実ファイルの SHA-256 は JSON の <code>renditions[].sha256</code> と一致します（詳細は <a href="https://github.com/yukihamada/openformats/tree/main/works">works/</a>）。<br><small>実測ログ（2026-11-09）: 7 作品とも <code>of.py verify</code> → <code>content_hash_match: true</code> / <code>renditions[].ok: true</code>（解説動画 mp4 = <code>82915572…</code>、画像 png = <code>54b83b15…</code>）</small></p>
+    <p class="sub">この仕組みで作った実作品。実ファイルの SHA-256 は JSON の <code>renditions[].sha256</code> と一致します（詳細は <a href="https://github.com/yukihamada/openformats/tree/main/works">works/</a>）。<br><small>実測ログ（2026-11-10）: 7 作品とも <code>of.py verify</code> → <code>content_hash_match: true</code>。うち本体ファイルを持つ 5 作品は <code>renditions[].ok: true</code>、記事と端末の 2 作品は本体ファイルを持たないため <code>renditions</code> は空です（解説動画 mp4 = <code>82915572…</code>、画像 png = <code>54b83b15…</code>）。</small></p>
     <div class="works">
       <div class="work">
         <div class="cover"><img src="assets/works/moco-news.webp" width="640" height="400" alt="「モコの、ひと息AIニュース」のカバー" loading="lazy" decoding="async"></div>
@@ -478,7 +478,7 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
   <footer>
     仕様は <a href="https://github.com/yukihamada/openformats">MIT</a>。規範文書は <a href="https://github.com/yukihamada/openformats/blob/main/SPEC.md">SPEC.md</a>、版管理は <a href="https://github.com/yukihamada/openformats/blob/main/VERSIONING.md">VERSIONING.md</a>。<br>
     制作・運営: <a href="https://yukihamada.jp">濱田優貴</a> ・ <a href="https://github.com/yukihamada/openformats">GitHub リポジトリ</a> ・ <a href="https://github.com/yukihamada/openformats/issues">改善提案・問い合わせ</a><br>
-    <small>最終更新: 2026-11-08 ・ 検証: <code>of.py verify</code> が <code>ok: true</code> を返すと、音源と JSON の指紋が一致します。</small>
+    <small>最終更新: 2026-11-10 ・ 検証: <code>of.py verify</code> が <code>ok: true</code> を返すと、音源と JSON の指紋が一致します。</small>
   </footer>
 </main>
 <div class="sr-only" role="status" aria-live="polite" id="copy-status"></div>
@@ -557,7 +557,10 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
         "access":{"visibility":"private","derivatives":"allow"}
       };
       var rend=null;
-      if(fileState.sha256){ rend={kind:"audio",format:fileState.format||'bin',path:file,sha256:fileState.sha256,bytes:fileState.bytes}; }
+      if(fileState.sha256){
+        var rkind = (kind==='movie') ? 'video' : (kind==='image') ? 'image' : (kind==='article'||kind==='book') ? 'document' : 'audio';
+        rend={kind:rkind,format:fileState.format||'bin',path:file,sha256:fileState.sha256,bytes:fileState.bytes};
+      }
       if(kind==='music'){ if(rend)o.renditions=[rend]; }
       else if(kind==='radio'){ o.speakers=[{id:"host",name:author}]; o.segments=[{type:"speech",speaker:"host",text:"ここに台本"}]; if(rend)o.renditions=[rend]; }
       else if(kind==='voice'){ o.source={path:file||'voice.wav'}; if(rend)o.renditions=[rend]; }
