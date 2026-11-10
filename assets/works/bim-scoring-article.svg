@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="記事『LLMに「何点ですか」と聞くのをやめた』のカバー">
+  <defs>
+    <linearGradient id="abg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#12303a"/><stop offset="1" stop-color="#2b7a8c"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="url(#abg)"/>
+  <g opacity="0.9">
+    <rect x="404" y="70" width="188" height="240" rx="14" fill="#ffffff" opacity="0.10"/>
+    <g fill="none" stroke="#bfe6ee" stroke-width="3" stroke-linecap="round" opacity="0.9">
+      <path d="M430 110 H566"/>
+      <path d="M430 140 H566"/>
+      <path d="M430 170 H540"/>
+      <path d="M430 200 H566"/>
+      <path d="M430 230 H500"/>
+    </g>
+    <g fill="#8fdfe9">
+      <rect x="430" y="262" width="30" height="30" rx="6"/>
+      <rect x="470" y="262" width="30" height="30" rx="6" opacity="0.7"/>
+      <rect x="510" y="262" width="30" height="30" rx="6" opacity="0.45"/>
+    </g>
+  </g>
+  <text x="48" y="120" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" font-size="20" font-weight="700" fill="#8fdfe9">ARTICLE ・ 442件の実測</text>
+  <text x="48" y="180" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" font-size="40" font-weight="800" fill="#ffffff">決定論で採点する</text>
+  <text x="48" y="220" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" font-size="16" fill="#bfe6ee">LLMに「何点ですか」と聞くのをやめた</text>
+</svg>

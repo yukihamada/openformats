@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="端末『MacBook Pro (M5 Max, 2026)』のカバー">
+  <defs>
+    <linearGradient id="dbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b1b22"/><stop offset="1" stop-color="#3a3a4a"/>
+    </linearGradient>
+    <linearGradient id="dscreen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2b5cff"/><stop offset="1" stop-color="#7aa0ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="url(#dbg)"/>
+  <g>
+    <rect x="404" y="96" width="180" height="116" rx="9" fill="url(#dscreen)" opacity="0.9"/>
+    <rect x="392" y="212" width="204" height="12" rx="6" fill="#c8c8d2"/>
+    <rect x="404" y="96" width="180" height="116" rx="9" fill="none" stroke="#e8e8f0" stroke-width="2" opacity="0.5"/>
+  </g>
+  <text x="48" y="120" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" font-size="20" font-weight="700" fill="#a9c0ff">DEVICE ・ 制作機材</text>
+  <text x="48" y="180" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" font-size="40" font-weight="800" fill="#ffffff">M5 Max / 128GB</text>
+  <text x="48" y="220" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" font-size="16" fill="#c8d4ff">MacBook Pro (2026) ・ 18コア ・ Metal 4</text>
+</svg>
