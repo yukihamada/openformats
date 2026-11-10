@@ -1,0 +1,42 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "product",
+  "id": "teai-privacy",
+  "name": "teai-privacy",
+  "group": "AI・仕事",
+  "description": "AI バックエンドへ届く前にテキストを点検する、Cloudflare Workers 向けの自己ホスト型プライバシーゲートウェイ。",
+  "url": "https://github.com/yukihamada/teai-privacy",
+  "status": "live",
+  "license": "MIT",
+  "platforms": [
+    "web",
+    "api"
+  ],
+  "formats": [
+    "article"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://github.com/yukihamada/teai-privacy",
+        "note": "GitHub リポジトリ 2026-11-10 実読"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-10T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "公開リポジトリから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "ネットワーク不要の JS コア。MIT。",
+  "content_hash": "1f4e171ef1d9d7dcfbe3e5ea49145cf44e1465128e850cca2cf0912086a1aab6"
+}

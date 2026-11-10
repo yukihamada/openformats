@@ -1,0 +1,41 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "product",
+  "id": "yukihamada-jp",
+  "name": "yukihamada.jp",
+  "group": "研究・関連サイト",
+  "description": "濱田優貴の個人サイト。Rust + Axum + Askama の SSR を Fly.io でホスト。",
+  "url": "https://yukihamada.jp",
+  "status": "live",
+  "license": "all-rights-reserved",
+  "platforms": [
+    "web"
+  ],
+  "formats": [
+    "article"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://github.com/yukihamada/yukihamada.jp",
+        "note": "GitHub リポジトリ 2026-11-10 実読"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-10T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "公開リポジトリから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "ブログ記事と管理ターミナルを含む。",
+  "content_hash": "44020fd756b74fa7411d2c687cc7926644e5c4483705955d6e32a667b94d8fb6"
+}

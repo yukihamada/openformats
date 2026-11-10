@@ -1,0 +1,42 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "product",
+  "id": "sakutsu",
+  "name": "サクッ (sakutsu)",
+  "group": "事業・お金・契約",
+  "description": "確定申告・青色申告サポートアプリ。所得・経費・控除入力から税額計算、e-Tax XML 出力まで。",
+  "url": "https://github.com/yukihamada/sakutsu",
+  "status": "beta",
+  "license": "MIT",
+  "platforms": [
+    "ios",
+    "macos"
+  ],
+  "formats": [
+    "article"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://github.com/yukihamada/sakutsu",
+        "note": "GitHub リポジトリ 2026-11-10 実読"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-10T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "公開リポジトリから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "e-Tax XML 生成に対応。",
+  "content_hash": "790d2ebf669da7833d40f77f8e6fe40b802958f3df74f71b3ff44b4774692315"
+}

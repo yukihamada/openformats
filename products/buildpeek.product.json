@@ -1,0 +1,41 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "product",
+  "id": "buildpeek",
+  "name": "BuildPeek",
+  "group": "研究・関連サイト",
+  "description": "Dockerfile・イメージ履歴・設定JSONをローカルで点検し、秘密情報の混入を示すブラウザツール。",
+  "url": "https://github.com/yukihamada/buildpeek",
+  "status": "beta",
+  "license": "MIT",
+  "platforms": [
+    "web"
+  ],
+  "formats": [
+    "article"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://github.com/yukihamada/buildpeek",
+        "note": "GitHub リポジトリ 2026-11-10 実読"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-10T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "公開リポジトリから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "8つのヒューリスティック。入力アップロードなし。",
+  "content_hash": "04c2a1531b0dc8a560dda3193507057db83c3b77fe55b6b228f21676ac21d976"
+}

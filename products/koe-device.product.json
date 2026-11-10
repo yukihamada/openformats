@@ -1,0 +1,42 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "product",
+  "id": "koe-device",
+  "name": "Koe Device",
+  "group": "声・音楽・メディア",
+  "description": "AI音声コンパニオンデバイスと Soluna Edition のフェス音響。ESP32-S3 + Raspberry Pi CM5。",
+  "url": "https://koe.live/",
+  "status": "development",
+  "license": "MIT",
+  "platforms": [
+    "device"
+  ],
+  "formats": [
+    "voice",
+    "device"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://github.com/yukihamada/koe-device",
+        "note": "GitHub リポジトリ 2026-11-10 実読"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-10T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "公開リポジトリから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "オープンハードウェア。実機出荷は未確認。",
+  "content_hash": "43a007476184e9c123005f586b601adedda314a59e88b28261021b50a37ff1aa"
+}

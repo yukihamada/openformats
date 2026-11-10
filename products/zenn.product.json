@@ -1,0 +1,41 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "product",
+  "id": "zenn",
+  "name": "zenn",
+  "group": "研究・関連サイト",
+  "description": "Zenn 記事の管理リポジトリ (Zenn CLI)。",
+  "url": "https://zenn.dev/yukihamada",
+  "status": "live",
+  "license": "all-rights-reserved",
+  "platforms": [
+    "web"
+  ],
+  "formats": [
+    "article"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://github.com/yukihamada/zenn",
+        "note": "GitHub リポジトリ 2026-11-10 実読"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-10T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "公開リポジトリから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "記事原稿のリポジトリ。",
+  "content_hash": "b54b00127af6240a1867b60bd99e72f60690e5acf6bed36d30e6f1661dc67d1f"
+}

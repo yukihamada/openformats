@@ -119,14 +119,14 @@ python3 tools/validate.py radio/v1.json works/yuki-podcast-001.radio.json
 | [place/v1.json](place/v1.json) | place | 場所・会場・POI | land/event/media |
 | [product/v1.json](product/v1.json) | product | 製品・サービス・ブランド | カタログ/作品連携 |
 
-**16 種類すべてに実データが入っています。** 内訳: music 2・radio 3・product 61、ほか article / bim / book / collection / country / device / event / image / land / movie / person / place / voice が各 1 件以上（`python3 tools/validate.py --all` で全件 PASS）。
+**16 種類すべてに実データが入っています。** 内訳: product 89・music 2・radio 3、ほか article / bim / book / collection / country / device / event / image / land / movie / person / place / voice が各 1 件以上（`python3 tools/validate.py --all` で全件 PASS）。
 
 ---
 
 ## 収録データ
 
 - [works/](works/) — 実作品（ポッドキャスト・ラジオ・楽曲・解説動画・記事・画像・端末・作者・作品集）。**音源・動画・画像ファイル本体も同梱**、JSON の SHA-256 と一致。
-- [products/](products/) — Enabler の製品カタログ 61 件 (`*.product.json`)。状態は確認時点を `status` に記録し、未確認は `unknown`。
+- [products/](products/) — 製品カタログ 89 件 (`*.product.json`)。Enabler 製品 61 件に加え、公開 GitHub リポジトリから実データで追加した 28 件（KOE OSS、BuildPeek、Mamori、mini-agent-c、MU、kenchiku-bench 等）。状態は確認時点を `status` に記録し、未確認は `unknown`。非公開プロジェクトは公開リポジトリに含めていません。
 - [events/](events/) — イベント（[zamna-hawaii-2026.event.json](events/zamna-hawaii-2026.event.json) 等）。
 - [places/](places/) — 会場・POI（[echoa-ridge.place.json](places/echoa-ridge.place.json) 等）。
 - [examples/](examples/) — 各フォーマットの最小サンプル。自分の作品を作るときは署名なし・`renditions` 付きの [templates/starter.music.json](templates/starter.music.json) をコピーすると最短です（`sha256` は空なので、`validate` の前に `hash --write` を実行してください）。建築は [examples/sample.bim.json](examples/sample.bim.json)（bim.house 完全スキーマの実例）。

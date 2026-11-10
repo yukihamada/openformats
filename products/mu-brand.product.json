@@ -1,0 +1,41 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "product",
+  "id": "mu-brand",
+  "name": "MU (mu-brand)",
+  "group": "創作・買い物",
+  "description": "AI が運営するアパレルブランド。北海道の天候で数量を決め、ボンディングカーブ価格で販売。",
+  "url": "https://wearmu.com",
+  "status": "live",
+  "license": "all-rights-reserved",
+  "platforms": [
+    "web"
+  ],
+  "formats": [
+    "product"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://github.com/yukihamada/mu-brand",
+        "note": "GitHub リポジトリ 2026-11-10 実読"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-10T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "公開リポジトリから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "Rust/Axum・Stripe・Printful 構成。",
+  "content_hash": "4475d5c19dd2b8cf8669170a4533e1702ceaf7da1d3b6dab71514d4c29566a13"
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://yukihamada.github.io/openformats/product/v1.json",
+  "spec_version": "1.1.0",
+  "kind": "product",
+  "id": "enablerhq",
+  "name": "enablerhq.com",
+  "group": "研究・関連サイト",
+  "description": "株式会社イネブラのコーポレートサイト (静的HTML + nginx / Fly.io)。",
+  "url": "https://enablerhq.com",
+  "status": "live",
+  "license": "all-rights-reserved",
+  "platforms": [
+    "web"
+  ],
+  "formats": [
+    "article"
+  ],
+  "provenance": {
+    "human_involvement": "human",
+    "sources": [
+      {
+        "ref": "https://github.com/yukihamada/enablerhq",
+        "note": "GitHub リポジトリ 2026-11-10 実読"
+      }
+    ],
+    "history": [
+      {
+        "at": "2026-11-10T00:00:00Z",
+        "action": "import",
+        "by": "openformats",
+        "note": "公開リポジトリから生成"
+      }
+    ]
+  },
+  "access": {
+    "visibility": "public",
+    "derivatives": "ask"
+  },
+  "note": "README に Fly.io 構成と約$5/月の記載。",
+  "content_hash": "8e79a0fe9adb5f7cc9e66871280d44c748446bb3b4f1d799cd9bba2274297ce4"
+}
