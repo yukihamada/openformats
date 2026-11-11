@@ -574,6 +574,102 @@ def test_export_pdf_japanese_font_subset():
     assert len(raw) < 5_000_000, len(raw)
 
 
+def test_export_musicxml_from_midi_uses_real_pitches():
+    """MIDI 参照があるとき、実音高・和音・小節を譜面へ反映する（回帰）。"""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import importlib, struct, tempfile, pathlib
+    import xml.etree.ElementTree as ET
+    export = importlib.import_module("export")
+
+    def vlq(n):
+        out = [n & 0x7F]
+        n >>= 7
+        while n:
+            out.append((n & 0x7F) | 0x80)
+            n >>= 7
+        return bytes(reversed(out))
+
+    ev = [b"\x00\xff\x58\x04\x04\x02\x18\x08"]  # 4/4
+    for note in (60, 64, 67):
+        ev.append(vlq(0) + bytes([0x90, note, 100]))
+    for note in (60, 64, 67):
+        ev.append(vlq(480) + bytes([0x80, note, 0]))
+    ev.append(vlq(0) + bytes([0x90, 74, 100]))
+    ev.append(vlq(480) + bytes([0x80, 74, 0]))
+    ev.append(b"\x00\xff\x2f\x00")
+    tdata = b"".join(ev)
+    midi = (b"MThd" + struct.pack(">IHHH", 6, 0, 1, 480)
+            + b"MTrk" + struct.pack(">I", len(tdata)) + tdata)
+    with tempfile.TemporaryDirectory() as d:
+        (pathlib.Path(d) / "mel.mid").write_bytes(midi)
+        data = {"kind": "music", "id": "mid", "title": "T",
+                "meta": {"bpm": 120, "key": "C major", "time_signature": "4/4"},
+                "tracks": [{"role": "vocal", "instrument": "Voice", "midi": "mel.mid"}],
+                "sections": [{"name": "verse"}]}
+        xml = export.to_musicxml(data, base_dir=d)
+    ET.fromstring(xml.encode("utf-8"))
+    assert xml.count("<chord/>") == 2, "和音が <chord/> で表現されていない"
+    for pitch in ("<step>C</step><octave>4</octave>",
+                  "<step>E</step><octave>4</octave>",
+                  "<step>G</step><octave>4</octave>",
+                  "<step>D</step><octave>5</octave>"):
+        assert pitch in xml, pitch
+    data2 = dict(data)
+    data2["tracks"] = []
+    xml2 = export.to_musicxml(data2)
+    assert "<chord/>" not in xml2
+
+
+def test_export_musicxml_midi_parser_running_status():
+    """running status 付き MIDI を正しく解析する（回帰）。"""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import importlib, struct
+    export = importlib.import_module("export")
+
+    def vlq(n):
+        out = [n & 0x7F]
+        n >>= 7
+        while n:
+            out.append((n & 0x7F) | 0x80)
+            n >>= 7
+        return bytes(reversed(out))
+
+    ev = (b"\x00\x90\x3c\x64" + vlq(480) + b"\x3c\x00"
+          + b"\x00\x40\x64" + vlq(480) + b"\x40\x00" + b"\x00\xff\x2f\x00")
+    midi = (b"MThd" + struct.pack(">IHHH", 6, 0, 1, 480)
+            + b"MTrk" + struct.pack(">I", len(ev)) + ev)
+    parsed = export._midi_parse(midi)
+    notes = parsed["tracks"][0]
+    assert len(notes) == 2, notes
+    assert [n[2] for n in notes] == [60, 64]
+    assert notes[0][1] == 480 and notes[1][1] == 480
+
+
+def test_export_pdf_cff_font():
+    """CFF(OTF/TTC) フォントを FontFile3 で埋め込み、日本語を抽出できる（回帰）。"""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import importlib, tempfile, pathlib, subprocess, shutil
+    export = importlib.import_module("export")
+    cands = [
+        "/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc",
+        "/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc",
+    ]
+    path = next((c for c in cands if pathlib.Path(c).exists()), None)
+    if path is None:
+        return
+    data = {"kind": "article", "id": "a", "title": "題",
+            "blocks": [{"type": "paragraph", "text": "日本語の本文です。"}]}
+    with tempfile.TemporaryDirectory() as d:
+        out = pathlib.Path(d) / "cff.pdf"
+        r = export.to_pdf(data, out, font_path=path)
+        raw = out.read_bytes()
+        assert r["font"], "CFF フォントが選択されていない"
+        assert b"CIDFontType0" in raw and b"FontFile3" in raw
+        if shutil.which("pdftotext"):
+            txt = subprocess.run(["pdftotext", str(out), "-"],
+                                 capture_output=True, text=True).stdout
+            assert "日本語の本文です。" in txt, repr(txt)
+
 
 def test_export_otio_structure():
     sys.path.insert(0, str(ROOT / "tools"))
