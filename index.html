@@ -100,9 +100,9 @@
   @media (prefers-color-scheme: dark){ .hero-art .light{display:none;} .hero-art .dark{display:block;} }
   .who { margin:22px 0 6px; font-size:14px; color:var(--muted); }
   .who a { color:var(--fg); }
-  .hero p a.hero-sub { display:inline-flex; align-items:center; min-height:44px; padding:0 16px; margin:4px 10px 4px 0;
-    border:1px solid var(--accent); border-radius:10px; color:var(--accent); font-weight:600; text-decoration:none; }
-  .hero p a.hero-sub:hover { background:var(--accent-soft); text-decoration:none; }
+  .hero p a.hero-sub { display:inline-flex; align-items:center; min-height:44px; padding:0 8px; margin:4px 0 4px 6px;
+    color:var(--accent); font-weight:600; text-decoration:underline; text-underline-offset:3px; }
+  .hero p a.hero-sub:hover { text-decoration:underline; }
   .hero-badge { display:inline-flex; align-items:center; gap:6px; margin-top:16px; font-size:13px; color:var(--muted);
     background:var(--card); border:1px solid var(--line); border-radius:999px; padding:6px 12px; line-height:1.4; }
   .hero-badge b { color:var(--fg); font-weight:600; }
@@ -276,7 +276,7 @@
   <section class="hero" id="hero" tabindex="-1">
     <div>
       <h1>あなたの作品は、<br>あなたの手元に残るか？</h1>
-      <p class="lede">サービスが終わっても、作品はあなたの手元に残る。ブラウザで作って、ダウンロードして保存できる。音楽・本・ラジオ・声・動画まで、同じ書き方でテキストに。</p>
+      <p class="lede">作品を JSON 1枚（設計図）で保存する個人仕様です。サービスが終わっても、作品はあなたの手元に残る。ブラウザで作って、ダウンロードして保存できる。音楽・本・ラジオ・声・動画まで、同じ書き方でテキストに。</p>
       <p><a class="cta" href="#builder">作品の設計図をつくる<span class="cta-note">（無料・ブラウザ内）</span> →</a> <a class="hero-sub" href="#works">実作品を聴く・観る</a></p>
       <p class="cta-sub" style="margin:6px 0 0;font-size:12.5px;color:var(--muted)">無料・ブラウザ内（送信なし）</p>
       <p class="hero-badge"><b>作者本人が7作品で実運用中</b>・MIT 公開・個人仕様（外部採用 0 件）</p>
@@ -289,9 +289,9 @@
   </section>
 
   <div class="stats" aria-label="このリポジトリの規模">
-    <div class="stat"><b>16</b><span>種類（<a href="https://github.com/yukihamada/openformats/blob/main/core/envelope/v1.json">kind 定義</a>・うち8種はブラウザで即生成）</span></div>
-    <div class="stat"><b>89</b><span>構想プロダクト（<a href="https://github.com/yukihamada/openformats/tree/main/products">products/</a>・変換実装は schema.org・C2PA の2種）</span></div>
-    <div class="stat"><b>SHA-256</b><span>で本体と照合</span></div>
+    <div class="stat"><b>16</b><span>作品の種類（<a href="https://github.com/yukihamada/openformats/blob/main/core/envelope/v1.json">kind 定義</a>・うち8種はブラウザで即生成）</span></div>
+    <div class="stat"><b>89</b><span>構想プロダクト（<a href="https://github.com/yukihamada/openformats/tree/main/products">products/</a>）</span></div>
+    <div class="stat"><b>2</b><span>変換の実装（schema.org・C2PA）</span></div>
     <div class="stat"><b>MIT</b><span>仕様はオープン</span></div>
   </div>
 
