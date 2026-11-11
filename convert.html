@@ -274,27 +274,34 @@
     return true;
   }
 
+  function reject(msg, paneMsg) {
+    showStatus(outStatus, "warn", msg);
+    pane.textContent = paneMsg;
+    outLabel.textContent = "変換できません";
+    outKind.innerHTML = "";
+  }
+
   function convert(target) {
     if (!parsed) { if (!tryParse()) return; }
     var out;
     try {
       if (target === "schema") {
-        if (parsedKind !== "work") { showStatus(outStatus, "warn", "schema.org への変換には作品 JSON が必要です。"); pane.textContent = "— 作品 JSON を読み込んでください —"; return; }
+        if (parsedKind !== "work") { reject("schema.org への変換には作品 JSON が必要です。", "— 作品 JSON を読み込んでください —"); return; }
         out = OF.toSchemaOrg(parsed);
       } else if (target === "c2pa") {
-        if (parsedKind !== "work") { showStatus(outStatus, "warn", "C2PA への変換には作品 JSON が必要です。"); pane.textContent = "— 作品 JSON を読み込んでください —"; return; }
+        if (parsedKind !== "work") { reject("C2PA への変換には作品 JSON が必要です。", "— 作品 JSON を読み込んでください —"); return; }
         out = OF.toC2PA(parsed);
       } else if (target === "markdown" || target === "csv" || target === "musicxml" || target === "otio") {
-        if (parsedKind !== "work") { showStatus(outStatus, "warn", TEXT_FORMATS[target].label + " への変換には作品 JSON が必要です。"); pane.textContent = "— 作品 JSON を読み込んでください —"; return; }
-        if (target === "musicxml" && parsed.kind !== "music") { showStatus(outStatus, "warn", "MusicXML は music 作品専用です（この作品は " + parsed.kind + "）。"); pane.textContent = "— music 作品を読み込んでください —"; return; }
-        if (target === "otio" && parsed.kind !== "movie") { showStatus(outStatus, "warn", "OTIO は movie 作品専用です（この作品は " + parsed.kind + "）。"); pane.textContent = "— movie 作品を読み込んでください —"; return; }
+        if (parsedKind !== "work") { reject(TEXT_FORMATS[target].label + " への変換には作品 JSON が必要です。", "— 作品 JSON を読み込んでください —"); return; }
+        if (target === "musicxml" && parsed.kind !== "music") { reject("MusicXML は music 作品専用です（この作品は " + parsed.kind + "）。", "— music 作品を読み込んでください —"); return; }
+        if (target === "otio" && parsed.kind !== "movie") { reject("OTIO は movie 作品専用です（この作品は " + parsed.kind + "）。", "— movie 作品を読み込んでください —"); return; }
         if (target === "markdown") out = OF.toMarkdown(parsed);
         else if (target === "csv") out = OF.toCSV(parsed);
         else if (target === "musicxml") out = OF.toMusicXML(parsed);
         else out = OF.toOTIO(parsed);
       } else {
         // import: schema.org -> work
-        if (parsedKind !== "schema") { showStatus(outStatus, "warn", "逆変換には schema.org JSON-LD が必要です。"); pane.textContent = "— schema.org JSON-LD を読み込んでください —"; return; }
+        if (parsedKind !== "schema") { reject("逆変換には schema.org JSON-LD が必要です。", "— schema.org JSON-LD を読み込んでください —"); return; }
         out = OF.fromSchemaOrg(parsed);
       }
       results[target] = out;

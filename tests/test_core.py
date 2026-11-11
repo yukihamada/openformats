@@ -605,6 +605,18 @@ def test_c2pa_png_and_jpeg_roundtrip():
 
 
 
+def test_export_cli_exit_code_on_kind_mismatch():
+    # 対象 kind と合わない変換は非ゼロ終了する（CI で失敗を握り潰さない）
+    import subprocess
+    ex = str(ROOT / "tools" / "export.py")
+    bad = subprocess.run([sys.executable, ex, "musicxml", str(ROOT / "examples/sample.book.json")],
+                         capture_output=True, text=True)
+    assert bad.returncode == 1, f"kind 不一致は exit 1 のはず: {bad.returncode}"
+    ok = subprocess.run([sys.executable, ex, "musicxml", str(ROOT / "examples/sample.music.json")],
+                        capture_output=True, text=True)
+    assert ok.returncode == 0, f"正しい kind は exit 0 のはず: {ok.returncode}"
+
+
 def _run():
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     failed = 0

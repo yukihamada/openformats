@@ -1531,6 +1531,7 @@ def cmd_export_musicxml(args):
         else:
             results.append({"file": str(p), "musicxml": xml})
     print(json.dumps(results if len(results) != 1 else results[0], ensure_ascii=False, indent=2))
+    return 1 if any("error" in r for r in results) else 0
 
 
 def cmd_export_otio(args):
@@ -1553,6 +1554,7 @@ def cmd_export_otio(args):
         else:
             results.append({"file": str(p), "otio": otio})
     print(json.dumps(results if len(results) != 1 else results[0], ensure_ascii=False, indent=2))
+    return 1 if any("error" in r for r in results) else 0
 
 
 def cmd_export_epub(args):
@@ -1570,6 +1572,7 @@ def cmd_export_epub(args):
         dst = (out_dir / (stem + ".epub")) if out_dir else (p.with_suffix(".epub"))
         results.append({"file": str(p), **to_epub(data, dst)})
     print(json.dumps(results if len(results) != 1 else results[0], ensure_ascii=False, indent=2))
+    return 1 if any("error" in r for r in results) else 0
 
 
 def cmd_export_pdf(args):
@@ -1587,6 +1590,7 @@ def cmd_export_pdf(args):
         dst = (out_dir / (stem + ".pdf")) if out_dir else (p.with_suffix(".pdf"))
         results.append({"file": str(p), **to_pdf(data, dst, font_path=args.font)})
     print(json.dumps(results if len(results) != 1 else results[0], ensure_ascii=False, indent=2))
+    return 1 if any("error" in r for r in results) else 0
 
 
 def cmd_embed_c2pa(args):
