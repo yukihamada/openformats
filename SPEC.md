@@ -55,6 +55,20 @@ RFC 2119 に従います。
 
 各 kind のスキーマは `<kind>/v1.json`。すべて envelope を `allOf` で継承する。
 
+### radio の追加制約
+
+`radio/v1.json` は型に加えて、`segments[].type` ごとの必須項目を課す:
+
+- `speech` → `speaker` と `text` が必須。
+- `marker` → `label` が必須。
+- `start_sec` / `duration_sec` / `fade_*` は 0 以上。
+
+さらに `tools/validate.py` は JSON Schema で表しにくい意味検証を行う（`tools/openformats/radio.py`）:
+
+- `speakers[].id` が一意であること。
+- `speech.speaker` が `speakers[].id` を参照していること。
+- `start_sec` が直前セグメントの終端より前でないこと（タイムラインの単調性）。
+
 ## 3. content_hash (必須アルゴリズム)
 
 `content_hash` = `SHA-256( JCS( 本体 ) )` の hex (小文字 64 桁)。

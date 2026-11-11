@@ -19,6 +19,8 @@ try:
 except ImportError:
     sys.exit("jsonschema が必要です: pip install jsonschema")
 
+from openformats.radio import semantic_errors as _semantic_errors
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA_DIRS = ("examples", "works", "products", "events", "places")
 SKIP_DIRS = {"tools", ".git", ".venv", "venv", "node_modules", "__pycache__", ".ofstore"}
@@ -68,11 +70,14 @@ def _disp(path):
 def validate_one(validator, path):
     data = json.loads(path.read_text(encoding="utf-8"))
     errors = sorted(validator.iter_errors(data), key=lambda e: list(e.path))
-    if errors:
+    sem = _semantic_errors(data)
+    if errors or sem:
         print(f"NG  {_disp(path)}")
         for e in errors:
             loc = "/".join(str(p) for p in e.path) or "(root)"
             print(f"    - {loc}: {e.message}")
+        for loc, msg in sem:
+            print(f"    - {loc}: {msg}")
         return 1
     print(f"OK  {_disp(path)}")
     return 0
