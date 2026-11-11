@@ -144,6 +144,10 @@
     <div class="tabs" role="tablist" aria-label="出力形式">
       <button role="tab" id="tab-schema" aria-controls="pane" aria-selected="true" tabindex="0">schema.org</button>
       <button role="tab" id="tab-c2pa" aria-controls="pane" aria-selected="false" tabindex="-1">C2PA</button>
+      <button role="tab" id="tab-markdown" aria-controls="pane" aria-selected="false" tabindex="-1">Markdown</button>
+      <button role="tab" id="tab-csv" aria-controls="pane" aria-selected="false" tabindex="-1">CSV</button>
+      <button role="tab" id="tab-musicxml" aria-controls="pane" aria-selected="false" tabindex="-1">MusicXML</button>
+      <button role="tab" id="tab-otio" aria-controls="pane" aria-selected="false" tabindex="-1">OTIO</button>
       <button role="tab" id="tab-import" aria-controls="pane" aria-selected="false" tabindex="-1">作品 JSON（逆変換）</button>
     </div>
     <div class="panel">
@@ -166,7 +170,7 @@
       <li>形式タブを選ぶと、その場で変換されます。</li>
       <li>「ダウンロード」で保存。schema.org は Web サイトの <code>&lt;script type="application/ld+json"&gt;</code> に貼れます。</li>
     </ol>
-    <p class="hint" style="margin-top:14px">同じ変換はコマンドでも行えます：<code>python3 tools/export.py schema.org &lt;file&gt;</code> / <code>c2pa</code> / <code>import</code>。このツールはその忠実な移植で、出力は全サンプルで一致することをテスト済みです。</p>
+    <p class="hint" style="margin-top:14px">同じ変換はコマンドでも行えます：<code>python3 tools/export.py schema.org &lt;file&gt;</code> / <code>c2pa</code> / <code>markdown</code> / <code>csv</code> / <code>musicxml</code> / <code>otio</code> / <code>import</code>。このツールはその忠実な移植で、出力は全サンプルで一致することをテスト済みです。</p>
   </section>
 
   <footer>
@@ -183,7 +187,14 @@
   var input = $("input"), pane = $("pane"), detect = $("detect");
   var inStatus = $("in-status"), outStatus = $("out-status");
   var outLabel = $("out-label"), outKind = $("out-kind");
-  var tabs = { schema: $("tab-schema"), c2pa: $("tab-c2pa"), import: $("tab-import") };
+  var tabs = { schema: $("tab-schema"), c2pa: $("tab-c2pa"), markdown: $("tab-markdown"), csv: $("tab-csv"), musicxml: $("tab-musicxml"), otio: $("tab-otio"), import: $("tab-import") };
+  // 出力がテキスト（JSON ではない）形式と、その拡張子・MIME
+  var TEXT_FORMATS = {
+    markdown: { ext: ".md", mime: "text/markdown", label: "Markdown" },
+    csv: { ext: ".csv", mime: "text/csv", label: "CSV" },
+    musicxml: { ext: ".musicxml", mime: "application/vnd.recordare.musicxml+xml", label: "MusicXML" },
+    otio: { ext: ".otio", mime: "application/json", label: "OpenTimelineIO (OTIO JSON)" }
+  };
   var current = "schema";
   var parsed = null;      // 入力 JSON
   var parsedKind = null;  // "work" | "schema"
@@ -272,15 +283,27 @@
       } else if (target === "c2pa") {
         if (parsedKind !== "work") { showStatus(outStatus, "warn", "C2PA への変換には作品 JSON が必要です。"); pane.textContent = "— 作品 JSON を読み込んでください —"; return; }
         out = OF.toC2PA(parsed);
+      } else if (target === "markdown" || target === "csv" || target === "musicxml" || target === "otio") {
+        if (parsedKind !== "work") { showStatus(outStatus, "warn", TEXT_FORMATS[target].label + " への変換には作品 JSON が必要です。"); pane.textContent = "— 作品 JSON を読み込んでください —"; return; }
+        if (target === "musicxml" && parsed.kind !== "music") { showStatus(outStatus, "warn", "MusicXML は music 作品専用です（この作品は " + parsed.kind + "）。"); pane.textContent = "— music 作品を読み込んでください —"; return; }
+        if (target === "otio" && parsed.kind !== "movie") { showStatus(outStatus, "warn", "OTIO は movie 作品専用です（この作品は " + parsed.kind + "）。"); pane.textContent = "— movie 作品を読み込んでください —"; return; }
+        if (target === "markdown") out = OF.toMarkdown(parsed);
+        else if (target === "csv") out = OF.toCSV(parsed);
+        else if (target === "musicxml") out = OF.toMusicXML(parsed);
+        else out = OF.toOTIO(parsed);
       } else {
         // import: schema.org -> work
         if (parsedKind !== "schema") { showStatus(outStatus, "warn", "逆変換には schema.org JSON-LD が必要です。"); pane.textContent = "— schema.org JSON-LD を読み込んでください —"; return; }
         out = OF.fromSchemaOrg(parsed);
       }
       results[target] = out;
-      pane.textContent = JSON.stringify(out, null, 2);
-      outLabel.textContent = target === "schema" ? "schema.org JSON-LD" : target === "c2pa" ? "C2PA マニフェスト（JSON）" : "openformats 作品 JSON";
-      var kind = out.kind || (out["@type"] ? String(out["@type"]) : "");
+      var isText = TEXT_FORMATS[target];
+      pane.textContent = isText ? (typeof out === "string" ? out : JSON.stringify(out, null, 2)) : JSON.stringify(out, null, 2);
+      outLabel.textContent = target === "schema" ? "schema.org JSON-LD"
+        : target === "c2pa" ? "C2PA マニフェスト（JSON）"
+        : isText ? isText.label
+        : "openformats 作品 JSON";
+      var kind = (out && typeof out === "object") ? (out.kind || (out["@type"] ? String(out["@type"]) : "")) : "";
       outKind.innerHTML = kind ? '<span class="kind-badge">' + escapeHtml(kind) + "</span>" : "";
       showStatus(outStatus, "ok", "変換しました。内容を確認してダウンロードしてください。");
     } catch (e) {
@@ -300,8 +323,10 @@
 
   // 入力形式に合わないタブを選んでいたら、適切なタブへ自動で切り替える
   function autoSelectTab() {
-    if (parsedKind === "schema" && (current === "schema" || current === "c2pa")) return "import";
+    if (parsedKind === "schema" && current !== "import") return "import";
     if (parsedKind === "work" && current === "import") return "schema";
+    if (parsedKind === "work" && current === "musicxml" && parsed.kind !== "music") return "schema";
+    if (parsedKind === "work" && current === "otio" && parsed.kind !== "movie") return "schema";
     return current;
   }
 
@@ -313,7 +338,7 @@
 
   // タブ（クリック＋矢印キー）
   Object.keys(tabs).forEach(function (k) { tabs[k].addEventListener("click", function () { selectTab(k); }); });
-  var tabOrder = ["schema", "c2pa", "import"];
+  var tabOrder = ["schema", "c2pa", "markdown", "csv", "musicxml", "otio", "import"];
   Object.keys(tabs).forEach(function (k) {
     tabs[k].addEventListener("keydown", function (e) {
       var i = tabOrder.indexOf(k);
@@ -394,9 +419,17 @@
   $("btn-dl").addEventListener("click", function () {
     if (!results[current]) { showStatus(outStatus, "warn", "先に変換してください。"); return; }
     var out = results[current];
-    var base = out.id || "openformats";
-    var suffix = current === "schema" ? ".schemaorg.json" : current === "c2pa" ? ".c2pa.json" : "." + (out.kind || "work") + ".json";
-    var blob = new Blob([JSON.stringify(out, null, 2) + "\n"], { type: "application/json" });
+    var base = parsed && parsed.id ? parsed.id : "openformats";
+    var tf = TEXT_FORMATS[current];
+    var suffix, blob;
+    if (tf) {
+      suffix = tf.ext;
+      var text = typeof out === "string" ? out : JSON.stringify(out, null, 2) + "\n";
+      blob = new Blob([text], { type: tf.mime + ";charset=utf-8" });
+    } else {
+      suffix = current === "schema" ? ".schemaorg.json" : current === "c2pa" ? ".c2pa.json" : "." + (out.kind || "work") + ".json";
+      blob = new Blob([JSON.stringify(out, null, 2) + "\n"], { type: "application/json" });
+    }
     var url = URL.createObjectURL(blob), a = document.createElement("a");
     a.href = url; a.download = base + suffix;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);

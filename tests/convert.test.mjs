@@ -77,5 +77,32 @@ for (const f of files) {
   }
 }
 
+// Markdown / CSV / MusicXML / OTIO の JS/Python 出力一致
+function pyText(target, file) {
+  const out = execFileSync("python3", [path.join(root, "tools/export.py"), target, path.join(root, file)], { encoding: "utf8" });
+  const j = JSON.parse(out);
+  if (target === "markdown") return j.markdown;
+  if (target === "csv") return j.csv;
+  if (target === "musicxml") return j.musicxml;
+  if (target === "otio") return JSON.stringify(norm(j.otio));
+  return null;
+}
+for (const f of files) {
+  const work = JSON.parse(readFileSync(path.join(root, f), "utf8"));
+  // markdown / csv は全作品で一致
+  if (OF.toMarkdown(work) === pyText("markdown", f)) pass++;
+  else { fail++; console.log("markdown MISMATCH", f); }
+  if (OF.toCSV(work) === pyText("csv", f)) pass++;
+  else { fail++; console.log("csv MISMATCH", f); }
+  if (work.kind === "music") {
+    if (OF.toMusicXML(work) === pyText("musicxml", f)) pass++;
+    else { fail++; console.log("musicxml MISMATCH", f); }
+  }
+  if (work.kind === "movie") {
+    if (JSON.stringify(norm(OF.toOTIO(work))) === pyText("otio", f)) pass++;
+    else { fail++; console.log("otio MISMATCH", f); }
+  }
+}
+
 console.log(`\n${pass} passed, ${fail} failed (${files.length} files)`);
 process.exit(fail ? 1 : 0);

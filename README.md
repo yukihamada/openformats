@@ -194,6 +194,8 @@ python3 tools/export.py schema.org works/hitotsu-saki-e.music.json
 python3 tools/export.py c2pa       works/hitotsu-saki-e.music.json
 python3 tools/export.py musicxml   works/hitotsu-saki-e.music.json --out-dir /tmp/of
 python3 tools/export.py otio       works/muscle-fibers-sports-2026-11.movie.json --out-dir /tmp/of
+python3 tools/export.py markdown   examples/sample.book.json
+python3 tools/export.py csv        works/hitotsu-saki-e.music.json
 python3 tools/export.py epub       examples/sample.book.json --out-dir /tmp/of
 python3 tools/export.py pdf        examples/sample.book.json --out-dir /tmp/of --font /path/to/jp.ttf
 python3 tools/export.py embed-c2pa works/bim-house-iso-day.image.json cover.png
@@ -209,7 +211,7 @@ python3 tools/export.py import /tmp/ld/hitotsu-saki-e.schemaorg.json
 - [tools/validate.py](tools/validate.py) — JSON Schema (Draft 2020-12) で作品を検証する。`--all` でリポジトリ全体。
 - [tools/of.py](tools/of.py) — ハッシュ・Ed25519 署名・検証・改訂（`revise`）・モデル移行（`migrate`）の CLI。`verify` は `content_hash`・署名・チェーンに加え、`renditions[].path` の実体存在と SHA-256 一致まで検証する（音源が欠けていれば `ok: false`）。
 - [tools/render.py](tools/render.py) — JSON を媒体化し、実体の SHA-256 で作品に紐づける（`--dry-run` で安全に試せる）。
-- [tools/export.py](tools/export.py) — 作品 JSON と既存標準の相互変換。**schema.org JSON-LD**（`schema.org`）と **C2PA マニフェスト**（`c2pa`）への書き出し、schema.org からの**逆変換**（`import`）、**MusicXML**（`musicxml`）・**OpenTimelineIO**（`otio`）・**EPUB 3**（`epub`）・**PDF**（`pdf`）への書き出し、**C2PA の PNG/JPEG バイナリ埋め込み**（`embed-c2pa`）に対応（`--list` で実装済み・予定を確認できる）。
+- [tools/export.py](tools/export.py) — 作品 JSON と既存標準の相互変換。**schema.org JSON-LD**（`schema.org`）と **C2PA マニフェスト**（`c2pa`）への書き出し、schema.org からの**逆変換**（`import`）、**MusicXML**（`musicxml`）・**OpenTimelineIO**（`otio`）・**EPUB 3**（`epub`）・**PDF**（`pdf`）・**Markdown**（`markdown`）・**CSV**（`csv`）への書き出し、**C2PA の PNG/JPEG バイナリ埋め込み**（`embed-c2pa`）に対応（`--list` で実装済み・予定を確認できる）。
 
 ---
 
@@ -274,8 +276,9 @@ openformats は既存標準を置き換えず、それらへの**ハブ**を目�
 | 楽譜 | MusicXML / MIDI | `music` から書き出す。 | **実装済み**（`tools/export.py musicxml`、MIDI は未対応） |
 | 動画編集 | [OpenTimelineIO](https://opentimeline.io/) / ffmpeg / Remotion | `movie` のタイムラインを変換する。 | **実装済み**（`tools/export.py otio`、ffmpeg/Remotion は未対応） |
 | 本 | EPUB / PDF | `book` から書き出す。 | **実装済み**（`tools/export.py epub` / `pdf`） |
+| 文書・表計算 | Markdown / CSV | 作品本文を Markdown、メタデータを CSV へ書き出す。 | **実装済み**（`tools/export.py markdown` / `csv`） |
 
-**現状の限界** — 実装済みの変換は schema.org（往復可）、C2PA マニフェスト JSON、C2PA の PNG/JPEG バイナリ埋め込み（JUMBF。COSE 署名は未対応）、MusicXML・OpenTimelineIO・EPUB 3・PDF への書き出しです（`python3 tools/export.py --list` で確認できる）。PDF の日本語は `--font` で TrueType を渡したときのみ正しく埋め込まれ、未指定なら ASCII のみです。MusicXML はセクション/歌詞からのリードシート生成で、MIDI や詳細な音符列は扱いません。OTIO は絶対開始位置を Gap で保持します。実装したものからこの表に「実装済み」と明記していきます。
+**現状の限界** — 実装済みの変換は schema.org（往復可）、C2PA マニフェスト JSON、C2PA の PNG/JPEG バイナリ埋め込み（JUMBF。COSE 署名は未対応）、MusicXML・OpenTimelineIO・EPUB 3・PDF・Markdown・CSV への書き出しです（`python3 tools/export.py --list` で確認できる）。PDF の日本語は `--font` で TrueType を渡したときのみ正しく埋め込まれ、未指定なら ASCII のみです。MusicXML はセクション/歌詞からのリードシート生成で、MIDI や詳細な音符列は扱いません。OTIO は絶対開始位置を Gap で保持します。Markdown は本文ブロック、CSV は作品メタデータの1行で、どちらも書き出し専用（逆変換は未対応）です。実装したものからこの表に「実装済み」と明記していきます。
 
 ---
 

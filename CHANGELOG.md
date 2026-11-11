@@ -5,6 +5,12 @@
 ## [Unreleased]
 
 ### Added
+- `tools/export.py markdown` / `csv` — 作品本文を Markdown、メタデータを CSV へ書き出す。
+  ブラウザ版 `assets/convert.js`（`toMarkdown` / `toCSV`）と `convert.html` の
+  Markdown・CSV タブにも同じ変換を移植し、全 107 ファイルで Python と JS の出力一致を
+  `tests/convert.test.mjs` で検証する。
+- `convert.html` に MusicXML・OTIO タブを追加（`assets/convert.js` の `toMusicXML` /
+  `toOTIO`）。music 作品は MusicXML、movie 作品は OTIO へブラウザ内で変換・ダウンロードできる。
 - `tools/export.py c2pa` — 作品 JSON を C2PA マニフェスト (JSON) へ書き出す。
   content_hash を `c2pa.hash.data`、作者を作成 assertion、provenance.history を
   `c2pa.actions`、renditions を ingredient、Ed25519 署名を signature_info に写す。

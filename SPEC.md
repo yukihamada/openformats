@@ -150,22 +150,22 @@ RFC 2119 に従います。
 
 openformats は既存標準を置き換えず、それらへの**ハブ**を目指す。
 
-> **実装状況（2026-11-11）**: 実装済みの変換は **schema.org（往復可）** と
-> **C2PA マニフェスト**（`python3 tools/export.py schema.org|c2pa|import <file>`）。
+> **実装状況（2026-11-11）**: 実装済みの変換は **schema.org（往復可）**、
+> **C2PA マニフェスト**、**MusicXML**、**OpenTimelineIO**、**EPUB 3**、**PDF**、
+> **Markdown**、**CSV**（`python3 tools/export.py <target> <file>`、`--list` で一覧）。
 > schema.org は書き出し→読み戻しで id・title・authors・content_hash が復元でき
 > （`import` サブコマンド）、C2PA は content_hash・署名・来歴・rendition を
-> マニフェスト JSON に写す。MusicXML・OpenTimelineIO・EPUB・PDF への書き出しは
-> **未実装**で、表は「目指す方向」。実装したものから「実装済み」と明記する。
+> マニフェスト JSON に写す。Markdown・CSV は書き出し専用（逆変換は未対応）。
 > 「標準 (standard)」を名乗るのは外部採用が確認されてからとし、現状は
 > 「公開された個人仕様 (public personal spec)」として扱う。
 
 | kind | 変換先（実装済み / 方向性） |
 |---|---|
-| book | schema.org（実装済み） / EPUB / PDF（方向性） |
-| movie | schema.org・C2PA（実装済み） / OpenTimelineIO / ffmpeg / Remotion |
-| music | schema.org・C2PA（実装済み） / MusicXML / DAW / Suno・MUREKA プロンプト |
-| voice / radio | schema.org・C2PA（実装済み） / KOE / teai TTS |
-| product | schema.org（実装済み） / 社内カタログ |
+| book | schema.org・EPUB・PDF・Markdown・CSV（実装済み） |
+| movie | schema.org・C2PA・OpenTimelineIO（実装済み） / ffmpeg / Remotion（方向性） |
+| music | schema.org・C2PA・MusicXML・Markdown・CSV（実装済み） / DAW / Suno・MUREKA プロンプト（方向性） |
+| voice / radio | schema.org・C2PA（実装済み） / KOE / teai TTS（方向性） |
+| product | schema.org（実装済み） / 社内カタログ（方向性） |
 
 ### bim と bim.house
 
