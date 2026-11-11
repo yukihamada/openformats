@@ -194,6 +194,7 @@
   .stat b { display:block; font-size:26px; letter-spacing:-.02em; }
   .stat span { color:var(--muted); font-size:14px; }
   @media (max-width:640px){ .stats{grid-template-columns:repeat(2,1fr); gap:8px;} .stat{padding:12px 14px;} .stat b{font-size:22px;} .stat span{font-size:13px;} }
+  @media (max-width:360px){ .stats{gap:6px;} .stat{padding:9px 11px;} .stat b{font-size:19px;} .stat span{font-size:12px;} }
 
   /* format grid with icons */
   .formats { display:grid; grid-template-columns:repeat(auto-fill,minmax(215px,1fr)); gap:12px; }
@@ -281,6 +282,7 @@
       <h1>あなたの作品は、<br>あなたの手元に残るか？</h1>
       <p class="lede">作品を JSON 1枚（設計図）で保存する個人仕様です。サービスが終わっても、作品はあなたの手元に残る。</p>
       <p><a class="cta" href="#builder">作品の設計図をつくる<span class="cta-note">（無料・ブラウザ内）</span> →</a> <a class="hero-sub" href="#works">実作品を聴く・観る</a></p>
+      <p class="cta-sub" style="margin:6px 0 0;font-size:12.5px;color:var(--muted)">保存先はあなたのPC。送信なし。</p>
     </div>
     <div class="hero-art">
       <img class="light" src="assets/hero.svg" width="960" height="560" fetchpriority="high" alt="1つの作品が1つのJSONになり、音楽・ラジオ・本・声・動画・建築などへ広がる様子のイラスト" decoding="async">
@@ -419,7 +421,7 @@
         </div>
       </div>
       <div class="work">
-        <div class="cover"><img src="works/bim-house-iso-day.png" width="1201" height="728" alt="白い箱型の住宅を斜め上から見たアイソメ図。屋根に太陽光パネル、庭に植栽とアプローチが見える。" loading="lazy" decoding="async"></div>
+        <div class="cover"><picture><source type="image/webp" srcset="works/bim-house-iso-day.webp"><img src="works/bim-house-iso-day.png" width="1201" height="728" alt="白い箱型の住宅を斜め上から見たアイソメ図。屋根に太陽光パネル、庭に植栽とアプローチが見える。" loading="lazy" decoding="async"></picture></div>
         <div class="body">
           <h3 class="work-title">bim.house — 住宅BIMのアイソメ日景</h3>
           <span class="meta">画像・1201×728 PNG ・ 太陽光パネル付き住宅</span>
