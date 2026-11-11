@@ -116,6 +116,7 @@
 
   .cta { display:inline-block; background:var(--cta-bg); color:var(--cta-fg); padding:12px 22px; border-radius:10px;
     font-weight:600; font-size:15px; margin:4px 10px 4px 0; box-shadow:var(--shadow); transition:transform .15s,filter .15s; }
+  .cta .cta-note { white-space:nowrap; }
   .cta:hover { text-decoration:none; filter:brightness(1.08); transform:translateY(-1px); }
   .cta.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent); box-shadow:none; }
   .cta.ghost:hover { background:var(--accent-soft); }
@@ -136,7 +137,7 @@
   .toc a[aria-current="true"]{ color:var(--accent); font-weight:600; }
   .toc { max-width:var(--maxw); margin:0 auto; display:flex; flex-wrap:wrap; gap:4px 18px;
     padding:10px 24px; font-size:14px; }
-  .toc a { display:inline-flex; align-items:center; color:var(--muted); padding:8px 2px; min-height:44px; line-height:24px; }
+  .toc a { display:inline-flex; align-items:center; color:var(--muted); padding:8px 2px; min-height:44px; min-width:44px; line-height:24px; }
   .toc a:hover { color:var(--accent); }
   @media (max-width:600px){ .toc{flex-wrap:nowrap; overflow-x:auto; gap:0 16px; padding:4px 16px; -webkit-overflow-scrolling:touch; scrollbar-width:none; -webkit-mask-image:linear-gradient(to right,#000 92%,transparent); mask-image:linear-gradient(to right,#000 92%,transparent);}
     .toc::-webkit-scrollbar{display:none;}
@@ -283,7 +284,7 @@
     <div>
       <h1>あなたの作品は、<br>あなたの手元に残るか？</h1>
       <p class="lede">作品を JSON 1枚（設計図）で保存する個人仕様です。サービスが終わっても、作品はあなたの手元に残る。</p>
-      <p><a class="cta" href="#builder">作品の設計図をつくる<span class="cta-note">（無料・ブラウザ内）</span> →</a> <a class="hero-sub" href="#works">実作品を聴く・観る</a></p>
+      <p><a class="cta" href="#builder">作品の設計図をつくる<span class="cta-note">（無料・ブラウザ内） →</span></a> <a class="hero-sub" href="#works">実作品を聴く・観る</a></p>
       <p class="cta-sub" style="margin:6px 0 0;font-size:12.5px;color:var(--muted)">保存先はあなたのPC。送信なし。</p>
     </div>
     <div class="hero-art">
@@ -299,9 +300,9 @@
     <div class="stat"><b>MIT</b><span>仕様はオープン</span></div>
   </div>
 
-  <p class="hero-badge" style="max-width:var(--maxw);margin:14px auto 0;padding:0 var(--pad,20px)"><b>作者本人が7作品で実運用中</b>・MIT 公開・個人仕様（外部採用 0 件）</p>
+  <p class="hero-badge" style="margin:14px 0 0"><b>作者本人が7作品で実運用中</b>・MIT 公開・個人仕様（外部採用 0 件）</p>
 
-  <details class="status-note" role="note" style="max-width:var(--maxw);margin:14px auto 0;padding:12px 16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);color:var(--muted);font-size:.9rem;line-height:1.6">
+  <details class="status-note" role="note" style="margin:14px 0 0;padding:12px 16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);color:var(--muted);font-size:.9rem;line-height:1.6;box-sizing:border-box">
     <summary style="cursor:pointer;color:var(--fg);font-weight:600;display:flex;align-items:center;min-height:44px">現在の位置づけ（正直に）— 個人仕様・外部採用 0 件</summary>
     <p style="margin:10px 0 0">これは作者1人の制作物に使っている<strong style="color:var(--fg)">個人仕様</strong>です。MIT で公開し、誰でも使えますが、外部採用はまだ 0 件（2026-11-11 時点）。既存標準（C2PA・schema.org・MusicXML・OpenTimelineIO 等）を置き換えるものではなく、それらへ変換する<strong style="color:var(--fg)">ハブ</strong>を目指しています。標準を名乗るのは外部採用が出てから、という方針です。</p>
   </details>
@@ -349,7 +350,7 @@
     <div class="row">
       <button class="cta ghost" type="button" id="b-dl">JSON をダウンロード</button>
       <button class="cta ghost" type="button" id="b-copy">コピー</button>
-      <span class="hint" id="b-hint">ファイルを選ぶと指紋（sha256）まで入った JSON になります。ファイル未選択のときは指紋（content_hash）は未計算のままです。</span>
+      <span class="hint" id="b-hint">ファイルを選ぶと指紋（sha256）まで入った JSON になります。content_hash は自動で付きます。</span>
     </div>
     <p class="sub" style="margin-top:18px;margin-bottom:0"><strong>もっと楽に：</strong>手持ちのファイルをまとめて作品にしたいときは <a href="import.html">一括インポート</a>、作った JSON が本物かを確かめたいときは <a href="verify.html">検証ツール</a> を使えます。</p>
   </section>
@@ -358,22 +359,22 @@
     <h2 id="h-formats">フォーマット（16 種類）</h2>
     <p class="sub">すべて <a href="core/envelope/v1.json">core/envelope/v1.json</a> を継承します。同じ道具（検証・ハッシュ・署名・レンダリング）が、ぜんぶの作品にそのまま効きます。</p>
     <div class="formats">
-      <a class="fmt" href="music/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-music"/></svg></span><span class="t"><h3>楽曲・作曲 <span class="en">music</span></h3></span></a>
-      <a class="fmt" href="radio/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-radio"/></svg></span><span class="t"><h3>ラジオ・ポッドキャスト <span class="en">radio</span></h3></span></a>
-      <a class="fmt" href="book/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-book"/></svg></span><span class="t"><h3>本・原稿 <span class="en">book</span></h3></span></a>
-      <a class="fmt" href="movie/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-movie"/></svg></span><span class="t"><h3>動画タイムライン <span class="en">movie</span></h3></span></a>
-      <a class="fmt" href="voice/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-voice"/></svg></span><span class="t"><h3>ナレーション・声 <span class="en">voice</span></h3></span></a>
-      <a class="fmt" href="image/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-image"/></svg></span><span class="t"><h3>画像・ビジュアル <span class="en">image</span></h3></span></a>
-      <a class="fmt" href="article/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-article"/></svg></span><span class="t"><h3>記事・投稿 <span class="en">article</span></h3></span></a>
-      <a class="fmt" href="bim/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-bim"/></svg></span><span class="t"><h3>建築 (bim.house) <span class="en">bim</span></h3></span></a>
-      <a class="fmt" href="device/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-device"/></svg></span><span class="t"><h3>IoT・端末 <span class="en">device</span></h3></span></a>
-      <a class="fmt" href="land/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-land"/></svg></span><span class="t"><h3>土地・区画 <span class="en">land</span></h3></span></a>
-      <a class="fmt" href="country/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-country"/></svg></span><span class="t"><h3>国・地域 <span class="en">country</span></h3></span></a>
-      <a class="fmt" href="event/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-event"/></svg></span><span class="t"><h3>イベント <span class="en">event</span></h3></span></a>
-      <a class="fmt" href="collection/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-collection"/></svg></span><span class="t"><h3>アルバム・シリーズ <span class="en">collection</span></h3></span></a>
-      <a class="fmt" href="person/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-person"/></svg></span><span class="t"><h3>作者・話者 <span class="en">person</span></h3></span></a>
-      <a class="fmt" href="place/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-place"/></svg></span><span class="t"><h3>場所・会場 <span class="en">place</span></h3></span></a>
-      <a class="fmt" href="product/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-product"/></svg></span><span class="t"><h3>製品・サービス <span class="en">product</span></h3></span></a>
+      <a class="fmt" href="music/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-music"/></svg></span><div class="t"><h3>楽曲・作曲 <span class="en">music</span></h3></div></a>
+      <a class="fmt" href="radio/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-radio"/></svg></span><div class="t"><h3>ラジオ・ポッドキャスト <span class="en">radio</span></h3></div></a>
+      <a class="fmt" href="book/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-book"/></svg></span><div class="t"><h3>本・原稿 <span class="en">book</span></h3></div></a>
+      <a class="fmt" href="movie/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-movie"/></svg></span><div class="t"><h3>動画タイムライン <span class="en">movie</span></h3></div></a>
+      <a class="fmt" href="voice/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-voice"/></svg></span><div class="t"><h3>ナレーション・声 <span class="en">voice</span></h3></div></a>
+      <a class="fmt" href="image/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-image"/></svg></span><div class="t"><h3>画像・ビジュアル <span class="en">image</span></h3></div></a>
+      <a class="fmt" href="article/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-article"/></svg></span><div class="t"><h3>記事・投稿 <span class="en">article</span></h3></div></a>
+      <a class="fmt" href="bim/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-bim"/></svg></span><div class="t"><h3>建築 (bim.house) <span class="en">bim</span></h3></div></a>
+      <a class="fmt" href="device/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-device"/></svg></span><div class="t"><h3>IoT・端末 <span class="en">device</span></h3></div></a>
+      <a class="fmt" href="land/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-land"/></svg></span><div class="t"><h3>土地・区画 <span class="en">land</span></h3></div></a>
+      <a class="fmt" href="country/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-country"/></svg></span><div class="t"><h3>国・地域 <span class="en">country</span></h3></div></a>
+      <a class="fmt" href="event/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-event"/></svg></span><div class="t"><h3>イベント <span class="en">event</span></h3></div></a>
+      <a class="fmt" href="collection/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-collection"/></svg></span><div class="t"><h3>アルバム・シリーズ <span class="en">collection</span></h3></div></a>
+      <a class="fmt" href="person/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-person"/></svg></span><div class="t"><h3>作者・話者 <span class="en">person</span></h3></div></a>
+      <a class="fmt" href="place/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-place"/></svg></span><div class="t"><h3>場所・会場 <span class="en">place</span></h3></div></a>
+      <a class="fmt" href="product/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-product"/></svg></span><div class="t"><h3>製品・サービス <span class="en">product</span></h3></div></a>
     </div>
     <p style="margin-top:22px"><a class="cta ghost" href="#builder">この形式で作ってみる →</a></p>
   </section>
@@ -541,6 +542,7 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
   </footer>
 </main>
 <div class="sr-only" role="status" aria-live="polite" id="copy-status"></div>
+<script src="assets/convert.js"></script>
 <script>
   document.querySelectorAll('.work .cover img, .prod .thumb img').forEach(function(img){
     var box = img.closest('.cover, .thumb');
@@ -635,6 +637,7 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
       else if(kind==='movie'){ o.timeline=[{id:"c1",type:"video",clips:[{start_sec:0,duration_sec:0,src:file||'clip.mp4'}]}]; if(rend)o.renditions=[rend]; }
       else if(kind==='image'){ o.source={path:file||'image.png'}; if(rend)o.renditions=[rend]; }
       else if(kind==='collection'){ o.items=[{ref:"example.music.json"}]; }
+      if(window.OFConvert && OFConvert.contentHash){ try{ o.content_hash=OFConvert.contentHash(o); }catch(e){} }
       return JSON.stringify(o,null,2);
     }
     var announceTimer=null;
@@ -668,7 +671,7 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
               render();
               hint.textContent=(k.value==='collection')
                 ? '指紋を計算しました。ただし collection は参照の集まりなので、renditions には入りません。'
-                : '指紋（sha256）を入れました。本体ファイルの指紋と一致するかは of.py verify で照合できます（content_hash はこの時点では未計算です）。';
+                : '指紋（sha256）を入れました。本体ファイルの指紋と一致するかは of.py verify で照合できます。';
             })
             .catch(function(){ hint.textContent='この環境では指紋を計算できませんでした。ファイル名だけ入れます。'; render(); });
         } else { hint.textContent='この環境では指紋を計算できません。ファイル名だけ入れます。'; render(); }
