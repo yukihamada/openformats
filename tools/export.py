@@ -541,8 +541,222 @@ def to_csv(data: dict) -> str:
     return ",".join(cell(c) for c in cols) + "\n" + ",".join(cell(c) for c in row) + "\n"
 
 
-def to_musicxml(data: dict) -> str:
-    """music 作品を MusicXML 4.0 の score-partwise 文字列へ書き出す。"""
+def _midi_read_varlen(data: bytes, pos: int):
+    """MIDI の可変長数値を読む。(値, 次の位置) を返す。"""
+    val = 0
+    while True:
+        b = data[pos]
+        pos += 1
+        val = (val << 7) | (b & 0x7F)
+        if not (b & 0x80):
+            return val, pos
+
+
+def _midi_parse(data: bytes):
+    """標準 MIDI ファイル (SMF) を解析する。
+
+    {format, division, tracks: [[note...]], tempos: [(tick, us_per_quarter)],
+     time_signature: (num, den)} を返す。note は
+    (start_tick, duration_ticks, midi_note, velocity)。format 0/1 に対応し、
+    running status・note on/off・tempo・拍子を扱う。外部依存なし。
+    """
+    if data[:4] != b"MThd":
+        raise ValueError("not a MIDI file")
+    hlen = struct.unpack(">I", data[4:8])[0]
+    fmt, ntrks, division = struct.unpack(">HHH", data[8:14])
+    pos = 8 + hlen
+    tracks = []
+    tempos = []
+    time_sig = None
+    for _ in range(ntrks):
+        if data[pos:pos + 4] != b"MTrk":
+            break
+        tlen = struct.unpack(">I", data[pos + 4:pos + 8])[0]
+        tdata = data[pos + 8:pos + 8 + tlen]
+        pos += 8 + tlen
+        notes = []
+        active = {}  # (channel, note) -> (start_tick, velocity)
+        tick = 0
+        i = 0
+        running = None
+        while i < len(tdata):
+            delta, i = _midi_read_varlen(tdata, i)
+            tick += delta
+            if i >= len(tdata):
+                break
+            status = tdata[i]
+            if status == 0xFF:  # meta
+                i += 1
+                mtype = tdata[i]
+                i += 1
+                mlen, i = _midi_read_varlen(tdata, i)
+                payload = tdata[i:i + mlen]
+                i += mlen
+                if mtype == 0x51 and mlen == 3:
+                    tempos.append((tick, (payload[0] << 16) | (payload[1] << 8) | payload[2]))
+                elif mtype == 0x58 and mlen >= 2:
+                    time_sig = (payload[0], 1 << payload[1])
+                elif mtype == 0x2F:  # end of track
+                    break
+                continue
+            if status in (0xF0, 0xF7):  # sysex
+                i += 1
+                slen, i = _midi_read_varlen(tdata, i)
+                i += slen
+                continue
+            if status & 0x80:
+                running = status
+                i += 1
+            else:
+                status = running
+            if status is None:
+                break
+            kind = status & 0xF0
+            channel = status & 0x0F
+            if kind in (0x80, 0x90):  # note off / on
+                note = tdata[i]
+                vel = tdata[i + 1]
+                i += 2
+                if kind == 0x90 and vel > 0:
+                    active[(channel, note)] = (tick, vel)
+                else:
+                    start = active.pop((channel, note), None)
+                    if start is not None:
+                        notes.append((start[0], tick - start[0], note, start[1]))
+            elif kind in (0xC0, 0xD0):  # program / channel pressure (1 byte)
+                i += 1
+            else:  # control / pitch / aftertouch (2 bytes)
+                i += 2
+        # 閉じ忘れのノートを回収
+        for (channel, note), (start, vel) in active.items():
+            notes.append((start, max(1, tick - start), note, vel))
+        notes.sort()
+        tracks.append(notes)
+    return {"format": fmt, "division": division, "tracks": tracks,
+            "tempos": tempos, "time_signature": time_sig}
+
+
+_MIDI_NOTE_NAMES = ["C", "C", "D", "D", "E", "F", "F", "G", "G", "A", "A", "B"]
+_MIDI_NOTE_ALTER = [0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0]
+
+
+def _midi_note_to_step_octave(note: int):
+    """MIDI ノート番号を (step, alter, octave) へ。C4=60 を octave 4 とする。"""
+    note = max(0, min(127, int(note)))
+    pc = note % 12
+    octave = note // 12 - 1
+    return _MIDI_NOTE_NAMES[pc], _MIDI_NOTE_ALTER[pc], octave
+
+
+def _load_track_midi(data: dict, base_dir):
+    """作品のトラックが参照する MIDI を読み、先頭の音列を返す。
+
+    vocal/lead トラックを優先し、midi 参照があり実ファイルが存在すれば
+    [(start_tick, dur, midi_note, vel), ...] を返す。無ければ None。
+    """
+    if base_dir is None:
+        return None
+    tracks = data.get("tracks") or []
+    ordered = sorted(tracks, key=lambda t: 0 if (t.get("role") in ("vocal", "lead")
+                                                 or "vocal" in str(t.get("instrument", "")).lower()) else 1)
+    for t in ordered:
+        ref = t.get("midi")
+        if not ref:
+            continue
+        path = pathlib.Path(ref)
+        if not path.is_absolute():
+            path = pathlib.Path(base_dir) / ref
+        if not path.exists():
+            continue
+        try:
+            parsed = _midi_parse(path.read_bytes())
+        except Exception:
+            continue
+        for nt in parsed["tracks"]:
+            if nt:
+                return {"notes": nt, "division": parsed["division"],
+                        "tempos": parsed["tempos"],
+                        "time_signature": parsed["time_signature"]}
+    return None
+
+
+def _musicxml_measures_from_midi(midi, beats, beat_type, fifths, mode, bpm):
+    """MIDI のノート列を MusicXML の小節列へ変換する。
+
+    division（1 四分音符あたりの tick 数）を MusicXML の divisions に合わせ、
+    ノートを tick グリッドのまま小節へ割り付ける。同時刻の音は <chord/> で
+    表現し、隙間は休符で埋める。歌詞は無いので音符のみ。
+    """
+    div = midi["division"] or 480
+    notes = midi["notes"]
+    ts = midi.get("time_signature")
+    if ts:
+        beats, beat_type = ts
+    out_div = div
+    beat_ticks = (div * 4 // beat_type) if beat_type else div
+    measure_ticks = beat_ticks * beats
+    if not notes:
+        return ['    <measure number="1"><note><rest measure="yes"/>'
+                '<duration>%d</duration></note></measure>' % measure_ticks]
+    total_ticks = max(n[0] + n[1] for n in notes)
+    n_measures = max(1, (total_ticks + measure_ticks - 1) // measure_ticks)
+
+    measures = [[] for _ in range(n_measures)]
+    for start, dur, note, vel in notes:
+        m = min(n_measures - 1, start // measure_ticks)
+        measures[m].append((start, dur, note, vel))
+
+    L = []
+    for mi, evs in enumerate(measures):
+        L.append('    <measure number="%d">' % (mi + 1))
+        if mi == 0:
+            L.append('      <attributes>')
+            L.append('        <divisions>%d</divisions>' % out_div)
+            L.append('        <key><fifths>%d</fifths><mode>%s</mode></key>' % (fifths, mode))
+            L.append('        <time><beats>%d</beats><beat-type>%d</beat-type></time>' % (beats, beat_type))
+            L.append('        <clef><sign>G</sign><line>2</line></clef>')
+            L.append('      </attributes>')
+            L.append('      <direction placement="above"><direction-type>'
+                     '<metronome><beat-unit>quarter</beat-unit>'
+                     '<per-minute>%d</per-minute></metronome></direction-type>'
+                     '<sound tempo="%d"/></direction>' % (int(bpm), int(bpm)))
+        if not evs:
+            L.append('      <note><rest measure="yes"/><duration>%d</duration></note>' % measure_ticks)
+            L.append('    </measure>')
+            continue
+        evs.sort(key=lambda e: (e[0], -e[2]))
+        cursor = mi * measure_ticks
+        prev_start = None
+        for (start, dur, note, vel) in evs:
+            step, alter, octave = _midi_note_to_step_octave(note)
+            alter_xml = "<alter>1</alter>" if alter > 0 else ""
+            is_chord = prev_start is not None and start == prev_start
+            if not is_chord and start > cursor:
+                L.append('      <note><rest/><duration>%d</duration></note>' % (start - cursor))
+            L.append('      <note>')
+            if is_chord:
+                L.append('        <chord/>')
+            L.append('        <pitch><step>%s</step>%s<octave>%d</octave></pitch>'
+                     % (step, alter_xml, octave))
+            L.append('        <duration>%d</duration>' % max(1, dur))
+            L.append('      </note>')
+            if not is_chord:
+                cursor = start + dur
+            prev_start = start
+        measure_end = (mi + 1) * measure_ticks
+        if cursor < measure_end:
+            L.append('      <note><rest/><duration>%d</duration></note>' % (measure_end - cursor))
+        L.append('    </measure>')
+    return L
+
+
+def to_musicxml(data: dict, base_dir=None) -> str:
+    """music 作品を MusicXML 4.0 の score-partwise 文字列へ書き出す。
+
+    base_dir を渡すと、トラックの midi 参照を解決して実音高を譜面にする。
+    MIDI が無ければ meta と歌詞から決定的な旋律を生成する。
+    """
+
     meta = data.get("meta") or {}
     title = data.get("title") or data.get("id") or "Untitled"
     composer = ", ".join(a.get("name") for a in (data.get("authors") or [])
@@ -575,6 +789,9 @@ def to_musicxml(data: dict) -> str:
     part_name = (vocal or (tracks[0] if tracks else {})).get("instrument") or "Melody"
     part_name = str(part_name)
 
+    # MIDI 参照があれば実音高を譜面にする（無ければ決定的な旋律を生成）。
+    midi = _load_track_midi(data, base_dir)
+
     def esc(s):
         return _xml_escape(str(s))
 
@@ -593,6 +810,13 @@ def to_musicxml(data: dict) -> str:
     lines.append('    <score-part id="P1"><part-name>%s</part-name></score-part>' % esc(part_name))
     lines.append('  </part-list>')
     lines.append('  <part id="P1">')
+
+    if midi:
+        lines.extend(_musicxml_measures_from_midi(
+            midi, beats, beat_type, fifths, mode, bpm))
+        lines.append('  </part>')
+        lines.append('</score-partwise>')
+        return "\n".join(lines) + "\n"
 
     # セクションごとに歌詞を四分音符へ割り当てる。1 小節に収まらない歌詞は
     # 小節を分けて全行を残す（切り捨てない）。歌詞が無ければ全休符 1 小節。
@@ -1083,11 +1307,64 @@ def _ttf_subset(data: bytes, tables: dict, keep_gids) -> bytes:
     return _ttf_build(out)
 
 
-def _find_japanese_font():
-    """システムにある日本語 TrueType(glyf) フォントを探してパスを返す。
+def _ttf_build_otto(tables: dict, data: bytes) -> bytes:
+    """サブフォントのテーブル群から CFF ベースの OpenType (OTTO) を組み立てる。
 
-    見つからなければ None。CFF(ヒラギノ等) は CIDFontType2 で埋め込めないため
-    候補から外し、glyf を持つフォントだけを返す。
+    CFF フォントは PDF へ FontFile3/OpenType として埋め込む必要がある。
+    TTC のサブフォントを単体の sfnt に切り出すときに使う。
+    """
+    tbl = {tag: data[o:o + l] for tag, (o, l) in tables.items()}
+    tags = sorted(tbl)
+    num = len(tags)
+    es = 0
+    while (1 << (es + 1)) <= num:
+        es += 1
+    sr = (1 << es) * 16
+    rs = num * 16 - sr
+    header = struct.pack(">IHHHH", 0x4F54544F, num, sr, es, rs)  # 'OTTO'
+    offset = 12 + num * 16
+    body = bytearray()
+    entries = []
+    for tag in tags:
+        td = tbl[tag]
+        entries.append((tag, _ttf_checksum(td), offset, len(td)))
+        body += td
+        body += b"\x00" * ((4 - len(td) % 4) % 4)
+        offset += len(td) + ((4 - len(td) % 4) % 4)
+    directory = bytearray()
+    for tag, chk, off, length in entries:
+        directory += tag.encode("latin-1") + struct.pack(">III", chk, off, length)
+    return bytes(header) + bytes(directory) + bytes(body)
+
+
+def _is_cff_font(tables: dict) -> bool:
+    return ("CFF " in tables or "CFF2" in tables) and "glyf" not in tables
+
+
+def _canonical_codepoint(cps):
+    """同じグリフに複数のコードポイントが対応するとき、正準の 1 つを選ぶ。
+
+    互換漢字 (U+F900 等) ではなく、通常の漢字 (U+65E5 等) を優先する。
+    ToUnicode の逆引きが互換文字へ化けるのを防ぐ。
+    """
+    def score(cp):
+        # 康熙部首・部首補助・CJK 互換漢字・互換形・私用領域・異体字セレクタを減点
+        bad = (0x2E80 <= cp <= 0x2EFF          # CJK 部首補助
+               or 0x2F00 <= cp <= 0x2FDF        # 康熙部首
+               or 0xF900 <= cp <= 0xFAFF        # CJK 互換漢字
+               or 0x2F800 <= cp <= 0x2FA1F      # CJK 互換漢字補助
+               or 0xFE00 <= cp <= 0xFE0F        # 異体字セレクタ
+               or 0xE0100 <= cp <= 0xE01EF      # 異体字セレクタ補助
+               or 0xE000 <= cp <= 0xF8FF)       # 私用領域
+        return (1 if bad else 0, cp)
+    return min(cps, key=score)
+
+
+def _find_japanese_font():
+    """システムにある日本語フォントを探してパスを返す。
+
+    glyf (TrueType) と CFF (OpenType/CFF, ヒラギノ等) の両方を対象にする。
+    見つからなければ None。
     """
     import glob
     candidates = [
@@ -1100,13 +1377,14 @@ def _find_japanese_font():
     ]
     candidates += sorted(glob.glob("/System/Library/Fonts/*.ttc"))
     candidates += sorted(glob.glob("/System/Library/Fonts/Supplemental/*.ttf"))
+    candidates += sorted(glob.glob("/System/Library/Fonts/*.otf"))
     for path in candidates:
         try:
             data = pathlib.Path(path).read_bytes()
             tables = _ttf_read_tables(data)
         except Exception:
             continue
-        if "glyf" not in tables:
+        if "glyf" not in tables and not _is_cff_font(tables):
             continue
         try:
             cmap = _ttf_cmap_unicode_to_gid(data, tables)
@@ -1225,30 +1503,47 @@ def _build_pdf(lines, font_path=None, title="document"):
     # フォント関連オブジェクト
     font_ref = "/F1 3 0 R"  # 既定: Helvetica (obj3)
     if font_path:
-        # 使用グリフだけ残してサブセット化（GID は維持）。
-        subset = _ttf_subset(fdata, tables, used_gids)
+        cff = _is_cff_font(tables)
+        if cff:
+            # CFF は FontFile3/OpenType として埋め込む。TTC ならサブフォントを
+            # 単体の OTTO に切り出してサブセット代わりにする（CFF の
+            # サブセット化は複雑なので、ここではフォント全体を埋め込む）。
+            subset = _ttf_build_otto(tables, fdata)
+            ff = add(b"<< /Length %d /Length1 %d /Subtype /OpenType >>\nstream\n"
+                     % (len(subset), len(subset)) + subset + b"\nendstream")
+            cid_subtype = "CIDFontType0"
+            ff_key = "FontFile3"
+        else:
+            # 使用グリフだけ残してサブセット化（GID は維持）。
+            subset = _ttf_subset(fdata, tables, used_gids)
+            ff = add(b"<< /Length %d /Length1 %d >>\nstream\n"
+                     % (len(subset), len(subset)) + subset + b"\nendstream")
+            cid_subtype = "CIDFontType2"
+            ff_key = "FontFile2"
         # オブジェクト番号を先に確定: ff, cid, type0, tounicode, fontdesc の順
-        ff = add(b"<< /Length %d /Length1 %d >>\nstream\n" % (len(subset), len(subset)) + subset + b"\nendstream")
         cid_num = len(objects) + 1
         type0_num = cid_num + 1
         touni_num = type0_num + 1
         fd_num = touni_num + 1
         # 使用グリフの実幅 (/W) を hmtx から作る。無ければ既定 1000。
         w_array = _ttf_width_array(fdata, tables, used_gids)
-        cidfont = ("<< /Type /Font /Subtype /CIDFontType2 /BaseFont /Embedded "
+        cid_extra = "" if cff else " /CIDToGIDMap /Identity"
+        cidfont = ("<< /Type /Font /Subtype /%s /BaseFont /Embedded "
                    "/CIDSystemInfo << /Registry (Adobe) /Ordering (Identity) /Supplement 0 >> "
-                   "/FontDescriptor %d 0 R /DW 1000 /CIDToGIDMap /Identity %s >>"
-                   % (fd_num, w_array)).encode("latin-1")
+                   "/FontDescriptor %d 0 R /DW 1000%s %s >>"
+                   % (cid_subtype, fd_num, cid_extra, w_array)).encode("latin-1")
         cid_id = add(cidfont)
         type0 = ("<< /Type /Font /Subtype /Type0 /BaseFont /Embedded "
                  "/Encoding /Identity-H /DescendantFonts [%d 0 R] /ToUnicode %d 0 R >>"
                  % (cid_id, touni_num)).encode("latin-1")
         type0_id = add(type0)
-        # ToUnicode CMap: GID -> unicode（使った GID のみ）
-        gid_to_uni = {}
+        # ToUnicode CMap: GID -> unicode（使った GID のみ）。
+        # 同じ GID に互換漢字と通常漢字が対応する場合は正準を選ぶ。
+        gid_cps = {}
         for u, g in cmap.items():
-            if g in used_gids and g not in gid_to_uni:
-                gid_to_uni[g] = u
+            if g in used_gids:
+                gid_cps.setdefault(g, []).append(u)
+        gid_to_uni = {g: _canonical_codepoint(cps) for g, cps in gid_cps.items()}
         cmap_lines = [
             "/CIDInit /ProcSet findresource begin",
             "12 dict begin",
@@ -1272,7 +1567,7 @@ def _build_pdf(lines, font_path=None, title="document"):
         add(b"<< /Length %d >>\nstream\n" % len(tounicode) + tounicode + b"\nendstream")
         desc = ("<< /Type /FontDescriptor /FontName /Embedded /Flags 4 "
                 "/FontBBox [0 -200 1000 900] /ItalicAngle 0 /Ascent 880 /Descent -120 "
-                "/CapHeight 700 /StemV 80 /FontFile2 %d 0 R >>" % ff).encode("latin-1")
+                "/CapHeight 700 /StemV 80 /%s %d 0 R >>" % (ff_key, ff)).encode("latin-1")
         add(desc)
         font_ref = "/F1 %d 0 R" % type0_id
     else:
@@ -1786,7 +2081,7 @@ def cmd_export_musicxml(args):
         if data.get("kind") != "music":
             results.append({"file": str(p), "error": "music 作品ではありません"})
             continue
-        xml = to_musicxml(data)
+        xml = to_musicxml(data, base_dir=p.parent)
         if out_dir:
             dst = out_dir / (p.stem.replace(".music", "") + ".musicxml")
             dst.write_text(xml, encoding="utf-8")
