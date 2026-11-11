@@ -139,7 +139,7 @@
         <p class="hint" style="margin:0">WAV・PNG・WebM・PDF は一般的な形式なので、そのまま再生・投稿・印刷に使えます。プレビューで確認してからダウンロード。</p>
       </div>
     </div>
-    <p class="hint" style="margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line)"><strong>正直な範囲：</strong>このページの音声は<strong>ブラウザ合成のプレビュー音源</strong>（メロディ確認用）です。本物の声（ナレーション・ポッドキャスト）は、同じ作品 JSON をコマンドの <strong>KOE / teai レンダラ</strong>で音声化します。動画はタイトルカード中心の簡易版で、本格的な編集は <code>tools/render.py</code> 側で行います。</p>
+    <p class="hint" style="margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line)"><strong>正直な範囲：</strong>このページの音声は<strong>ブラウザ合成のプレビュー音源</strong>（メロディ確認用）です。本物の声（ナレーション・ポッドキャスト）は、同じ作品 JSON をコマンドの <strong>KOE / teai レンダラ</strong>で音声化します。動画は簡易版で、ラジオは話者・章・現在の台本を表示しますが、本格的な編集は <code>tools/render.py</code> 側で行います。</p>
   </section>
 
   <section class="panel" aria-labelledby="h-in">
@@ -201,6 +201,17 @@
       <li><strong>動画（movie）</strong> — 場面構成からタイトルカードの動画を試作する。</li>
     </ul>
     <p class="hint" style="margin:14px 0 0">同じことをコマンドでも行えます：<code>python3 tools/render.py &lt;work.json&gt; --kind audio --format wav --dry-run</code>（プレビュー）／本物の声は <code>--renderer koe --kind audio --format mp3</code>。このページの音声はブラウザ合成のプレビューです。</p>
+  </section>
+
+  <section class="panel" aria-labelledby="h-koe" style="margin-top:24px">
+    <h2 id="h-koe" style="font-size:1.1rem;margin:0 0 12px">本物の声で仕上げる（KOE に声を登録）</h2>
+    <p style="margin:0 0 10px;color:var(--muted)">このページの音声は確認用のプレビューです。ナレーションやポッドキャストを<strong>自分の声</strong>で作るには、先に KOE へ声を登録します。登録は本人が録音し、利用への同意を行います。</p>
+    <ol style="margin:0 0 12px;padding-left:1.2em;color:var(--muted)">
+      <li><a href="https://koe.live/enroll" target="_blank" rel="noopener">KOE の声登録ページ</a>を開き、案内に沿って<strong>自分の声を録音</strong>します。</li>
+      <li>録音を聞き直し、<strong>利用への同意</strong>を確認して登録を完了します。</li>
+      <li>登録した声は、作品 JSON を <code>--renderer koe</code> で音声化するときに使えます。</li>
+    </ol>
+    <p class="hint" style="margin:0">登録・録音・同意は本人が行ってください。このページや第三者が代わりに登録することはできません。声の利用範囲は KOE の案内に従います。</p>
   </section>
 
   <footer>

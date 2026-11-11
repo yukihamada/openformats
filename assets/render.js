@@ -322,7 +322,12 @@
     seconds = Math.max(2, Math.min(12, seconds || 6));
     var c = makeCanvas(1280, 720);
     var ctx = c.getContext("2d");
-    var stream = c.captureStream(30);
+    // captureStream(0) = 手動で requestFrame する。非表示タブや背面ウィンドウでも
+    // 確実にフレームを送れる（captureStream(30) は隠れるとフレームが止まり録画が空になる）。
+    var stream = c.captureStream(0);
+    var track = stream.getVideoTracks()[0];
+    var manualFrame = track && typeof track.requestFrame === "function";
+    if (!manualFrame) stream = c.captureStream(30); // フォールバック
     var mime = "video/webm;codecs=vp9";
     if (!MediaRecorder.isTypeSupported(mime)) mime = "video/webm;codecs=vp8";
     if (!MediaRecorder.isTypeSupported(mime)) mime = "video/webm";
@@ -332,6 +337,26 @@
     var title = String(work.title || work.id || "Untitled");
     var names = [];
     (work.authors || []).forEach(function (a) { if (a && a.name) names.push(a.name); });
+    // radio は台本の「今どこ」を出す。話者・章・現在の一文が分かるようにする。
+    var isRadio = work.kind === "radio" && (work.segments || []).length;
+    var script = isRadio ? scriptBlocks(work).filter(function (b) { return b.kind !== "title"; }) : [];
+    var totalDur = 0;
+    (work.segments || []).forEach(function (s) { totalDur = Math.max(totalDur, (Number(s.start_sec) || 0) + (Number(s.duration_sec) || 0)); });
+    function currentBlock(el) {
+      // 経過時間を台本のタイムラインに写す (尺が無ければ均等割り)
+      var n = script.length;
+      if (!n) return null;
+      if (totalDur > 0) {
+        var t = (el / seconds) * totalDur, acc = 0;
+        for (var i = 0; i < n; i++) {
+          var d = Number(script[i].dur) || (totalDur / n);
+          if (t < acc + d) return script[i];
+          acc += d;
+        }
+        return script[n - 1];
+      }
+      return script[Math.min(n - 1, Math.floor((el / seconds) * n))];
+    }
     function draw(el) {
       var p = Math.min(1, el / seconds);
       var g = ctx.createLinearGradient(0, 0, 1280, 720);
@@ -344,12 +369,38 @@
       ctx.fillStyle = "#eef2ff";
       ctx.font = "600 28px -apple-system,'Hiragino Sans','Noto Sans JP',sans-serif";
       ctx.fillText("openformats · " + String(work.kind || "work"), 80, 100);
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "700 72px -apple-system,'Hiragino Sans','Noto Sans JP',sans-serif";
-      wrapText(ctx, title, 80, 340, 1120, 90);
-      ctx.fillStyle = "#c9d4ff";
-      ctx.font = "32px -apple-system,'Hiragino Sans','Noto Sans JP',sans-serif";
-      if (names.length) ctx.fillText(names.join(", "), 80, 640);
+
+      if (isRadio) {
+        var blk = currentBlock(el);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "700 56px -apple-system,'Hiragino Sans','Noto Sans JP',sans-serif";
+        wrapText(ctx, title, 80, 190, 1120, 70);
+        if (blk) {
+          if (blk.kind === "marker") {
+            ctx.fillStyle = "#7aa0ff";
+            ctx.font = "700 44px -apple-system,'Hiragino Sans','Noto Sans JP',sans-serif";
+            wrapText(ctx, blk.text, 80, 340, 1120, 60);
+          } else if (blk.kind === "speaker") {
+            ctx.fillStyle = "#6ee7a0";
+            ctx.font = "700 34px -apple-system,'Hiragino Sans','Noto Sans JP',sans-serif";
+            ctx.fillText(blk.text, 80, 330);
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "600 40px -apple-system,'Hiragino Sans','Noto Sans JP',sans-serif";
+            wrapText(ctx, blk.body, 80, 400, 1120, 56);
+          } else {
+            ctx.fillStyle = "#c9d4ff";
+            ctx.font = "32px -apple-system,'Hiragino Sans','Noto Sans JP',sans-serif";
+            wrapText(ctx, blk.text, 80, 360, 1120, 44);
+          }
+        }
+      } else {
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "700 72px -apple-system,'Hiragino Sans','Noto Sans JP',sans-serif";
+        wrapText(ctx, title, 80, 340, 1120, 90);
+        ctx.fillStyle = "#c9d4ff";
+        ctx.font = "32px -apple-system,'Hiragino Sans','Noto Sans JP',sans-serif";
+        if (names.length) ctx.fillText(names.join(", "), 80, 640);
+      }
       // 進捗バー
       ctx.fillStyle = "rgba(255,255,255,.2)"; ctx.fillRect(80, 680, 1120, 6);
       ctx.fillStyle = "#7aa0ff"; ctx.fillRect(80, 680, 1120 * p, 6);
@@ -365,65 +416,120 @@
       // 最初のフレームを描いてから録画開始し、固定間隔で描き続ける
       // （requestAnimationFrame は非表示タブで止まるため setInterval を使う）
       draw(0);
+      if (manualFrame) track.requestFrame();
       var fps = 30, tick = 0, total = Math.round(seconds * fps);
       rec.start(100);
       var timer = setInterval(function () {
         tick++;
         draw(tick / fps);
+        if (manualFrame) track.requestFrame();
         if (tick >= total) { clearInterval(timer); if (rec.state !== "inactive") rec.stop(); }
       }, 1000 / fps);
     });
   }
 
-  function textPages(work) {
-    // book/article は章ごと、それ以外は 1 ページ
-    var pages = [];
-    if ((work.kind === "book" || work.kind === "article") && (work.chapters || []).length) {
+  // ---- 作品を「台本ブロック」に分解 (純粋) --------------------------------
+  // radio は話者・章・ト書きを保った台本に、book/article は章立てに、
+  // それ以外はタイトル + 本文にする。PDF/字幕/動画の元になる。
+  function scriptBlocks(work) {
+    work = work || {};
+    var blocks = [];
+    var title = String(work.title || work.id || "Untitled");
+    blocks.push({ kind: "title", text: title });
+
+    if (work.kind === "radio" && (work.segments || []).length) {
+      var spk = {};
+      (work.speakers || []).forEach(function (s) { spk[s.id] = s.name || s.id; });
+      (work.segments || []).forEach(function (seg) {
+        var t = seg.type;
+        if (t === "marker") {
+          if (seg.label) blocks.push({ kind: "marker", text: String(seg.label) });
+        } else if (t === "speech") {
+          blocks.push({ kind: "speaker", text: String(spk[seg.speaker] || seg.speaker || "話者"), body: String(seg.text || ""), dur: Number(seg.duration_sec) || 0 });
+        } else if (t === "music" || t === "sfx") {
+          blocks.push({ kind: "meta", text: "[" + t + (seg.src ? " " + seg.src : "") + "]", dur: Number(seg.duration_sec) || 0 });
+        } else if (t === "pause" || t === "silence") {
+          blocks.push({ kind: "meta", text: "(間 " + (Number(seg.duration_sec) || 0) + " 秒)", dur: Number(seg.duration_sec) || 0 });
+        }
+      });
+    } else if ((work.kind === "book" || work.kind === "article") && (work.chapters || []).length) {
       work.chapters.forEach(function (ch) {
-        var lines = [String(ch.title || ch.id || "章")];
+        blocks.push({ kind: "h2", text: String(ch.title || ch.id || "章") });
         (ch.blocks || []).forEach(function (b) {
-          if (b.type === "heading") lines.push(b.text || "");
-          else if (b.type === "paragraph") lines.push(b.text || "");
-          else if (b.type === "list") (b.items || []).forEach(function (it) { lines.push("・" + it); });
-          else if (b.text) lines.push(b.text);
+          if (b.type === "heading") blocks.push({ kind: "h2", text: String(b.text || "") });
+          else if (b.type === "list") (b.items || []).forEach(function (it) { blocks.push({ kind: "body", text: "・" + it }); });
+          else blocks.push({ kind: "body", text: String(b.text || "") });
         });
-        pages.push(lines);
       });
     } else {
-      var lines = [String(work.title || work.id || "Untitled")];
-      var body = textOf(work).split("\n");
-      body.forEach(function (l) { if (l && l !== lines[0]) lines.push(l); });
-      pages.push(lines);
+      textOf(work).split("\n").forEach(function (l) {
+        if (l && l !== title) blocks.push({ kind: "body", text: l });
+      });
     }
-    return pages;
+    return blocks;
   }
+
+  // 各ブロック種別の描画スタイル (canvas の font 文字列と行間)。
+  var PDF_STYLES = {
+    title:   { font: "700 40px", color: "#111111", lh: 70, gapBefore: 0,  gapAfter: 26 },
+    h2:      { font: "700 32px", color: "#111111", lh: 52, gapBefore: 18, gapAfter: 14 },
+    marker:  { font: "700 28px", color: "#2b5cff", lh: 44, gapBefore: 26, gapAfter: 10 },
+    speaker: { font: "700 24px", color: "#0a7d33", lh: 38, gapBefore: 16, gapAfter: 4 },
+    body:    { font: "26px",     color: "#222222", lh: 40, gapBefore: 0,  gapAfter: 8 },
+    meta:    { font: "italic 22px", color: "#888888", lh: 34, gapBefore: 2, gapAfter: 6 }
+  };
+  var PDF_FAMILY = " -apple-system,'Hiragino Sans','Noto Sans JP',sans-serif";
 
   function renderPdf(work) {
     if (!isDom()) return Promise.reject(new Error("canvas はブラウザ専用"));
     var W = 1240, H = 1754; // A4 相当 (150dpi)
-    var pages = textPages(work);
+    var pad = 100, left = pad, maxW = W - pad * 2, bottom = H - pad;
+    var blocks = scriptBlocks(work);
+
+    // まず各ブロックを「行」に展開し、ページ境界で分割する (長い台本も切れない)
+    var pages = [];
+    var page = [];
+    var y = pad + 40;
+    function newPage() { pages.push(page); page = []; y = pad + 40; }
+
+    blocks.forEach(function (blk) {
+      var st = PDF_STYLES[blk.kind] || PDF_STYLES.body;
+      y += st.gapBefore || 0;
+      var texts = blk.kind === "speaker" ? [blk.text, blk.body] : [blk.text];
+      texts.forEach(function (raw, idx) {
+        var font = idx === 0 ? st.font : "26px";
+        var color = idx === 0 ? st.color : "#222222";
+        var lh = idx === 0 ? st.lh : 40;
+        // 行の折り返し幅はフォントに依存するので、計測用の一時 canvas を使う
+        var meas = makeCanvas(8, 8).getContext("2d");
+        meas.font = font + PDF_FAMILY;
+        var lines = wrapLines(meas, raw || "", maxW);
+        lines.forEach(function (line) {
+          if (y + lh > bottom) newPage();
+          page.push({ text: line, x: left, y: y, font: font + PDF_FAMILY, color: color });
+          y += lh;
+        });
+      });
+      y += st.gapAfter || 0;
+    });
+    if (page.length) pages.push(page);
+    if (!pages.length) pages.push([]);
+
+    // ページを canvas に描いて JPEG 化 → PDF にまとめる
     var jpegs = [];
     var chain = Promise.resolve();
-    pages.forEach(function (lines) {
+    pages.forEach(function (ops, pageIndex) {
       chain = chain.then(function () {
         var c = makeCanvas(W, H);
         var ctx = c.getContext("2d");
         ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, W, H);
-        var pad = 100, y = pad + 40;
-        ctx.fillStyle = "#111";
-        ctx.font = "700 40px -apple-system,'Hiragino Sans','Noto Sans JP',sans-serif";
-        ctx.fillText(lines[0] || "", pad, y); y += 70;
-        ctx.font = "26px -apple-system,'Hiragino Sans','Noto Sans JP',sans-serif";
-        ctx.fillStyle = "#222";
-        for (var i = 1; i < lines.length; i++) {
-          var wrapped = wrapLines(ctx, lines[i], W - pad * 2);
-          for (var j = 0; j < wrapped.length; j++) {
-            if (y > H - pad) break;
-            ctx.fillText(wrapped[j], pad, y); y += 40;
-          }
-          y += 10;
-        }
-        ctx.fillStyle = "#888"; ctx.font = "20px ui-monospace,monospace";
+        ops.forEach(function (op) {
+          ctx.fillStyle = op.color; ctx.font = op.font;
+          ctx.fillText(op.text, op.x, op.y);
+        });
+        // フッタ: ページ番号 + ハッシュ
+        ctx.fillStyle = "#aaaaaa"; ctx.font = "20px ui-monospace,monospace";
+        ctx.fillText((pageIndex + 1) + " / " + pages.length, W - pad - 90, H - 50);
         if (work.content_hash) ctx.fillText("sha256 " + String(work.content_hash).slice(0, 24) + "…", pad, H - 50);
         return canvasToJpeg(c).then(function (jpg) { jpegs.push(jpg); });
       });
@@ -450,6 +556,7 @@
     hashSeed: hashSeed,
     mulberry32: mulberry32,
     textOf: textOf,
+    scriptBlocks: scriptBlocks,
     melodyFromWork: melodyFromWork,
     encodeWAV: encodeWAV,
     synthSamples: synthSamples,
