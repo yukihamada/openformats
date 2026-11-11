@@ -36,29 +36,6 @@
   <h1>メディア作成</h1>
   <p class="lede"><strong>設計図（作品 JSON）1つ</strong>から、<strong>音声・画像・動画・PDF</strong> を、ボタン1つで作れます。曲もラジオも本も動画も、同じ操作。インストール不要、ファイルはどこにも送信しません。</p>
 
-  <section class="panel mb-24" aria-labelledby="h-value">
-    <h2 id="h-value" class="panel-h">これが便利なところ</h2>
-    <div class="grid2">
-      <div>
-        <p class="value-item"><strong>① 1つの設計図から、いくつもの「実物」</strong></p>
-        <p class="hint value-item">曲のメタ・歌詞・台本・章が入った JSON ひとつで、試聴用の音声、サムネ用の画像、SNS 用の短い動画、配布用の PDF をまとめて作れます。元データを直せば、作り直すだけ。</p>
-      </div>
-      <div>
-        <p class="value-item"><strong>② ブラウザだけで完結・送信なし</strong></p>
-        <p class="hint value-item">インストールもログインも不要。ファイルは外部へ送らず、この端末の中だけで生成します。機密の原稿や音源でも安心して試せます。</p>
-      </div>
-      <div>
-        <p class="value-item"><strong>③ 種類を問わず、同じ操作</strong></p>
-        <p class="hint value-item">music・radio・book・movie など、どの作品でも同じ画面で同じボタン。形式ごとに別ツールを覚える必要がありません。</p>
-      </div>
-      <div>
-        <p class="value-item"><strong>④ そのまま使えるファイルで保存</strong></p>
-        <p class="hint value-item">WAV・PNG・WebM・PDF は一般的な形式なので、そのまま再生・投稿・印刷に使えます。プレビューで確認してからダウンロード。</p>
-      </div>
-    </div>
-    <p class="hint value-foot"><strong>正直な範囲：</strong>このページの音声は<strong>ブラウザ合成のプレビュー音源</strong>（メロディ確認用）です。本物の声（ナレーション・ポッドキャスト）は、同じ作品 JSON をコマンドの <strong>KOE / teai レンダラ</strong>で音声化します。動画は簡易版で、ラジオは話者・章・現在の台本を表示しますが、本格的な編集は <code>tools/render.py</code> 側で行います。</p>
-  </section>
-
   <section class="panel" aria-labelledby="h-in">
     <h2 id="h-in" class="sr-only">入力</h2>
     <div class="drop" id="drop" role="button" tabindex="0" aria-label="作品 JSON を選ぶか、ここにドロップ">
@@ -98,6 +75,29 @@
       </div>
       <div id="out-status" class="status info" role="status" aria-live="polite" hidden></div>
     </div>
+  </section>
+
+  <section class="panel mb-24 mt-24" aria-labelledby="h-value">
+    <h2 id="h-value" class="panel-h">これが便利なところ</h2>
+    <div class="grid2">
+      <div>
+        <p class="value-item"><strong>① 1つの設計図から、いくつもの「実物」</strong></p>
+        <p class="hint value-item">曲のメタ・歌詞・台本・章が入った JSON ひとつで、試聴用の音声、サムネ用の画像、SNS 用の短い動画、配布用の PDF をまとめて作れます。元データを直せば、作り直すだけ。</p>
+      </div>
+      <div>
+        <p class="value-item"><strong>② ブラウザだけで完結・送信なし</strong></p>
+        <p class="hint value-item">インストールもログインも不要。ファイルは外部へ送らず、この端末の中だけで生成します。機密の原稿や音源でも安心して試せます。</p>
+      </div>
+      <div>
+        <p class="value-item"><strong>③ 種類を問わず、同じ操作</strong></p>
+        <p class="hint value-item">music・radio・book・movie など、どの作品でも同じ画面で同じボタン。形式ごとに別ツールを覚える必要がありません。</p>
+      </div>
+      <div>
+        <p class="value-item"><strong>④ そのまま使えるファイルで保存</strong></p>
+        <p class="hint value-item">WAV・PNG・WebM・PDF は一般的な形式なので、そのまま再生・投稿・印刷に使えます。プレビューで確認してからダウンロード。</p>
+      </div>
+    </div>
+    <p class="hint value-foot"><strong>正直な範囲：</strong>このページの音声は<strong>ブラウザ合成のプレビュー音源</strong>（メロディ確認用）です。本物の声（ナレーション・ポッドキャスト）は、同じ作品 JSON をコマンドの <strong>KOE / teai レンダラ</strong>で音声化します。動画は簡易版で、ラジオは話者・章・現在の台本を表示しますが、本格的な編集は <code>tools/render.py</code> 側で行います。</p>
   </section>
 
   <section class="steps" aria-labelledby="h-steps">
