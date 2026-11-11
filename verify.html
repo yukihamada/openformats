@@ -18,19 +18,23 @@
 <a class="sr-only" href="#main">本文へスキップ</a>
 <header class="site-nav">
   <nav aria-label="サイト">
-    <a class="name" href="./">openformats</a>
-    <a href="./#builder">ブラウザで作る</a>
-    <a href="./#works">実作品</a>
-    <a href="convert.html">変換ツール</a>
-    <a href="render.html">メディア作成</a>
-    <a href="import.html">一括インポート</a>
+    <a class="brand" href="./"><span class="mark" aria-hidden="true">{}</span>openformats</a>
+    <div class="links">
+      <a href="./#builder">つくる</a>
+      <a href="./#formats">フォーマット</a>
+      <a href="./#works">実作品</a>
+      <a href="convert.html">変換</a>
+      <a href="import.html">一括</a>
+      <a href="render.html">メディア</a>
+      <a href="verify.html" aria-current="page">検証</a>
+    </div>
     <a class="gh" href="https://github.com/yukihamada/openformats">GitHub ↗</a>
   </nav>
 </header>
 <main id="main" tabindex="-1">
   <h1>検証ツール</h1>
   <p class="lede">作品 JSON と本体ファイル（音源・画像など）をドロップするだけで、<strong>指紋（SHA-256）</strong>・<strong>署名（Ed25519）</strong>・<strong>履歴チェーン</strong>が正しいかを、このブラウザ内で確かめます。ファイルはどこにも送信しません。</p>
-  <p class="hint" style="margin:-12px 0 20px">かんたんに言うと：作品と本体が「すり替わっていないか」を、その場で照合する道具です。コマンド <code>python3 tools/of.py verify</code> と同じ判定をブラウザで行います。</p>
+  <p class="hint lede-note">かんたんに言うと：作品と本体が「すり替わっていないか」を、その場で照合する道具です。コマンド <code>python3 tools/of.py verify</code> と同じ判定をブラウザで行います。</p>
 
   <section class="panel" aria-labelledby="h-in">
     <h2 id="h-in" class="sr-only">入力</h2>
@@ -39,13 +43,13 @@
       <div class="small">JSON は 1 つ、本体ファイルは複数まとめて選べます（例: <code>hitotsu-saki-e.music.json</code> と <code>take1_full.m4a</code>）。JSON だけでも指紋・署名・履歴は検証できます。</div>
       <input id="file" type="file" multiple accept=".json,application/json,audio/*,video/*,image/*,.wav,.mp3,.m4a,.mp4,.png,.jpg,.jpeg,.webp,.svg,.txt,.md,.pdf" hidden>
     </div>
-    <div class="row" style="margin-top:16px">
+    <div class="row mt-16">
       <span class="hint">または JSON を貼り付け：</span>
       <button class="cta ghost" type="button" id="btn-sample">実作品のサンプルを読み込む</button>
       <button class="cta ghost" type="button" id="btn-clear">クリア</button>
     </div>
-    <label for="input" style="margin-top:12px">作品 JSON</label>
-    <textarea id="input" spellcheck="false" style="width:100%;min-height:180px;resize:vertical;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);font:13px/1.6 ui-monospace,Menlo,Consolas,monospace" placeholder='{ "kind": "music", "id": "my-song", "content_hash": "...", ... }'></textarea>
+    <label for="input" class="mt-12">作品 JSON</label>
+    <textarea id="input" class="verify-input" spellcheck="false" placeholder='{ "kind": "music", "id": "my-song", "content_hash": "...", ... }'></textarea>
     <div class="row">
       <button class="cta" type="button" id="btn-verify">検証する</button>
       <span class="hint" id="detect">JSON 待ち</span>
@@ -53,7 +57,7 @@
     <div id="in-status" class="status info" role="status" aria-live="polite" hidden></div>
   </section>
 
-  <section style="margin-top:24px" aria-labelledby="h-out">
+  <section class="mt-24" aria-labelledby="h-out">
     <h2 id="h-out" class="sr-only">検証結果</h2>
     <div class="panel">
       <div id="summary" class="summary" hidden><span class="badge" id="sum-badge"></span><span id="sum-text"></span></div>
@@ -72,7 +76,7 @@
       <li><strong>署名（Ed25519）</strong> — 指紋に対する作者の署名が有効か。</li>
       <li><strong>hash_chain / revisions（履歴）</strong> — 改訂の連鎖が途切れていないか、差分が本体と整合するか。</li>
     </ol>
-    <p class="hint" style="margin-top:14px">同じ判定はコマンドでも行えます：<code>python3 tools/of.py verify &lt;file&gt;</code>。このツールはその忠実な移植で、<code>works/</code> の全作品で判定が一致することをテスト済みです（<code>tests/verify.test.mjs</code>）。</p>
+    <p class="hint mt-14">同じ判定はコマンドでも行えます：<code>python3 tools/of.py verify &lt;file&gt;</code>。このツールはその忠実な移植で、<code>works/</code> の全作品で判定が一致することをテスト済みです（<code>tests/verify.test.mjs</code>）。</p>
   </section>
 
   <footer>

@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#fbfbf9" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141413" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#faf9f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15140f" media="(prefers-color-scheme: dark)">
 <title>openformats — 1 作品 = 1 JSON</title>
 <meta name="description" content="あらゆる創作の最小単位を、人間が読める JSON で定義する個人仕様（MIT・公開）。音楽・ラジオ・本・声・動画・製品・場所を同じ語彙で。既存標準を置き換えずハブを目指す実証段階。">
 <meta property="og:type" content="website">
@@ -49,235 +49,29 @@
 <meta name="twitter:title" content="openformats — あなたの作品は、あなたの手元に残るか？">
 <meta name="twitter:description" content="1 作品 = 1 JSON。音楽も本もラジオも、テキストで、あなたの手元に。ブラウザで作ってダウンロード保存。実音源つき。">
 <meta name="twitter:image" content="https://yukihamada.github.io/openformats/og-image.png">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%232b5cff'/%3E%3Ctext x='12' y='17' font-size='13' font-family='monospace' fill='white' text-anchor='middle'%3E%7B%7D%3C/text%3E%3C/svg%3E">
-<style>
-  :root {
-    --fg:#1a1a1a; --muted:#6b6b6b; --line:#e5e5e5; --bg:#fbfbf9; --card:#ffffff;
-    --accent:#2b5cff; --accent-soft:#eef2ff; --accent-2:#7aa0ff;
-    --cta-bg:#2b5cff; --cta-fg:#ffffff;
-    --code-bg:rgba(20,20,19,.06); --code-fg:#3a3a3a; --shadow:0 10px 30px rgba(43,92,255,.10);
-    --radius:14px; --maxw:1000px; color-scheme:light dark;
-  }
-  @media (prefers-color-scheme: dark){
-    :root{ --fg:#e8e8e6; --muted:#9a9a96; --line:#2a2a28; --bg:#141413; --card:#1b1b1a;
-      --accent:#7aa0ff; --accent-soft:#1c2233; --accent-2:#a9c0ff;
-      --cta-bg:#2b5cff; --cta-fg:#ffffff;
-      --code-bg:rgba(255,255,255,.10); --code-fg:#d8d8d2; --shadow:0 10px 30px rgba(0,0,0,.45); }
-  }
-  * { box-sizing:border-box; }
-  html { scroll-behavior:smooth; scroll-padding-top:110px; }
-  #main { scroll-margin-top:8px; }
-  @media (min-width:601px){ html { scroll-padding-top:72px; } }
-  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} *{animation:none!important;transition:none!important;} }
-  body { margin:0; background:var(--bg); color:var(--fg); overflow-x:hidden;
-    font:16px/1.7 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif;
-    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
-  main { max-width:var(--maxw); margin:0 auto; padding:0 24px 96px; scroll-margin-top:72px; }
-  a { color:var(--accent); text-decoration:none; }
-  a:hover { text-decoration:underline; }
-  main p a, .sub a { padding:3px 1px; }
-  .sub a, footer a, .who a, .early a { display:inline-flex; align-items:center; min-height:44px; min-width:44px; padding:0 4px; }
-  @media (max-width:820px){ footer a, .work .body a, .dl a, .early a { display:inline-block; min-height:44px; line-height:44px; padding:0 2px; }
-    main p a:not(.cta), main li a { display:inline; line-height:inherit; padding:2px 1px; }
-    .fmt { min-height:64px; } .fmt .t h3 { line-height:1.2; } }
-  small { font-size:14px; }
-  .builder label small { font-size:14px; }
-  :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:4px; }
-  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:max(13px,.9em); color:var(--code-fg);
-    background:var(--code-bg); padding:.15em .4em; border-radius:5px; }
-  pre { background:var(--code-bg); padding:16px 18px; border-radius:10px;
-    overflow:auto; font-size:14px; line-height:1.6; }
-  pre code { background:none; padding:0; }
-  .codewrap pre { white-space:pre-wrap; word-break:break-word; overflow-x:hidden; }
-
-  /* hero */
-  .hero { display:grid; grid-template-columns:1fr 1.12fr; gap:36px; align-items:center;
-    padding:72px 0 48px; }
-  .hero h1 { font-size:clamp(30px,4.4vw,48px); line-height:1.15; letter-spacing:-.025em; margin:0 0 16px; }
-  .hero .lede { font-size:clamp(16px,2vw,19px); color:var(--muted); margin:0 0 28px; max-width:34em; }
-  .hero-art { position:relative; }
-  .hero-art img { width:100%; height:auto; display:block; }
-  @media (max-width:820px){ .hero-art img{width:100%; height:auto;} }
-  .hero-art .dark { display:none; }
-  @media (prefers-color-scheme: dark){ .hero-art .light{display:none;} .hero-art .dark{display:block;} }
-  .who { margin:22px 0 6px; font-size:14px; color:var(--muted); }
-  .who a { color:var(--fg); }
-  .hero p a.hero-sub { display:inline-flex; align-items:center; min-height:44px; padding:0 8px; margin:4px 0 4px 6px;
-    color:#1f4fd8; font-weight:600; text-decoration:underline; text-underline-offset:3px; }
-  .hero p a.hero-sub:hover { text-decoration:underline; }
-  @media (prefers-color-scheme: dark){ .hero p a.hero-sub{ color:#a9c0ff; } }
-  .hero-badge { display:inline-flex; align-items:center; gap:6px; margin-top:16px; font-size:13px; color:var(--muted);
-    background:var(--card); border:1px solid var(--line); border-radius:999px; padding:6px 12px; line-height:1.4; }
-  .hero-badge b { color:var(--fg); font-weight:600; }
-  .hero .cta-sub { display:block; }
-  @media (max-width:820px){ .hero{grid-template-columns:1fr; gap:16px; padding:20px 0 16px;} .hero-art img{max-height:34vh; object-fit:contain;} }
-  @media (max-width:600px){ .brand{padding:12px 0 0;} .hero{padding:12px 0 12px;} .hero h1{margin-bottom:10px;} .hero .lede{margin-bottom:18px;}
-    .hero .cta{white-space:normal;} .hero .cta-sub{display:block;} }
-
-  .cta { display:inline-block; background:var(--cta-bg); color:var(--cta-fg); padding:12px 22px; border-radius:10px;
-    font-weight:600; font-size:15px; margin:4px 10px 4px 0; box-shadow:var(--shadow); transition:transform .15s,filter .15s; }
-  .cta .cta-note { white-space:nowrap; }
-  .cta:hover { text-decoration:none; filter:brightness(1.08); transform:translateY(-1px); }
-  .cta.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent); box-shadow:none; }
-  .cta.ghost:hover { background:var(--accent-soft); }
-
-  /* brand */
-  .brand { display:flex; align-items:center; gap:10px; padding:22px 0 0; }
-  .brand .mark { width:30px; height:30px; border-radius:8px; background:var(--accent); color:#fff;
-    display:grid; place-items:center; font-family:ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; }
-  .brand .name { font-weight:700; font-size:16px; letter-spacing:-.01em; }
-  @media (prefers-color-scheme:dark){ .brand .mark { background:#2b5cff; } }
-  .brand .tag { color:var(--muted); font-size:14px; margin-left:2px; }
-  .brand .ver { margin-left:auto; font-size:14px; color:var(--muted); font-family:ui-monospace,Menlo,monospace;
-    border:1px solid var(--line); border-radius:999px; padding:3px 10px; }
-  @media (max-width:560px){ .brand .tag{display:none;} }
-
-  .site-nav { position:sticky; top:0; z-index:50; background:var(--bg); border-bottom:1px solid var(--line);
-    backdrop-filter:saturate(1.2) blur(6px); }
-  .toc a[aria-current="true"]{ color:var(--accent); font-weight:600; }
-  .toc { max-width:var(--maxw); margin:0 auto; display:flex; flex-wrap:wrap; gap:4px 18px;
-    padding:10px 24px; font-size:14px; }
-  .toc a { display:inline-flex; align-items:center; color:var(--muted); padding:8px 2px; min-height:44px; min-width:44px; line-height:24px; }
-  .toc a:hover { color:var(--accent); }
-  @media (max-width:600px){ .toc{flex-wrap:nowrap; overflow-x:auto; gap:0 16px; padding:4px 16px; -webkit-overflow-scrolling:touch; scrollbar-width:none; -webkit-mask-image:linear-gradient(to right,#000 92%,transparent); mask-image:linear-gradient(to right,#000 92%,transparent);}
-    .toc::-webkit-scrollbar{display:none;}
-    .toc a{white-space:nowrap; padding:10px 2px; min-height:44px; line-height:24px; font-size:14px;} .toc .toc-gh{margin-left:0;} }
-  .toc .toc-gh { margin-left:auto; color:var(--accent); font-weight:600; }
-
-  .builder { margin-top:18px; }
-  .builder .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-  @media (max-width:720px){ .builder .grid{grid-template-columns:1fr;} }
-  .builder label, .builder .outlabel { display:block; font-size:14px; color:var(--muted); margin:10px 0 4px; }
-  .builder input, .builder select { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:9px;
-    background:var(--card); color:var(--fg); font-size:14px; font-family:inherit; min-height:44px; }
-  .builder select { -webkit-appearance:none; appearance:none; height:44px; line-height:normal;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%236b6b6b' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat:no-repeat; background-position:right 12px center; padding-right:34px; }
-  .builder input:focus, .builder select:focus { outline:2px solid var(--accent); outline-offset:1px; }
-  .builder .out { background:var(--code-bg); border:1px solid var(--line); border-radius:10px; padding:14px;
-    font-family:ui-monospace,Menlo,monospace; font-size:13px; white-space:pre-wrap; word-break:break-word;
-    max-height:min(340px,50vh); overflow:auto; margin:0; }
-  .codewrap pre { padding-top:44px; }
-  .builder .row { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; align-items:center; }
-  .builder .hint { font-size:14px; color:var(--muted); }
-
-  /* copy button */
-  .codewrap { position:relative; }
-  .term-steps { margin-top:18px; border:1px solid var(--line); border-radius:10px; background:var(--card); }
-  .term-steps > summary { display:flex; align-items:center; min-height:44px; padding:10px 16px; cursor:pointer;
-    font-weight:600; color:var(--fg); list-style:none; }
-  .term-steps > summary::-webkit-details-marker { display:none; }
-  .term-steps > summary::before { content:"▸"; margin-right:8px; color:var(--accent); transition:transform .15s; }
-  .term-steps[open] > summary::before { transform:rotate(90deg); }
-  .term-steps > summary:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
-  .term-steps > *:not(summary) { margin-left:16px; margin-right:16px; }
-  .term-steps > .codewrap { margin-left:16px; margin-right:16px; }
-  .copy { position:absolute; top:8px; right:8px; background:var(--card); color:var(--muted);
-    border:1px solid var(--line); border-radius:7px; padding:5px 10px; font-size:14px; cursor:pointer; min-height:44px; min-width:44px;
-    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif; }
-  .copy:hover { border-color:var(--accent); color:var(--accent); }
-  .copy:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
-  .faq { margin:24px 0 0; }
-  .faq details { border:1px solid var(--line); border-radius:10px; padding:0 14px; margin:8px 0; background:var(--card); }
-  .faq summary { cursor:pointer; padding:14px 0; font-weight:600; min-height:44px; display:flex; align-items:center; }
-  .faq summary:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
-  .faq details p { margin:0 0 14px; color:var(--muted); font-size:14px; }
-  .glossary { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin:16px 0 0; }
-  .glossary div { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-size:14px; }
-  .glossary b { color:var(--accent); }
-
-  section { margin-top:64px; }
-  h2 { font-size:clamp(21px,2.6vw,26px); margin:0 0 6px; letter-spacing:-.015em; }
-  .sub { color:var(--muted); margin:0 0 24px; font-size:15px; }
-  p { margin:0 0 16px; }
-
-  /* stat strip */
-  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:8px 0 0; }
-  .stat { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px; }
-  .stat b { display:block; font-size:26px; letter-spacing:-.02em; }
-  .stat span { color:var(--muted); font-size:14px; }
-  @media (max-width:640px){ .stats{grid-template-columns:repeat(2,1fr); gap:8px;} .stat{padding:12px 14px;} .stat b{font-size:22px;} .stat span{font-size:13px;} }
-  @media (max-width:360px){ .stats{gap:6px;} .stat{padding:9px 11px;} .stat b{font-size:19px;} .stat span{font-size:12px;} }
-
-  /* format grid with icons */
-  .formats { display:grid; grid-template-columns:repeat(auto-fill,minmax(215px,1fr)); gap:12px; }
-  .fmt { display:flex; gap:12px; align-items:center; background:var(--card); border:1px solid var(--line);
-    border-radius:var(--radius); padding:14px 16px; transition:border-color .15s,transform .15s; }
-  .fmt:hover { border-color:var(--accent); text-decoration:none; transform:translateY(-2px); }
-  .fmt .ic { flex:0 0 38px; width:38px; height:38px; border-radius:10px; background:var(--accent-soft);
-    color:var(--accent); display:grid; place-items:center; }
-  .fmt .ic svg { width:22px; height:22px; }
-  .fmt .t { line-height:1.25; }
-  .fmt .t h3 { display:block; font-size:16px; font-weight:600; color:var(--fg); margin:0; letter-spacing:-.01em; }
-  .fmt .t .en { font-weight:400; color:var(--muted); font-size:14px; }
-  .fmt .t span { font-size:14px; color:var(--muted); }
-
-  /* works with covers */
-  .works { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
-  .work { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
-    display:flex; flex-direction:column; transition:transform .15s,box-shadow .15s; }
-  .work:hover { transform:translateY(-2px); box-shadow:var(--shadow); }
-  .work .cover { aspect-ratio:16/10; background:var(--accent-soft); display:block; overflow:hidden; position:relative; }
-  .work .cover img { width:100%; height:100%; object-fit:cover; display:block; }
-  .work .cover::after, .prod .thumb::after { content:""; position:absolute; inset:0; pointer-events:none;
-    background:linear-gradient(100deg, transparent 20%, rgba(255,255,255,.28) 50%, transparent 80%);
-    background-size:200% 100%; animation:shimmer 1.3s ease-in-out infinite; }
-  .work .cover.loaded::after, .prod .thumb.loaded::after { display:none; }
-  @keyframes shimmer { from{background-position:200% 0;} to{background-position:-60% 0;} }
-  .work .cover.placeholder { display:grid; place-items:center; color:var(--accent); }
-  .work .cover.placeholder svg { width:44px; height:44px; opacity:.8; }
-  .work .body { padding:14px 16px 16px; display:flex; flex-direction:column; gap:6px; flex:1; }
-  .work .work-title { font-size:15px; margin:0; }
-  .work .meta { color:var(--muted); font-size:14px; }
-  .work .asize { color:var(--muted); font-size:13px; font-family:ui-monospace,Menlo,monospace; }
-  .work audio { width:100%; height:44px; margin-top:8px; accent-color:var(--accent); }
-  .work .dl { font-size:14px; margin-top:auto; padding-top:8px; }
-  .work .dl a { display:inline-block; padding:10px 8px; min-height:44px; min-width:44px; }
-  footer a { display:inline-block; padding:10px 2px; min-height:44px; }
-
-  /* products with thumbnails */
-  .products { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; }
-  @media (min-width:641px){ .products .prod:first-child{grid-column:span 2;} }
-  @media (max-width:640px){ .products{grid-template-columns:repeat(2,1fr);} .formats{grid-template-columns:repeat(2,1fr);} }
-  @media (max-width:400px){ .products{grid-template-columns:1fr;} .formats{grid-template-columns:1fr;} }
-  .prod { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
-    display:flex; flex-direction:column; transition:border-color .15s,transform .15s; }
-  .prod:hover { border-color:var(--accent); text-decoration:none; transform:translateY(-2px); }
-  .prod .thumb { aspect-ratio:16/10; background:var(--accent-soft); overflow:hidden; position:relative; }
-  .prod .thumb img { width:100%; height:100%; object-fit:cover; display:block; }
-  .prod .pbody { padding:10px 14px 14px; }
-  .prod .pbody h3 { display:block; font-size:16px; color:var(--fg); margin:0; letter-spacing:-.01em; }
-  .prod .pbody span { font-size:14px; color:var(--muted); font-family:ui-monospace,Menlo,monospace; }
-
-  footer { margin-top:72px; padding-top:24px; border-top:1px solid var(--line); color:var(--muted); font-size:14px; }
-  .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
-  .sr-only:focus { position:fixed; top:12px; left:12px; width:auto; height:auto; margin:0; padding:10px 16px;
-    clip:auto; overflow:visible; background:var(--cta-bg); color:var(--cta-fg); border-radius:8px;
-    font-weight:600; z-index:100; box-shadow:var(--shadow); }
-</style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%231b1a16'/%3E%3Ctext x='12' y='17' font-size='13' font-family='monospace' fill='white' text-anchor='middle'%3E%7B%7D%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
 <a class="sr-only" href="#main">本文へスキップ</a>
 <header class="site-nav">
-  <nav class="toc" aria-label="目次">
-    <a href="#builder">ブラウザで作る</a>
-    <a href="#formats">フォーマット</a>
-    <a href="#works">実作品</a>
-    <a href="#start">3ステップ</a>
-    <a href="#products">プロダクト</a>
-    <a href="#standards">既存標準</a>
-    <a href="import.html">一括インポート</a>
-    <a href="verify.html">検証ツール</a>
-    <a href="convert.html">変換ツール</a>
-    <a href="render.html">メディア作成</a>
-    <a class="toc-gh" href="https://github.com/yukihamada/openformats">GitHub ↗</a>
+  <nav aria-label="サイト">
+    <a class="brand" href="./" aria-current="page"><span class="mark" aria-hidden="true">{}</span>openformats</a>
+    <div class="links">
+      <a href="#builder">つくる</a>
+      <a href="#formats">フォーマット</a>
+      <a href="#works">実作品</a>
+      <a href="convert.html">変換</a>
+      <a href="import.html">一括</a>
+      <a href="render.html">メディア</a>
+      <a href="verify.html">検証</a>
+    </div>
+    <a class="gh" href="https://github.com/yukihamada/openformats">GitHub ↗</a>
   </nav>
 </header>
 <main id="main" tabindex="-1">
-  <div class="brand">
-    <span class="mark" aria-hidden="true">{}</span>
-    <span class="name">openformats</span>
-    <span class="tag">— 作品をサービスの外へ残す個人プロジェクト（実証段階）</span>
+  <div class="brand-row">
+    <span class="tag">作品をサービスの外へ残す個人プロジェクト（実証段階）</span>
     <span class="ver">v1.0</span>
   </div>
 
@@ -285,8 +79,12 @@
     <div>
       <h1>あなたの作品は、<br>あなたの手元に残るか？</h1>
       <p class="lede">作品を JSON 1枚（設計図）で保存する個人仕様です。サービスが終わっても、作品はあなたの手元に残る。</p>
-      <p><a class="cta" href="#builder">作品の設計図をつくる<span class="cta-note">（無料・ブラウザ内） →</span></a> <a class="hero-sub" href="#works">実作品を聴く・観る</a></p>
-      <p class="cta-sub" style="margin:6px 0 0;font-size:12.5px;color:var(--muted)">保存先はあなたのPC。送信なし。</p>
+      <div class="hero-actions">
+        <a class="cta" href="#builder">設計図をつくる<span class="cta-note">（無料・ブラウザ内）</span></a>
+        <a class="hero-sub" href="#works">実作品を聴く・観る</a>
+      </div>
+      <p class="hero-note">保存先はあなたのPC。送信なし。</p>
+      <p class="hero-badge"><b>作者本人が9作品で実運用中</b>・MIT 公開・個人仕様（外部採用 0 件）</p>
     </div>
     <div class="hero-art">
       <img class="light" src="assets/hero.svg" width="960" height="560" fetchpriority="high" alt="1つの作品が1つのJSONになり、音楽・ラジオ・本・声・動画・建築などへ広がる様子のイラスト" decoding="async">
@@ -301,17 +99,15 @@
     <div class="stat"><b>MIT</b><span>仕様はオープン</span></div>
   </div>
 
-  <p class="hero-badge" style="margin:14px 0 0"><b>作者本人が9作品で実運用中</b>・MIT 公開・個人仕様（外部採用 0 件）</p>
-
-  <details class="status-note" role="note" style="margin:14px 0 0;padding:12px 16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);color:var(--muted);font-size:.9rem;line-height:1.6;box-sizing:border-box">
-    <summary style="cursor:pointer;color:var(--fg);font-weight:600;display:flex;align-items:center;min-height:44px">現在の位置づけ（正直に）— 個人仕様・外部採用 0 件</summary>
-    <p style="margin:10px 0 0">これは作者1人の制作物に使っている<strong style="color:var(--fg)">個人仕様</strong>です。MIT で公開し、誰でも使えますが、外部採用はまだ 0 件（2026-11-11 時点）。既存標準（C2PA・schema.org・MusicXML・OpenTimelineIO 等）を置き換えるものではなく、それらへ変換する<strong style="color:var(--fg)">ハブ</strong>を目指しています。標準を名乗るのは外部採用が出てから、という方針です。</p>
+  <details class="status-note" role="note">
+    <summary>現在の位置づけ（正直に）— 個人仕様・外部採用 0 件</summary>
+    <p>これは作者1人の制作物に使っている<strong>個人仕様</strong>です。MIT で公開し、誰でも使えますが、外部採用はまだ 0 件（2026-11-11 時点）。既存標準（C2PA・schema.org・MusicXML・OpenTimelineIO 等）を置き換えるものではなく、それらへ変換する<strong>ハブ</strong>を目指しています。標準を名乗るのは外部採用が出てから、という方針です。</p>
   </details>
 
   <section id="builder" class="builder" aria-labelledby="h-builder">
     <h2 id="h-builder">ブラウザだけで、今すぐ 1 作品を残す</h2>
     <p class="sub">コマンド不要。タイトルと作者を入れるだけで、正しい JSON（設計図）ができます。ダウンロードして、音源と同じフォルダに置けば完成です。<br><small>※ 16 種類のうち、ここでブラウザ生成できるのは主要 8 種類です（残りはひな形から）。</small></p>
-    <p class="sub" style="margin-top:-12px"><strong>できあがるもの：</strong>作品の設計図（JSON）1 枚。音源や画像と同じフォルダに保存すれば、サービスが終わっても作品はあなたの手元に残ります（Git にコミットすれば履歴も残せます）。</p>
+    <p class="sub"><strong>できあがるもの：</strong>作品の設計図（JSON）1 枚。音源や画像と同じフォルダに保存すれば、サービスが終わっても作品はあなたの手元に残ります（Git にコミットすれば履歴も残せます）。</p>
     <noscript><p class="hint">このビルダーは JavaScript で動きます。オフの場合は、下の「3 ステップ」のひな形 JSON をコピーして使ってください。</p></noscript>
     <div class="grid">
       <div>
@@ -343,17 +139,17 @@
         <p class="hint" id="b-filehint">選ぶと、指紋（SHA-256）をこのブラウザ内で計算して JSON に入れます。ファイルはどこにも送信しません。</p>
       </div>
       <div>
-        <span class="outlabel" id="b-outlabel">できあがる JSON（設計図）<span id="b-sample" style="color:var(--accent);font-weight:600"> — サンプル表示（タイトルを入れるとあなたの作品に変わります）</span></span>
+        <span class="outlabel" id="b-outlabel">できあがる JSON（設計図）<span id="b-sample" class="outlabel-sample"> — サンプル（タイトルを入れると変わります）</span></span>
         <pre class="out" id="b-out" aria-labelledby="b-outlabel"></pre>
         <p class="hint" id="b-legend"><code>id</code>=作品の一意な名前 / <code>kind</code>=種類 / <code>renditions</code>=本体ファイルと指紋 / <code>provenance</code>=作り方の履歴 / <code>license</code>=再利用の条件</p>
       </div>
     </div>
     <div class="row">
-      <button class="cta ghost" type="button" id="b-dl">JSON をダウンロード</button>
+      <button class="cta" type="button" id="b-dl">JSON をダウンロード</button>
       <button class="cta ghost" type="button" id="b-copy">コピー</button>
       <span class="hint" id="b-hint">ファイルを選ぶと指紋（sha256）まで入った JSON になります。content_hash は自動で付きます。</span>
     </div>
-    <p class="sub" style="margin-top:18px;margin-bottom:0"><strong>もっと楽に：</strong>手持ちのファイルをまとめて作品にしたいときは <a href="import.html">一括インポート</a>、作った JSON が本物かを確かめたいときは <a href="verify.html">検証ツール</a> を使えます。</p>
+    <p class="sub mt-20 mb-0"><strong>もっと楽に：</strong>手持ちのファイルをまとめて作品にしたいときは <a href="import.html">一括インポート</a>、作った JSON が本物かを確かめたいときは <a href="verify.html">検証ツール</a> を使えます。</p>
   </section>
 
   <section id="formats" aria-labelledby="h-formats">
@@ -377,7 +173,7 @@
       <a class="fmt" href="place/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-place"/></svg></span><div class="t"><h3>場所・会場 <span class="en">place</span></h3></div></a>
       <a class="fmt" href="product/v1.json"><span class="ic"><svg><use href="assets/icons.svg#i-product"/></svg></span><div class="t"><h3>製品・サービス <span class="en">product</span></h3></div></a>
     </div>
-    <p style="margin-top:22px"><a class="cta ghost" href="#builder">この形式で作ってみる →</a></p>
+    <p class="mt-24"><a class="cta ghost" href="#builder">この形式で作ってみる →</a></p>
   </section>
 
   <section id="works" aria-labelledby="h-works">
@@ -419,7 +215,7 @@
         <div class="body">
           <h3 class="work-title">遅筋と速筋 — スポーツと筋肉のエネルギー代謝</h3>
           <span class="meta">本人声の解説動画・10場面 ・ mp4 ・ 2分38秒</span>
-          <video controls preload="none" playsinline aria-label="遅筋と速筋 — スポーツと筋肉のエネルギー代謝" src="works/muscle-fibers-sports-2026-11.mp4" poster="assets/works/muscle-fibers-sports.png" style="width:100%;border-radius:8px;margin-top:6px"></video>
+          <video controls preload="none" playsinline aria-label="遅筋と速筋 — スポーツと筋肉のエネルギー代謝" src="works/muscle-fibers-sports-2026-11.mp4" poster="assets/works/muscle-fibers-sports.png"></video>
           <div class="asize">MP4 ・ 7.6 MB ・ 2:38</div>
           <div class="dl"><a href="https://youtu.be/f8wm8bD6uC8">YouTube で観る</a> ・ <a href="works/muscle-fibers-sports-2026-11.mp4">mp4 をダウンロード</a> ・ <a href="works/muscle-fibers-sports-2026-11.movie.json">JSON</a></div>
         </div>
@@ -470,7 +266,7 @@
         </div>
       </div>
     </div>
-    <p style="margin-top:22px"><a class="cta ghost" href="#builder">自分の作品も残す →</a></p>
+    <p class="mt-24"><a class="cta ghost" href="#builder">自分の作品も残す →</a></p>
   </section>
 
   <section id="start" aria-labelledby="h-start">
@@ -508,7 +304,7 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
       <p><small>既存標準へ書き出したいときは <code>python3 tools/export.py &lt;target&gt; &lt;file&gt;</code> で変換できます（<code>--list</code> で一覧）。実装済みは schema.org（往復可）・C2PA マニフェスト・MusicXML・OpenTimelineIO・EPUB 3・PDF・Markdown・CSV の8種です。C2PA はマニフェスト JSON の書き出しと PNG/JPEG へのバイナリ埋め込み（JUMBF）まで対応し、COSE 署名は未対応です。</small></p>
     </details>
     <p class="who">作っているのは <a href="https://github.com/yukihamada">濱田優貴（@yukihamada）</a> です。仕様も実装も GitHub で公開しています。</p>
-    <h2 id="h-faq">よくある質問</h2>
+    <h2 id="h-faq" class="mt-48">よくある質問</h2>
     <div class="faq" aria-labelledby="h-faq">
       <details><summary>GitHub が終わったら、作品はどうなりますか？</summary><p>JSON と本体ファイルはあなたの手元（ローカルや他の Git ホスト）にそのまま残ります。特定のサービスに依存しないので、別の場所へコピーするだけで続けられます。</p></details>
       <details><summary>無料で使えますか？</summary><p>はい。仕様（SPEC）もツールも MIT ライセンスで、無料です。有料のサービスに登録する必要はありません。</p></details>
@@ -517,7 +313,7 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
   </section>
 
   <section id="products" aria-labelledby="h-products">
-    <h2 id="h-products">この JSON を使うプロダクト <small style="font-weight:400;color:var(--muted)">（主要 13 / 全 89 件）</small></h2>
+    <h2 id="h-products">この JSON を使うプロダクト <small class="soft">（主要 13 / 全 89 件）</small></h2>
     <p class="sub">各フォーマット（kind）を実際に生成・消費するサービスだけを掲載（<a href="https://github.com/yukihamada/openformats/tree/main/products">products/</a> に 89 件のカタログ全件、ここは主要 13 件）。</p>
     <div class="products">
       <a class="prod" href="https://koe.live" target="_blank" rel="noopener"><span class="thumb"><img src="assets/products/koe.webp" width="640" height="400" alt="KOE のスクリーンショット" loading="lazy" decoding="async"></span><span class="pbody"><h3>KOE</h3><span>voice</span></span></a>
@@ -537,7 +333,7 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
     <div class="early" role="note">
       <strong>初期採用者を募集しています。</strong> この仕様で作品を残したら、GitHub の <a href="https://github.com/yukihamada/openformats/issues">Issues</a> に作品リンクを貼ってください。ここに実例として掲載します（架空の実績は載せません）。外部採用が 1 件出るまでは「オープン標準」ではなく「公開された個人仕様」として扱います。
     </div>
-    <p style="margin-top:22px"><a class="cta ghost" href="#builder">今すぐ作る →</a> <a class="cta ghost" href="https://github.com/yukihamada/openformats">仕様を読む</a></p>
+    <p class="mt-24"><a class="cta" href="#builder">今すぐ作る →</a> <a class="cta ghost" href="https://github.com/yukihamada/openformats">仕様を読む</a></p>
   </section>
 
   <section id="standards" aria-labelledby="h-standards">
@@ -548,10 +344,10 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
       <div><b>C2PA</b>（写真や動画の「本物・改ざんされていない」を証明する仕組み） — 同じことを <code>content_hash</code>／<code>hash_chain</code>／Ed25519 で JSON 内でも行う。<strong>実装済み</strong>（<code>tools/export.py c2pa</code> で C2PA マニフェスト JSON へ書き出し。バイナリ埋め込み JUMBF/COSE は未実装）。</div>
       <div><b>MusicXML</b>（楽譜の共通形式）<b> / OpenTimelineIO</b>（動画編集のタイムライン形式）<b> / EPUB</b>（電子書籍の共通形式） — <strong>実装済み</strong>（<code>tools/export.py musicxml</code> / <code>otio</code> / <code>epub</code>）。MusicXML は music、OTIO は movie、EPUB/PDF は book・article 作品が対象です。</div>
     </div>
-    <p><small>むずかしい用語が多いと感じたら、ここは読み飛ばして構いません。要点は「既存の共通形式へ変換して橋渡しする」ことだけです。実装済みの変換は 8 種（schema.org・C2PA・MusicXML・OpenTimelineIO・EPUB・PDF・Markdown・CSV）です（<code>python3 tools/export.py --list</code> で確認できます）。実装したものから順に「実装済み」と明記します。</small></p>
-    <p style="margin-top:18px"><a class="cta" href="convert.html">ブラウザで変換する（コマンド不要）→</a></p>
-    <p class="hint" style="margin-top:8px">作品 JSON を schema.org / C2PA へ変換。逆変換も。ファイルは送信しません。</p>
-    <p class="hint" style="margin-top:6px">作った作品が本物か確かめたいときは <a href="verify.html">検証ツール</a>（指紋・署名・履歴をブラウザで照合）。</p>
+    <p class="hint mt-16">むずかしい用語が多いと感じたら、ここは読み飛ばして構いません。要点は「既存の共通形式へ変換して橋渡しする」ことだけです。実装済みの変換は 8 種（schema.org・C2PA・MusicXML・OpenTimelineIO・EPUB・PDF・Markdown・CSV）です（<code>python3 tools/export.py --list</code> で確認できます）。実装したものから順に「実装済み」と明記します。</p>
+    <p class="mt-20"><a class="cta" href="convert.html">ブラウザで変換する（コマンド不要）→</a></p>
+    <p class="hint mt-10">作品 JSON を schema.org / C2PA へ変換。逆変換も。ファイルは送信しません。</p>
+    <p class="hint mt-6">作った作品が本物か確かめたいときは <a href="verify.html">検証ツール</a>（指紋・署名・履歴をブラウザで照合）。</p>
   </section>
 
   <footer>
@@ -693,7 +489,7 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
                 : '指紋（sha256）を入れました。本体ファイルの指紋と一致するかは of.py verify で照合できます。';
             })
             .catch(function(){ hint.textContent='この環境では指紋を計算できませんでした。ファイル名だけ入れます。'; render(); });
-        } else { hint.textContent='この環境では指紋を計算できません。ファイル名だけ入れます。'; render(); }
+        } else { hint.textContent='この環境では指紋を計算できませんでした。ファイル名だけ入れます。'; render(); }
       });
     }
     dl.addEventListener('click',function(){
@@ -714,19 +510,6 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
       else fallback(text,done);
     });
   })();
-</script>
-<script>
-(function(){
-  var links=[].slice.call(document.querySelectorAll('.toc a[href^="#"]'));
-  var map={}; links.forEach(function(a){ var id=a.getAttribute('href').slice(1); var el=document.getElementById(id); if(el) map[id]=a; });
-  if(!('IntersectionObserver' in window)) return;
-  var io=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting){ links.forEach(function(a){a.removeAttribute('aria-current');}); var a=map[e.target.id]; if(a) a.setAttribute('aria-current','true'); }
-    });
-  },{rootMargin:'-45% 0px -50% 0px', threshold:0});
-  Object.keys(map).forEach(function(id){ io.observe(document.getElementById(id)); });
-})();
 </script>
 </body>
 </html>
