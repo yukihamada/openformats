@@ -311,6 +311,141 @@ def _key_to_fifths(key: str):
     return 0, "major"
 
 
+def _blocks_to_markdown(blocks) -> str:
+    """openformats のブロック配列を Markdown へ。"""
+    out = []
+    for b in blocks or []:
+        t = b.get("type")
+        if t == "heading":
+            lvl = b.get("level") or 2
+            lvl = min(max(int(lvl), 1), 6)
+            out.append("#" * lvl + " " + str(b.get("text", "")))
+        elif t == "paragraph":
+            out.append(str(b.get("text", "")))
+        elif t == "list":
+            items = b.get("items") or []
+            buf = []
+            for i, it in enumerate(items):
+                mark = ("%d." % (i + 1)) if b.get("ordered") else "-"
+                buf.append(mark + " " + str(it))
+            out.append("\n".join(buf))
+        elif t == "quote":
+            out.append("> " + str(b.get("text", "")))
+        elif t == "code":
+            lang = b.get("lang") or ""
+            out.append("```" + str(lang) + "\n" + str(b.get("text", "")) + "\n```")
+        elif t == "table":
+            rows = b.get("rows") or []
+            if rows:
+                def cells(r):
+                    return "| " + " | ".join(str(c) for c in r) + " |"
+                out.append(cells(rows[0]))
+                out.append("| " + " | ".join("---" for _ in rows[0]) + " |")
+                for r in rows[1:]:
+                    out.append(cells(r))
+        elif t == "figure":
+            cap = b.get("caption") or b.get("alt") or ""
+            out.append("![%s](%s)" % (str(b.get("alt", "")), str(b.get("src", ""))))
+            if cap:
+                out.append("*" + str(cap) + "*")
+        elif t == "divider":
+            out.append("---")
+        elif t == "footnote":
+            out.append("[^]: " + str(b.get("text", "")))
+        elif b.get("text"):
+            out.append(str(b.get("text", "")))
+    return "\n\n".join(out)
+
+
+def to_markdown(data: dict) -> str:
+    """作品を読みやすい Markdown へ書き出す。"""
+    title = data.get("title") or data.get("name") or data.get("id") or "Untitled"
+    lines = ["# " + str(title), ""]
+    meta = []
+    if data.get("kind"):
+        meta.append("- 種類: " + str(data.get("kind")))
+    names = [a.get("name") for a in (data.get("authors") or [])
+             if isinstance(a, dict) and a.get("name")]
+    if names:
+        meta.append("- 作者: " + ", ".join(names))
+    if data.get("lang"):
+        meta.append("- 言語: " + str(data.get("lang")))
+    if data.get("license"):
+        meta.append("- ライセンス: " + str(data.get("license")))
+    if data.get("created_at"):
+        meta.append("- 作成: " + str(data.get("created_at")))
+    if data.get("content_hash"):
+        meta.append("- 指紋 (SHA-256): " + str(data.get("content_hash")))
+    if meta:
+        lines.extend(meta)
+        lines.append("")
+
+    kind = data.get("kind")
+    if kind in ("book", "article"):
+        chapters = data.get("chapters") or []
+        if chapters:
+            for ch in chapters:
+                lines.append("## " + str(ch.get("title") or ch.get("id") or "章"))
+                lines.append("")
+                lines.append(_blocks_to_markdown(ch.get("blocks")))
+                lines.append("")
+        else:
+            lines.append(_blocks_to_markdown(data.get("blocks")))
+            lines.append("")
+    elif kind == "music":
+        sections = data.get("sections") or []
+        if sections:
+            lines.append("## 構成")
+            lines.append("")
+            for s in sections:
+                lines.append("- " + str(s.get("name") or "") +
+                             ("（%s 秒）" % s.get("duration_sec") if s.get("duration_sec") is not None else ""))
+            lines.append("")
+        tracks = data.get("tracks") or []
+        if tracks:
+            lines.append("## トラック")
+            lines.append("")
+            for t in tracks:
+                lines.append("- " + str(t.get("instrument") or t.get("id") or "track"))
+            lines.append("")
+        for ly in data.get("lyrics") or []:
+            lines.append("## 歌詞（" + str(ly.get("section") or "") + "）")
+            lines.append("")
+            for ln in ly.get("lines") or []:
+                lines.append(str(ln))
+            lines.append("")
+    elif kind == "movie":
+        for t in data.get("timeline") or []:
+            lines.append("## " + str(t.get("id") or t.get("type") or "track"))
+            lines.append("")
+            for c in t.get("clips") or []:
+                label = c.get("src") or c.get("text") or "clip"
+                lines.append("- %s〜%s秒: %s" % (c.get("start_sec", 0),
+                                                 (c.get("start_sec", 0) or 0) + (c.get("duration_sec", 0) or 0),
+                                                 str(label)))
+            lines.append("")
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def to_csv(data: dict) -> str:
+    """作品のメタデータを 1 行の CSV に。表計算・Notion・Airtable 取り込み用。"""
+    cols = ["id", "kind", "title", "authors", "lang", "license", "created_at", "content_hash", "url"]
+    names = [a.get("name") for a in (data.get("authors") or [])
+             if isinstance(a, dict) and a.get("name")]
+
+    def cell(v):
+        s = "" if v is None else str(v)
+        if any(ch in s for ch in [",", '"', "\n", "\r"]):
+            return '"' + s.replace('"', '""') + '"'
+        return s
+
+    row = [data.get("id"), data.get("kind"),
+           data.get("title") or data.get("name"), "; ".join(names) if names else "",
+           data.get("lang"), data.get("license"), data.get("created_at"),
+           data.get("content_hash"), data.get("url")]
+    return ",".join(cell(c) for c in cols) + "\n" + ",".join(cell(c) for c in row) + "\n"
+
+
 def to_musicxml(data: dict) -> str:
     """music 作品を MusicXML 4.0 の score-partwise 文字列へ書き出す。"""
     meta = data.get("meta") or {}
@@ -1341,6 +1476,42 @@ def cmd_import(args):
     print(json.dumps(results if len(results) != 1 else results[0], ensure_ascii=False, indent=2))
 
 
+def cmd_export_markdown(args):
+    paths = [pathlib.Path(p) for p in args.files]
+    out_dir = pathlib.Path(args.out_dir) if args.out_dir else None
+    if out_dir:
+        out_dir.mkdir(parents=True, exist_ok=True)
+    results = []
+    for p in paths:
+        data = core.load(p)
+        md = to_markdown(data)
+        if out_dir:
+            dst = out_dir / (re.sub(r"\.(book|article|music|movie|radio|voice)$", "", p.stem) + ".md")
+            dst.write_text(md, encoding="utf-8")
+            results.append({"file": str(p), "out": str(dst), "bytes": len(md.encode("utf-8"))})
+        else:
+            results.append({"file": str(p), "markdown": md})
+    print(json.dumps(results if len(results) != 1 else results[0], ensure_ascii=False, indent=2))
+
+
+def cmd_export_csv(args):
+    paths = [pathlib.Path(p) for p in args.files]
+    out_dir = pathlib.Path(args.out_dir) if args.out_dir else None
+    if out_dir:
+        out_dir.mkdir(parents=True, exist_ok=True)
+    results = []
+    for p in paths:
+        data = core.load(p)
+        csv = to_csv(data)
+        if out_dir:
+            dst = out_dir / (re.sub(r"\.(book|article|music|movie|radio|voice)$", "", p.stem) + ".csv")
+            dst.write_text(csv, encoding="utf-8")
+            results.append({"file": str(p), "out": str(dst), "bytes": len(csv.encode("utf-8"))})
+        else:
+            results.append({"file": str(p), "csv": csv})
+    print(json.dumps(results if len(results) != 1 else results[0], ensure_ascii=False, indent=2))
+
+
 def cmd_export_musicxml(args):
     paths = [pathlib.Path(p) for p in args.files]
     out_dir = pathlib.Path(args.out_dir) if args.out_dir else None
@@ -1455,6 +1626,14 @@ def main(argv=None):
     m.add_argument("files", nargs="+")
     m.add_argument("--out-dir")
     m.set_defaults(fn=cmd_export_musicxml)
+    mk = sub.add_parser("markdown", help="作品を Markdown へ書き出す")
+    mk.add_argument("files", nargs="+")
+    mk.add_argument("--out-dir")
+    mk.set_defaults(fn=cmd_export_markdown)
+    cs = sub.add_parser("csv", help="作品メタデータを CSV へ書き出す")
+    cs.add_argument("files", nargs="+")
+    cs.add_argument("--out-dir")
+    cs.set_defaults(fn=cmd_export_csv)
     o = sub.add_parser("otio", help="movie 作品を OpenTimelineIO (OTIO JSON) へ書き出す")
     o.add_argument("files", nargs="+")
     o.add_argument("--out-dir")
@@ -1476,7 +1655,7 @@ def main(argv=None):
     if args.list or not getattr(args, "fn", None):
         print(json.dumps({
             "implemented": ["schema.org", "c2pa", "import(schema.org)",
-                            "musicxml", "otio", "epub", "pdf", "embed-c2pa"],
+                            "musicxml", "otio", "epub", "pdf", "markdown", "csv", "embed-c2pa"],
             "planned": [],
         }, ensure_ascii=False, indent=2))
         return 0

@@ -432,6 +432,321 @@
     return data;
   }
 
+  // ---- Markdown / CSV / MusicXML / OTIO -----------------------------------
+  function xmlEscape(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+  }
+
+  function blocksToMarkdown(blocks) {
+    var out = [];
+    (blocks || []).forEach(function (b) {
+      var t = b.type;
+      if (t === "heading") {
+        var lvl = Math.min(Math.max(parseInt(b.level, 10) || 2, 1), 6);
+        out.push(new Array(lvl + 1).join("#") + " " + String(b.text || ""));
+      } else if (t === "paragraph") {
+        out.push(String(b.text || ""));
+      } else if (t === "list") {
+        var items = b.items || [];
+        out.push(items.map(function (it, i) {
+          return (b.ordered ? (i + 1) + "." : "-") + " " + String(it);
+        }).join("\n"));
+      } else if (t === "quote") {
+        out.push("> " + String(b.text || ""));
+      } else if (t === "code") {
+        out.push("```" + String(b.lang || "") + "\n" + String(b.text || "") + "\n```");
+      } else if (t === "table") {
+        var rows = b.rows || [];
+        if (rows.length) {
+          function cells(r) { return "| " + r.map(String).join(" | ") + " |"; }
+          out.push(cells(rows[0]));
+          out.push("| " + rows[0].map(function () { return "---"; }).join(" | ") + " |");
+          rows.slice(1).forEach(function (r) { out.push(cells(r)); });
+        }
+      } else if (t === "figure") {
+        out.push("![" + String(b.alt || "") + "](" + String(b.src || "") + ")");
+        var cap = b.caption || b.alt || "";
+        if (cap) out.push("*" + String(cap) + "*");
+      } else if (t === "divider") {
+        out.push("---");
+      } else if (t === "footnote") {
+        out.push("[^]: " + String(b.text || ""));
+      } else if (b.text) {
+        out.push(String(b.text));
+      }
+    });
+    return out.join("\n\n");
+  }
+
+  function toMarkdown(data) {
+    var title = data.title || data.name || data.id || "Untitled";
+    var lines = ["# " + String(title), ""];
+    var meta = [];
+    if (data.kind) meta.push("- 種類: " + String(data.kind));
+    var names = [];
+    (data.authors || []).forEach(function (a) {
+      if (a && typeof a === "object" && a.name) names.push(a.name);
+    });
+    if (names.length) meta.push("- 作者: " + names.join(", "));
+    if (data.lang) meta.push("- 言語: " + String(data.lang));
+    if (data.license) meta.push("- ライセンス: " + String(data.license));
+    if (data.created_at) meta.push("- 作成: " + String(data.created_at));
+    if (data.content_hash) meta.push("- 指紋 (SHA-256): " + String(data.content_hash));
+    if (meta.length) { lines = lines.concat(meta); lines.push(""); }
+
+    var kind = data.kind;
+    if (kind === "book" || kind === "article") {
+      var chapters = data.chapters || [];
+      if (chapters.length) {
+        chapters.forEach(function (ch) {
+          lines.push("## " + String(ch.title || ch.id || "章"));
+          lines.push("");
+          lines.push(blocksToMarkdown(ch.blocks));
+          lines.push("");
+        });
+      } else {
+        lines.push(blocksToMarkdown(data.blocks));
+        lines.push("");
+      }
+    } else if (kind === "music") {
+      var sections = data.sections || [];
+      if (sections.length) {
+        lines.push("## 構成");
+        lines.push("");
+        sections.forEach(function (s) {
+          lines.push("- " + String(s.name || "") +
+            (s.duration_sec != null ? "（" + s.duration_sec + " 秒）" : ""));
+        });
+        lines.push("");
+      }
+      var tracks = data.tracks || [];
+      if (tracks.length) {
+        lines.push("## トラック");
+        lines.push("");
+        tracks.forEach(function (t) { lines.push("- " + String(t.instrument || t.id || "track")); });
+        lines.push("");
+      }
+      (data.lyrics || []).forEach(function (ly) {
+        lines.push("## 歌詞（" + String(ly.section || "") + "）");
+        lines.push("");
+        (ly.lines || []).forEach(function (ln) { lines.push(String(ln)); });
+        lines.push("");
+      });
+    } else if (kind === "movie") {
+      (data.timeline || []).forEach(function (t) {
+        lines.push("## " + String(t.id || t.type || "track"));
+        lines.push("");
+        (t.clips || []).forEach(function (c) {
+          var label = c.src || c.text || "clip";
+          var start = c.start_sec || 0;
+          var startStr = (typeof start === "number" && start % 1 !== 0) ? String(start) : String(start) + ".0";
+          var endVal = start + (c.duration_sec || 0);
+          var endStr = (typeof endVal === "number" && endVal % 1 !== 0) ? String(endVal) : String(endVal) + ".0";
+          lines.push("- " + startStr + "〜" + endStr + "秒: " + String(label));
+        });
+        lines.push("");
+      });
+    }
+    return lines.join("\n").replace(/\s+$/, "") + "\n";
+  }
+
+  function toCSV(data) {
+    var cols = ["id", "kind", "title", "authors", "lang", "license", "created_at", "content_hash", "url"];
+    var names = [];
+    (data.authors || []).forEach(function (a) {
+      if (a && typeof a === "object" && a.name) names.push(a.name);
+    });
+    function cell(v) {
+      var s = (v == null) ? "" : String(v);
+      if (/[",\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+      return s;
+    }
+    var row = [data.id, data.kind, data.title || data.name,
+      names.length ? names.join("; ") : "", data.lang, data.license,
+      data.created_at, data.content_hash, data.url];
+    return cols.map(cell).join(",") + "\n" + row.map(cell).join(",") + "\n";
+  }
+
+  var KEY_FIFTHS = {
+    "C major": 0, "G major": 1, "D major": 2, "A major": 3, "E major": 4,
+    "B major": 5, "F# major": 6, "C# major": 7,
+    "F major": -1, "Bb major": -2, "Eb major": -3, "Ab major": -4,
+    "Db major": -5, "Gb major": -6, "Cb major": -7,
+    "A minor": 0, "E minor": 1, "B minor": 2, "F# minor": 3, "C# minor": 4,
+    "G# minor": 5, "D# minor": 6, "A# minor": 7,
+    "D minor": -1, "G minor": -2, "C minor": -3, "F minor": -4,
+    "Bb minor": -5, "Eb minor": -6, "Ab minor": -7
+  };
+  function keyToFifths(key) {
+    if (!key) return [0, "major"];
+    var k = String(key).trim();
+    if (Object.prototype.hasOwnProperty.call(KEY_FIFTHS, k)) {
+      return [KEY_FIFTHS[k], k.indexOf("minor") >= 0 ? "minor" : "major"];
+    }
+    var norm = k.replace(/♯/g, "#").replace(/♭/g, "b").replace(/\s+/g, " ");
+    for (var cand in KEY_FIFTHS) {
+      if (cand.toLowerCase() === norm.toLowerCase()) {
+        return [KEY_FIFTHS[cand], cand.indexOf("minor") >= 0 ? "minor" : "major"];
+      }
+    }
+    return [0, "major"];
+  }
+
+  function toMusicXML(data) {
+    var meta = data.meta || {};
+    var title = data.title || data.id || "Untitled";
+    var composer = [];
+    (data.authors || []).forEach(function (a) {
+      if (a && typeof a === "object" && a.name) composer.push(a.name);
+    });
+    composer = composer.join(", ");
+    var bpm = meta.bpm || 120;
+    var timeSig = meta.time_signature || "4/4";
+    var beats = 4, beatType = 4;
+    var m = String(timeSig).split("/");
+    if (m.length === 2) {
+      beats = parseInt(m[0], 10) || 4;
+      beatType = parseInt(m[1], 10) || 4;
+    }
+    var kf = keyToFifths(meta.key || "C major");
+    var fifths = kf[0], mode = kf[1];
+
+    var sections = data.sections || [];
+    var lyricsBySection = {};
+    (data.lyrics || []).forEach(function (ly) {
+      var s = ly.section;
+      if (!lyricsBySection[s]) lyricsBySection[s] = [];
+      lyricsBySection[s] = lyricsBySection[s].concat(ly.lines || []);
+    });
+
+    var tracks = data.tracks || [];
+    var vocal = null;
+    for (var i = 0; i < tracks.length; i++) {
+      var t = tracks[i];
+      if (t.role === "vocal" || String(t.instrument || "").toLowerCase().indexOf("vocal") >= 0) { vocal = t; break; }
+    }
+    var partName = String((vocal || tracks[0] || {}).instrument || "Melody");
+
+    var L = [];
+    L.push('<?xml version="1.0" encoding="UTF-8"?>');
+    L.push('<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" ' +
+      '"http://www.musicxml.org/dtds/partwise.dtd">');
+    L.push('<score-partwise version="4.0">');
+    L.push('  <work><work-title>' + xmlEscape(title) + '</work-title></work>');
+    L.push('  <identification>');
+    if (composer) L.push('    <creator type="composer">' + xmlEscape(composer) + '</creator>');
+    L.push('    <encoding><software>openformats export.py</software></encoding>');
+    L.push('  </identification>');
+    L.push('  <part-list>');
+    L.push('    <score-part id="P1"><part-name>' + xmlEscape(partName) + '</part-name></score-part>');
+    L.push('  </part-list>');
+    L.push('  <part id="P1">');
+
+    if (!sections.length) sections = [{ name: "section1" }];
+    sections.forEach(function (sec, idx) {
+      L.push('    <measure number="' + (idx + 1) + '">');
+      if (idx === 0) {
+        L.push('      <attributes>');
+        L.push('        <divisions>1</divisions>');
+        L.push('        <key><fifths>' + fifths + '</fifths><mode>' + mode + '</mode></key>');
+        L.push('        <time><beats>' + beats + '</beats><beat-type>' + beatType + '</beat-type></time>');
+        L.push('        <clef><sign>G</sign><line>2</line></clef>');
+        L.push('      </attributes>');
+        L.push('      <direction placement="above"><direction-type>' +
+          '<metronome><beat-unit>quarter</beat-unit>' +
+          '<per-minute>' + Math.trunc(bpm) + '</per-minute></metronome></direction-type>' +
+          '<sound tempo="' + Math.trunc(bpm) + '"/></direction>');
+      }
+      var secLines = lyricsBySection[sec.name] || [];
+      if (secLines.length) {
+        var per = Math.max(1, beats);
+        var used = Math.min(per, secLines.length);
+        for (var j = 0; j < used; j++) {
+          L.push('      <note>');
+          L.push('        <pitch><step>C</step><octave>4</octave></pitch>');
+          L.push('        <duration>1</duration>');
+          L.push('        <type>quarter</type>');
+          L.push('        <lyric number="1"><text>' + xmlEscape(secLines[j]) + '</text></lyric>');
+          L.push('      </note>');
+        }
+        for (var r = 0; r < per - used; r++) {
+          L.push('      <note><rest/><duration>1</duration><type>quarter</type></note>');
+        }
+      } else {
+        L.push('      <note><rest measure="yes"/><duration>' + Math.max(1, beats) + '</duration></note>');
+      }
+      L.push('    </measure>');
+    });
+    L.push('  </part>');
+    L.push('</score-partwise>');
+    return L.join("\n") + "\n";
+  }
+
+  function toOTIO(data) {
+    var fmt = data.format || {};
+    var fps = parseFloat(fmt.fps || 24);
+    function rt(sec) {
+      return { "OTIO_SCHEMA": "RationalTime.1", value: Math.round(parseFloat(sec || 0) * fps * 1e6) / 1e6, rate: fps };
+    }
+    function trange(start, dur) {
+      return { "OTIO_SCHEMA": "TimeRange.1", start_time: rt(start), duration: rt(dur) };
+    }
+    var tracks = [];
+    (data.timeline || []).forEach(function (t) {
+      var ttype = t.type;
+      var kind = ({ video: "Video", audio: "Audio", music: "Audio", subtitle: "Video", overlay: "Video" })[ttype] || "Video";
+      var children = [];
+      var cursor = 0;
+      var clips = (t.clips || []).slice().sort(function (a, b) { return (a.start_sec || 0) - (b.start_sec || 0); });
+      clips.forEach(function (c) {
+        var start = parseFloat(c.start_sec || 0);
+        var dur = parseFloat(c.duration_sec || 0);
+        if (start > cursor + 1e-9) {
+          children.push({ "OTIO_SCHEMA": "Gap.1", name: "gap", source_range: trange(0, start - cursor), metadata: {}, effects: [], markers: [], enabled: true });
+        }
+        var name = c.src || c.text || "clip";
+        var media = null;
+        if (c.src) {
+          media = { "OTIO_SCHEMA": "ExternalReference.1", target_url: String(c.src), available_range: null, available_image_bounds: null };
+        }
+        var clip = {
+          "OTIO_SCHEMA": "Clip.2", name: String(name).slice(0, 120),
+          source_range: trange(c.in_sec || 0, dur), media_reference: media,
+          metadata: {}, effects: [], markers: [], enabled: true
+        };
+        if (c.text) clip.metadata.openformats = { subtitle_text: c.text };
+        children.push(clip);
+        cursor = Math.max(cursor, start) + dur;
+      });
+      tracks.push({
+        "OTIO_SCHEMA": "Track.1", name: t.id || ttype || "track", kind: kind,
+        metadata: { openformats: { type: ttype } }, source_range: null,
+        effects: [], markers: [], enabled: true, children: children
+      });
+    });
+    var total = fmt.duration_sec;
+    if (total == null) {
+      total = 0;
+      (data.timeline || []).forEach(function (t) {
+        (t.clips || []).forEach(function (c) {
+          total = Math.max(total, (c.start_sec || 0) + (c.duration_sec || 0));
+        });
+      });
+    }
+    var stack = {
+      "OTIO_SCHEMA": "Stack.1", name: data.title || data.id || "timeline",
+      metadata: { openformats: { id: data.id, kind: "movie" } },
+      source_range: null, effects: [], markers: [], enabled: true, children: tracks
+    };
+    return {
+      "OTIO_SCHEMA": "Timeline.1", name: data.title || data.id || "timeline",
+      global_start_time: rt(0),
+      metadata: { openformats: { id: data.id, content_hash: data.content_hash, fps: fps, duration_sec: total } },
+      tracks: stack
+    };
+  }
+
   return {
     init: setSha256,
     sha256Hex: sha256Hex,
@@ -439,6 +754,10 @@
     contentHash: contentHash,
     toSchemaOrg: toSchemaOrg,
     toC2PA: toC2PA,
+    toMarkdown: toMarkdown,
+    toCSV: toCSV,
+    toMusicXML: toMusicXML,
+    toOTIO: toOTIO,
     fromSchemaOrg: fromSchemaOrg,
     slugify: slugify,
     SCHEMA_TYPE: SCHEMA_TYPE
