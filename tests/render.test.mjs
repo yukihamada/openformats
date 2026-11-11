@@ -60,5 +60,27 @@ ok(text.slice(firstOff, firstOff + 6) === "1 0 ob", "xref オフセットが正�
 ok(R.textOf(book).includes("はじめに"), "book の本文を抽出");
 ok(R.textOf(music).includes("朝の光"), "music の歌詞を抽出");
 
+// --- scriptBlocks (radio / book / その他) ---
+const radio = JSON.parse(readFileSync(path.join(root, "works/moco-news-20261009.radio.json"), "utf8"));
+const rb = R.scriptBlocks(radio);
+ok(rb[0].kind === "title" && rb[0].text.includes("モコ"), "radio: 先頭はタイトル");
+ok(rb.some(b => b.kind === "marker" && b.text.includes("お茶")), "radio: 章マーカーを保持");
+const spk = rb.filter(b => b.kind === "speaker");
+ok(spk.length === 5, "radio: 発話5つを話者ブロックに");
+ok(spk[0].text === "モコ" && spk[0].body.includes("おかえりなさい"), "radio: 話者名と台本本文を分離");
+ok(spk.every(b => b.body && b.body.length > 0), "radio: 全発話に本文がある");
+ok(spk.every(b => b.dur > 0), "radio: 発話に尺がある");
+const bb = R.scriptBlocks(book);
+ok(bb.some(b => b.kind === "h2"), "book: 章見出しを h2 に");
+ok(bb.filter(b => b.kind === "body").length > 0, "book: 本文ブロックがある");
+// 未知 kind でもタイトル + 本文で落ちない
+const gen = R.scriptBlocks({ kind: "music", id: "x", title: "T", lyrics: [{ lines: ["a", "b"] }] });
+ok(gen[0].kind === "title" && gen.length >= 2, "その他: タイトル + 本文");
+// 全 kind で例外を出さない
+for (const k of ["music", "radio", "movie", "book", "article", "voice"]) {
+  const b = R.scriptBlocks({ kind: k, id: "z", title: "T" });
+  ok(Array.isArray(b) && b.length >= 1, `scriptBlocks(${k}) が配列を返す`);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
