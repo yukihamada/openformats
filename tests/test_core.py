@@ -506,6 +506,75 @@ def test_export_musicxml_wellformed():
     assert raw.count(b"<lyric") >= 4
 
 
+def test_export_musicxml_melody_and_all_lyrics():
+    """旋律が同音連打でなく、歌詞を切り捨てない（回帰）。"""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import importlib, re
+    export = importlib.import_module("export")
+    lines = ["行%d" % i for i in range(1, 12)]  # 1 小節(4拍)に収まらない行数
+    data = {"kind": "music", "id": "m2", "title": "T",
+            "meta": {"bpm": 104, "key": "F major", "time_signature": "4/4"},
+            "sections": [{"name": "verse"}],
+            "lyrics": [{"section": "verse", "lines": lines}]}
+    xml = export.to_musicxml(data)
+    steps = re.findall(r"<step>([A-G])</step>", xml)
+    octs = re.findall(r"<octave>(\d)</octave>", xml)
+    assert len(set(zip(steps, octs))) >= 3, "旋律が単一音に固定されている"
+    assert xml.count("<lyric") == len(lines), "歌詞が切り捨てられている"
+    assert "<fifths>-1</fifths>" in xml  # F major
+    assert "per-minute>104<" in xml
+
+
+def test_export_markdown_table_no_blank_rows():
+    """表の行間に空行を入れない（回帰）。"""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import importlib, re
+    export = importlib.import_module("export")
+    data = {"kind": "article", "id": "a", "title": "T",
+            "blocks": [{"type": "table", "rows": [["A", "B"], ["1", "2"], ["3", "4"]]}]}
+    md = export.to_markdown(data)
+    assert not re.search(r"\|[^\n]*\n\n\|", md), "表の行間に空行がある"
+    assert "| A | B |" in md and "| 1 | 2 |" in md
+
+
+def test_export_schema_org_article_body():
+    """article/book に本文 articleBody を入れる（回帰）。"""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import importlib
+    export = importlib.import_module("export")
+    art = {"kind": "article", "id": "a", "title": "T",
+           "blocks": [{"type": "paragraph", "text": "本文の段落。"}]}
+    ld = export.to_schema_org(art)
+    assert ld.get("articleBody") == "本文の段落。", ld
+    book = {"kind": "book", "id": "b", "title": "T",
+            "chapters": [{"title": "第一章",
+                          "blocks": [{"type": "paragraph", "text": "章の本文。"}]}]}
+    ld2 = export.to_schema_org(book)
+    assert "章の本文。" in ld2.get("articleBody", "")
+    # 本文の無い kind には付けない
+    assert "articleBody" not in export.to_schema_org({"kind": "music", "id": "m"})
+
+
+def test_export_pdf_japanese_font_subset():
+    """日本語 PDF を自動フォント埋め込みし、サブセットで肥大化しない（回帰）。"""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import importlib, tempfile, pathlib
+    export = importlib.import_module("export")
+    if export._find_japanese_font() is None:
+        return  # 日本語 TrueType の無い環境ではスキップ
+    data = {"kind": "article", "id": "a", "title": "日本語の題",
+            "blocks": [{"type": "paragraph", "text": "これは日本語の本文です。"}]}
+    with tempfile.TemporaryDirectory() as d:
+        out = pathlib.Path(d) / "jp.pdf"
+        r = export.to_pdf(data, out)
+        raw = out.read_bytes()
+    assert r["font"], "日本語フォントが自動選択されていない"
+    assert b"CIDFontType2" in raw and b"/ToUnicode" in raw
+    # サブセット化によりフォント全体(数十MB)を埋め込まない
+    assert len(raw) < 5_000_000, len(raw)
+
+
+
 def test_export_otio_structure():
     sys.path.insert(0, str(ROOT / "tools"))
     import importlib
