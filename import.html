@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>一括インポート — 手持ちのファイルをまとめて作品 JSON にする</title>
+<meta name="description" content="音源・画像・動画などをまとめて選ぶだけで、1ファイル=1作品の openformats JSON をブラウザ内で生成。指紋（SHA-256）と content_hash を自動で入れて、すぐ検証できる形にします。ファイルは送信しません。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="一括インポート — openformats">
+<meta property="og:description" content="手持ちのファイルをまとめて作品 JSON に。ブラウザ内で完結、ファイルは送信しません。">
+<meta property="og:url" content="https://yukihamada.github.io/openformats/import.html">
+<link rel="canonical" href="https://yukihamada.github.io/openformats/import.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%232b5cff'/%3E%3Ctext x='12' y='17' font-size='13' font-family='monospace' fill='white' text-anchor='middle'%3E%7B%7D%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="sr-only" href="#main">本文へスキップ</a>
+<header class="site-nav">
+  <nav aria-label="サイト">
+    <a class="name" href="./">openformats</a>
+    <a href="./#builder">ブラウザで作る</a>
+    <a href="./#works">実作品</a>
+    <a href="convert.html">変換ツール</a>
+    <a href="verify.html">検証ツール</a>
+    <a class="gh" href="https://github.com/yukihamada/openformats">GitHub ↗</a>
+  </nav>
+</header>
+<main id="main" tabindex="-1">
+  <h1>一括インポート</h1>
+  <p class="lede">手持ちの音源・画像・動画などを<strong>まとめて選ぶ</strong>だけで、<strong>1 ファイル = 1 作品</strong>の openformats JSON を一度に作ります。指紋（SHA-256）と <code>content_hash</code> を自動で入れるので、そのまま <a href="verify.html">検証ツール</a> で合格する形になります。ファイルはどこにも送信しません。</p>
+
+  <section class="panel" aria-labelledby="h-in">
+    <h2 id="h-in" class="sr-only">入力</h2>
+    <div class="drop" id="drop" role="button" tabindex="0" aria-label="作品にするファイルを選ぶか、ここにドロップ">
+      <div><strong>作品にしたいファイルをドロップ</strong> または クリックして選択</div>
+      <div class="small">複数まとめて選べます。フォルダごと選ぶこともできます。種類（kind）は拡張子から自動で判定し、あとで変更できます。</div>
+      <input id="file" type="file" multiple hidden>
+      <input id="folder" type="file" webkitdirectory directory multiple hidden>
+    </div>
+    <div class="row" style="margin-top:16px">
+      <button class="cta ghost" type="button" id="btn-folder">フォルダを選ぶ</button>
+      <button class="cta ghost" type="button" id="btn-clear">クリア</button>
+      <span style="flex:1"></span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px" class="meta-grid">
+      <div>
+        <label for="i-author">作者名（全作品に適用）</label>
+        <input id="i-author" type="text" placeholder="例: 山田 花子" autocomplete="off">
+      </div>
+      <div>
+        <label for="i-license">ライセンス（全作品に適用）</label>
+        <select id="i-license">
+          <option value="CC-BY-4.0">CC-BY-4.0（クレジット表記で再利用OK）</option>
+          <option value="CC0-1.0">CC0-1.0（完全に自由）</option>
+          <option value="All-Rights-Reserved">All Rights Reserved（再利用不可）</option>
+        </select>
+      </div>
+    </div>
+    <div id="in-status" class="status info" role="status" aria-live="polite" hidden></div>
+  </section>
+
+  <section style="margin-top:24px" aria-labelledby="h-list">
+    <h2 id="h-list" style="font-size:1.15rem;margin:0 0 8px">作る作品（<span id="count">0</span> 件）</h2>
+    <div class="panel">
+      <p class="empty" id="placeholder">まだファイルがありません。上の欄にファイルをドロップしてください。</p>
+      <table class="list" id="list" hidden>
+        <thead>
+          <tr><th style="width:38%">ファイル</th><th style="width:16%">種類</th><th>タイトル</th><th style="width:60px"></th></tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="row" id="actions" hidden>
+        <button class="cta" type="button" id="btn-dl-all">JSON をまとめてダウンロード</button>
+        <button class="cta ghost" type="button" id="btn-copy-all">全 JSON をコピー</button>
+        <span class="hint" id="dl-hint">ブラウザの設定によっては、複数ファイルの保存確認が出ます。</span>
+      </div>
+      <div id="out-status" class="status info" role="status" aria-live="polite" hidden></div>
+    </div>
+  </section>
+
+  <section class="steps" aria-labelledby="h-steps">
+    <h2 id="h-steps">使い方</h2>
+    <ol>
+      <li>作品にしたいファイルをまとめて選びます（フォルダごとでも可）。</li>
+      <li>作者名・ライセンスを入れると、全作品に反映されます。種類とタイトルは必要なら直せます。</li>
+      <li>「JSON をまとめてダウンロード」で保存し、<strong>本体ファイルと同じフォルダ</strong>に置きます。</li>
+      <li><a href="verify.html">検証ツール</a> に JSON と本体を入れると、指紋が一致して「合格」になります。</li>
+    </ol>
+    <p class="hint" style="margin-top:14px">コマンドで同じことをする場合：<code>python3 tools/of.py hash &lt;file&gt; --write</code> で指紋を書き込み、<code>python3 tools/of.py verify &lt;file&gt;</code> で照合できます。このツールの出力はその形に合わせています。</p>
+  </section>
+
+  <footer>
+    <p>openformats は MIT 公開の個人仕様です。このツールはすべてブラウザ内で処理し、ファイルを外部へ送信しません（このページ自体は初回に読み込む必要があります）。</p>
+  </footer>
+</main>
+
+<script src="assets/convert.js"></script>
+<script src="assets/verify.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var drop = $("drop"), fileInput = $("file"), folderInput = $("folder");
+  var tbody = $("tbody"), list = $("list"), placeholder = $("placeholder");
+  var actions = $("actions"), countEl = $("count");
+  var inStatus = $("in-status"), outStatus = $("out-status");
+  var authorEl = $("i-author"), licenseEl = $("i-license");
+  var items = []; // { file, name, bytes, sha256, kind, title }
+
+  var KINDS = ["music","radio","voice","book","article","movie","image","collection","bim","device","land","country","event","person","place","product"];
+
+  function showStatus(el, kind, msg) {
+    if (!el) return;
+    if (!msg) { el.hidden = true; el.textContent = ""; return; }
+    el.hidden = false; el.className = "status " + kind; el.textContent = msg;
+  }
+
+  function detectKind(name, type) {
+    var ext = (name.split(".").pop() || "").toLowerCase();
+    if (["mp3","wav","m4a","aac","flac","ogg","opus"].indexOf(ext) >= 0) return "music";
+    if (["mp4","mov","webm","mkv","m4v"].indexOf(ext) >= 0) return "movie";
+    if (["png","jpg","jpeg","webp","gif","svg","avif","tif","tiff"].indexOf(ext) >= 0) return "image";
+    if (["md","txt","pdf","doc","docx","epub"].indexOf(ext) >= 0) return "book";
+    return "article";
+  }
+  function renditionKind(kind) {
+    if (kind === "movie") return "video";
+    if (kind === "image") return "image";
+    if (kind === "article" || kind === "book") return "document";
+    return "audio";
+  }
+  function titleFromName(name) {
+    var base = name.replace(/\.[^.]+$/, "");
+    return base.replace(/[_-]+/g, " ").trim() || name;
+  }
+  function slugId(name, kind, sha) {
+    var base = name.replace(/\.[^.]+$/, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
+    if (base.length >= 2 && /[a-z]/.test(base)) return base;
+    return (kind || "work") + "-" + (sha ? sha.slice(0, 8) : Date.now().toString(36));
+  }
+  function toHex(bytes) {
+    var s = ""; for (var i = 0; i < bytes.length; i++) s += bytes[i].toString(16).padStart(2, "0"); return s;
+  }
+  function sha256(buf) {
+    return OFVerify.sha256HexBytes(new Uint8Array(buf));
+  }
+
+  function buildWork(item) {
+    var kind = item.kind;
+    var author = authorEl.value.trim();
+    var o = {
+      "$schema": "https://yukihamada.github.io/openformats/" + kind + "/v1.json",
+      "spec_version": "1.1.0",
+      "kind": kind,
+      "id": slugId(item.name, kind, item.sha256),
+      "title": item.title || titleFromName(item.name),
+      "lang": "ja",
+      "license": licenseEl.value,
+      "provenance": {
+        "human_involvement": "human",
+        "history": [{ "at": new Date().toISOString(), "action": "create", "by": author || "unknown" }]
+      },
+      "access": { "visibility": "private", "derivatives": "allow" }
+    };
+    if (author) o.authors = [{ name: author }];
+
+    var rend = { kind: renditionKind(kind), format: (item.name.split(".").pop() || "bin").toLowerCase(), path: item.name, sha256: item.sha256, bytes: item.bytes };
+    if (kind === "music") { o.renditions = [rend]; }
+    else if (kind === "radio") { o.speakers = [{ id: "host", name: author || "unknown" }]; o.segments = [{ type: "speech", speaker: "host", text: "ここに台本" }]; o.renditions = [rend]; }
+    else if (kind === "voice") { o.source = { path: item.name }; o.renditions = [rend]; }
+    else if (kind === "book") { o.metadata = {}; o.chapters = [{ id: "ch1", title: "第1章", blocks: [{ type: "paragraph", text: "本文" }] }]; o.renditions = [rend]; }
+    else if (kind === "article") { o.blocks = [{ type: "paragraph", text: "本文" }]; o.renditions = [rend]; }
+    else if (kind === "movie") { o.timeline = [{ id: "c1", type: "video", clips: [{ start_sec: 0, duration_sec: 0, src: item.name }] }]; o.renditions = [rend]; }
+    else if (kind === "image") { o.source = { path: item.name }; o.renditions = [rend]; }
+    else if (kind === "collection") { o.items = [{ ref: item.name }]; }
+    else { o.renditions = [rend]; }
+
+    // content_hash は renditions を除いて計算されるので、ここで入れておけば verify が合格する
+    o.content_hash = OFVerify.contentHash(o);
+    return o;
+  }
+
+  function render() {
+    countEl.textContent = items.length;
+    if (!items.length) { list.hidden = true; actions.hidden = true; placeholder.hidden = false; return; }
+    placeholder.hidden = true; list.hidden = false; actions.hidden = false;
+    tbody.innerHTML = "";
+    items.forEach(function (item, idx) {
+      var tr = document.createElement("tr");
+      var tdFile = document.createElement("td");
+      tdFile.className = "file"; tdFile.textContent = item.name;
+      var tdKind = document.createElement("td");
+      var sel = document.createElement("select");
+      KINDS.forEach(function (k) {
+        var opt = document.createElement("option");
+        opt.value = k; opt.textContent = k;
+        if (k === item.kind) opt.selected = true;
+        sel.appendChild(opt);
+      });
+      sel.setAttribute("aria-label", item.name + " の種類");
+      sel.addEventListener("change", function () { item.kind = sel.value; });
+      tdKind.appendChild(sel);
+      var tdTitle = document.createElement("td");
+      var tIn = document.createElement("input");
+      tIn.type = "text"; tIn.value = item.title; tIn.setAttribute("aria-label", item.name + " のタイトル");
+      tIn.addEventListener("input", function () { item.title = tIn.value; });
+      tdTitle.appendChild(tIn);
+      var tdRm = document.createElement("td");
+      var rm = document.createElement("button");
+      rm.className = "rm"; rm.type = "button"; rm.textContent = "削除";
+      rm.setAttribute("aria-label", item.name + " を一覧から外す");
+      rm.addEventListener("click", function () { items.splice(idx, 1); render(); });
+      tdRm.appendChild(rm);
+      tr.appendChild(tdFile); tr.appendChild(tdKind); tr.appendChild(tdTitle); tr.appendChild(tdRm);
+      tbody.appendChild(tr);
+    });
+  }
+
+  function handleFiles(fileList) {
+    var arr = Array.prototype.slice.call(fileList || []).filter(function (f) {
+      return !/\.json$/i.test(f.name); // 既存 JSON は対象外
+    });
+    if (!arr.length) { showStatus(inStatus, "warn", "作品にするファイル（音源・画像・動画など）を選んでください。"); return; }
+    showStatus(inStatus, "info", arr.length + " ファイルの指紋を計算中…");
+    var jobs = arr.map(function (f) {
+      return f.arrayBuffer().then(function (buf) {
+        return { file: f, name: f.name, bytes: f.size, sha256: sha256(buf), kind: detectKind(f.name, f.type), title: titleFromName(f.name) };
+      });
+    });
+    Promise.all(jobs).then(function (newItems) {
+      newItems.forEach(function (it) {
+        // 同名は置き換え
+        var existing = items.findIndex(function (x) { return x.name === it.name; });
+        if (existing >= 0) items[existing] = it; else items.push(it);
+      });
+      render();
+      showStatus(inStatus, null);
+      showStatus(outStatus, "ok", arr.length + " ファイルを追加しました。指紋（SHA-256）を計算済みです。");
+    }).catch(function (e) {
+      showStatus(inStatus, "err", "読み込みに失敗: " + e.message);
+    });
+  }
+
+  function download(name, text) {
+    var blob = new Blob([text], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+  function jsonName(item) {
+    var w = buildWork(item);
+    var d = new Date();
+    var ds = d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0");
+    return (w.id || "work") + "-" + ds + "." + w.kind + ".json";
+  }
+
+  $("btn-dl-all").addEventListener("click", function () {
+    if (!items.length) return;
+    var i = 0;
+    (function next() {
+      if (i >= items.length) { showStatus(outStatus, "ok", items.length + " 件の JSON を保存しました。本体ファイルと同じフォルダに置いてください。"); return; }
+      var item = items[i++];
+      download(jsonName(item), JSON.stringify(buildWork(item), null, 2));
+      setTimeout(next, 250);
+    })();
+  });
+  $("btn-copy-all").addEventListener("click", function () {
+    if (!items.length) return;
+    var all = items.map(function (it) { return JSON.stringify(buildWork(it), null, 2); }).join("\n\n");
+    var done = function () { showStatus(outStatus, "ok", "全 " + items.length + " 件の JSON をコピーしました。"); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(all).then(done, function () { fallbackCopy(all, done); });
+    } else fallbackCopy(all, done);
+  });
+  function fallbackCopy(text, cb) {
+    var ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); } catch (e) {}
+    document.body.removeChild(ta); cb();
+  }
+
+  drop.addEventListener("click", function () { fileInput.click(); });
+  drop.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInput.click(); } });
+  fileInput.addEventListener("change", function () { handleFiles(fileInput.files); fileInput.value = ""; });
+  folderInput.addEventListener("change", function () { handleFiles(folderInput.files); folderInput.value = ""; });
+  $("btn-folder").addEventListener("click", function () { folderInput.click(); });
+  ["dragenter", "dragover"].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add("over"); }); });
+  ["dragleave", "drop"].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove("over"); }); });
+  drop.addEventListener("drop", function (e) { if (e.dataTransfer && e.dataTransfer.files) handleFiles(e.dataTransfer.files); });
+  $("btn-clear").addEventListener("click", function () { items = []; render(); showStatus(inStatus, null); showStatus(outStatus, null); });
+})();
+</script>
+</body>
+</html>

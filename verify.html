@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>検証ツール — openformats の作品が本物かをブラウザで確かめる</title>
+<meta name="description" content="openformats の作品 JSON と本体ファイルをドロップするだけで、指紋（SHA-256）・署名・履歴の一致をブラウザ内で検証します。ファイルはどこにも送信しません。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="検証ツール — openformats">
+<meta property="og:description" content="作品 JSON と本体ファイルの指紋・署名・履歴をブラウザ内で検証。ファイルは送信しません。">
+<meta property="og:url" content="https://yukihamada.github.io/openformats/verify.html">
+<link rel="canonical" href="https://yukihamada.github.io/openformats/verify.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%232b5cff'/%3E%3Ctext x='12' y='17' font-size='13' font-family='monospace' fill='white' text-anchor='middle'%3E%7B%7D%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="sr-only" href="#main">本文へスキップ</a>
+<header class="site-nav">
+  <nav aria-label="サイト">
+    <a class="name" href="./">openformats</a>
+    <a href="./#builder">ブラウザで作る</a>
+    <a href="./#works">実作品</a>
+    <a href="convert.html">変換ツール</a>
+    <a href="import.html">一括インポート</a>
+    <a class="gh" href="https://github.com/yukihamada/openformats">GitHub ↗</a>
+  </nav>
+</header>
+<main id="main" tabindex="-1">
+  <h1>検証ツール</h1>
+  <p class="lede">作品 JSON と本体ファイル（音源・画像など）をドロップするだけで、<strong>指紋（SHA-256）</strong>・<strong>署名（Ed25519）</strong>・<strong>履歴チェーン</strong>が正しいかを、このブラウザ内で確かめます。ファイルはどこにも送信しません。</p>
+  <p class="hint" style="margin:-12px 0 20px">かんたんに言うと：作品と本体が「すり替わっていないか」を、その場で照合する道具です。コマンド <code>python3 tools/of.py verify</code> と同じ判定をブラウザで行います。</p>
+
+  <section class="panel" aria-labelledby="h-in">
+    <h2 id="h-in" class="sr-only">入力</h2>
+    <div class="drop" id="drop" role="button" tabindex="0" aria-label="作品 JSON と本体ファイルを選ぶか、ここにドロップ">
+      <div><strong>作品 JSON と本体ファイルをドロップ</strong> または クリックして選択</div>
+      <div class="small">JSON は 1 つ、本体ファイルは複数まとめて選べます（例: <code>hitotsu-saki-e.music.json</code> と <code>take1_full.m4a</code>）。JSON だけでも指紋・署名・履歴は検証できます。</div>
+      <input id="file" type="file" multiple accept=".json,application/json,audio/*,video/*,image/*,.wav,.mp3,.m4a,.mp4,.png,.jpg,.jpeg,.webp,.svg,.txt,.md,.pdf" hidden>
+    </div>
+    <div class="row" style="margin-top:16px">
+      <span class="hint">または JSON を貼り付け：</span>
+      <button class="cta ghost" type="button" id="btn-sample">実作品のサンプルを読み込む</button>
+      <button class="cta ghost" type="button" id="btn-clear">クリア</button>
+    </div>
+    <label for="input" style="margin-top:12px">作品 JSON</label>
+    <textarea id="input" spellcheck="false" style="width:100%;min-height:180px;resize:vertical;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);font:13px/1.6 ui-monospace,Menlo,Consolas,monospace" placeholder='{ "kind": "music", "id": "my-song", "content_hash": "...", ... }'></textarea>
+    <div class="row">
+      <button class="cta" type="button" id="btn-verify">検証する</button>
+      <span class="hint" id="detect">JSON 待ち</span>
+    </div>
+    <div id="in-status" class="status info" role="status" aria-live="polite" hidden></div>
+  </section>
+
+  <section style="margin-top:24px" aria-labelledby="h-out">
+    <h2 id="h-out" class="sr-only">検証結果</h2>
+    <div class="panel">
+      <div id="summary" class="summary" hidden><span class="badge" id="sum-badge"></span><span id="sum-text"></span></div>
+      <ul class="checks" id="checks" aria-live="polite"></ul>
+      <p class="empty" id="placeholder">まだ検証していません。上の欄に作品 JSON（と本体ファイル）を入れて「検証する」を押してください。</p>
+      <div id="out-status" class="status info" role="status" aria-live="polite" hidden></div>
+    </div>
+  </section>
+
+  <section class="steps" aria-labelledby="h-steps">
+    <h2 id="h-steps">何を見ているか</h2>
+    <ol>
+      <li><strong>基本構造</strong> — <code>spec_version</code> / <code>kind</code> / <code>id</code> が仕様どおりか。</li>
+      <li><strong>content_hash（作品の指紋）</strong> — 保存された指紋と、いま再計算した指紋が一致するか。一致すれば中身は改ざんされていません。</li>
+      <li><strong>renditions（本体ファイル）</strong> — 音源や画像の実ファイルの SHA-256 が JSON の記録と一致するか。</li>
+      <li><strong>署名（Ed25519）</strong> — 指紋に対する作者の署名が有効か。</li>
+      <li><strong>hash_chain / revisions（履歴）</strong> — 改訂の連鎖が途切れていないか、差分が本体と整合するか。</li>
+    </ol>
+    <p class="hint" style="margin-top:14px">同じ判定はコマンドでも行えます：<code>python3 tools/of.py verify &lt;file&gt;</code>。このツールはその忠実な移植で、<code>works/</code> の全作品で判定が一致することをテスト済みです（<code>tests/verify.test.mjs</code>）。</p>
+  </section>
+
+  <footer>
+    <p>openformats は MIT 公開の個人仕様です。このツールは検証をすべてブラウザ内で行い、ファイルを外部へ送信しません（このページ自体は初回に読み込む必要があります）。</p>
+  </footer>
+</main>
+
+<script src="assets/convert.js"></script>
+<script src="assets/verify.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var input = $("input"), drop = $("drop"), fileInput = $("file");
+  var checksEl = $("checks"), placeholder = $("placeholder"), summary = $("summary");
+  var inStatus = $("in-status"), outStatus = $("out-status"), detect = $("detect");
+  var filesByName = {};
+
+  function showStatus(el, kind, msg) {
+    if (!el) return;
+    if (!msg) { el.hidden = true; el.textContent = ""; return; }
+    el.hidden = false; el.className = "status " + kind; el.textContent = msg;
+  }
+
+  function readFiles(fileList) {
+    var arr = Array.prototype.slice.call(fileList || []);
+    var jobs = arr.map(function (f) {
+      return f.arrayBuffer().then(function (buf) {
+        filesByName[f.name] = new Uint8Array(buf);
+        return f.name;
+      });
+    });
+    return Promise.all(jobs);
+  }
+
+  function handleFiles(fileList) {
+    var arr = Array.prototype.slice.call(fileList || []);
+    if (!arr.length) return;
+    var jsonFile = arr.filter(function (f) { return /\.json$/i.test(f.name) || f.type === "application/json"; })[0];
+    var media = arr.filter(function (f) { return f !== jsonFile; });
+    var tasks = [];
+    if (jsonFile) {
+      tasks.push(jsonFile.text().then(function (t) { input.value = t; }));
+    }
+    if (media.length) tasks.push(readFiles(media));
+    Promise.all(tasks).then(function () {
+      detect.textContent = jsonFile ? "JSON を読み込みました" : "JSON がありません";
+      if (jsonFile) run();
+      else showStatus(inStatus, "warn", "本体ファイルは読み込みました。作品 JSON も一緒に選ぶか貼り付けてください。");
+    });
+  }
+
+  function clearResults() {
+    checksEl.innerHTML = "";
+    summary.hidden = true;
+    placeholder.hidden = false;
+    showStatus(outStatus, null);
+  }
+
+  function render(res) {
+    placeholder.hidden = true;
+    checksEl.innerHTML = "";
+    var iconChar = { ok: "✓", warn: "!", err: "✕", info: "i" };
+    res.checks.forEach(function (c) {
+      var li = document.createElement("li");
+      var ico = document.createElement("span");
+      ico.className = "ico " + c.status;
+      ico.textContent = iconChar[c.status] || "?";
+      ico.setAttribute("aria-hidden", "true");
+      var body = document.createElement("div");
+      body.className = "body";
+      var label = document.createElement("div");
+      label.className = "label";
+      label.textContent = c.label;
+      var detail = document.createElement("div");
+      detail.className = "detail";
+      detail.textContent = c.detail;
+      body.appendChild(label);
+      if (c.detail) body.appendChild(detail);
+      li.appendChild(ico);
+      li.appendChild(body);
+      checksEl.appendChild(li);
+    });
+    summary.hidden = false;
+    var badge = $("sum-badge"), text = $("sum-text");
+    if (res.ok) {
+      badge.className = "badge ok"; badge.textContent = "合格";
+      text.textContent = "この作品は、記録された指紋・署名・履歴と一致しています。";
+    } else {
+      badge.className = "badge err"; badge.textContent = "不合格";
+      text.textContent = "一致しない項目があります。下の赤い項目を確認してください。";
+    }
+  }
+
+  function run() {
+    var text = input.value.trim();
+    if (!text) { showStatus(inStatus, "warn", "作品 JSON を入れてください。"); return; }
+    var work;
+    try { work = JSON.parse(text); }
+    catch (e) { showStatus(inStatus, "err", "JSON の構文エラー: " + e.message); return; }
+    if (!work || typeof work !== "object" || !work.kind || !work.id) {
+      showStatus(inStatus, "warn", "openformats 作品 JSON（kind と id を持つ）ではないようです。");
+      return;
+    }
+    showStatus(inStatus, "info", "検証中…");
+    detect.textContent = "検証中…";
+    OFVerify.verifyWork(work, filesByName).then(function (res) {
+      render(res);
+      detect.textContent = res.ok ? "合格" : "不合格";
+      showStatus(inStatus, null);
+      var mediaUsed = Object.keys(filesByName).length;
+      if (mediaUsed === 0 && (work.renditions || []).length) {
+        showStatus(inStatus, "info", "本体ファイルが未読込のため、renditions は「未読込」と表示しています。ファイルも一緒にドロップすると照合できます。");
+      }
+    }).catch(function (e) {
+      showStatus(inStatus, "err", "検証中にエラー: " + e.message);
+    });
+  }
+
+  drop.addEventListener("click", function () { fileInput.click(); });
+  drop.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInput.click(); } });
+  fileInput.addEventListener("change", function () { handleFiles(fileInput.files); fileInput.value = ""; });
+  ["dragenter", "dragover"].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add("over"); });
+  });
+  ["dragleave", "drop"].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove("over"); });
+  });
+  drop.addEventListener("drop", function (e) { if (e.dataTransfer && e.dataTransfer.files) handleFiles(e.dataTransfer.files); });
+
+  $("btn-verify").addEventListener("click", run);
+  $("btn-clear").addEventListener("click", function () {
+    input.value = ""; filesByName = {}; detect.textContent = "JSON 待ち"; clearResults(); showStatus(inStatus, null);
+  });
+  $("btn-sample").addEventListener("click", function () {
+    fetch("works/hitotsu-saki-e.music.json").then(function (r) { return r.text(); })
+      .then(function (t) { input.value = t; detect.textContent = "サンプルを読み込みました"; run(); })
+      .catch(function () { showStatus(inStatus, "err", "サンプルを読み込めませんでした。"); });
+  });
+})();
+</script>
+</body>
+</html>

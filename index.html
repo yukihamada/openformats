@@ -261,6 +261,8 @@
     <a href="#start">3ステップ</a>
     <a href="#products">プロダクト</a>
     <a href="#standards">既存標準</a>
+    <a href="import.html">一括インポート</a>
+    <a href="verify.html">検証ツール</a>
     <a href="convert.html">変換ツール</a>
     <a class="toc-gh" href="https://github.com/yukihamada/openformats">GitHub ↗</a>
   </nav>
@@ -345,6 +347,7 @@
       <button class="cta ghost" type="button" id="b-copy">コピー</button>
       <span class="hint" id="b-hint">ファイルを選ぶと指紋（sha256）まで入った JSON になります。ファイル未選択のときは指紋（content_hash）は未計算のままです。</span>
     </div>
+    <p class="sub" style="margin-top:18px;margin-bottom:0"><strong>もっと楽に：</strong>手持ちのファイルをまとめて作品にしたいときは <a href="import.html">一括インポート</a>、作った JSON が本物かを確かめたいときは <a href="verify.html">検証ツール</a> を使えます。</p>
   </section>
 
   <section id="formats" aria-labelledby="h-formats">
@@ -524,6 +527,7 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
     <p><small>むずかしい用語が多いと感じたら、ここは読み飛ばして構いません。要点は「既存の共通形式へ変換して橋渡しする」ことだけです。実装済みの変換は schema.org と C2PA の2種です（<code>python3 tools/export.py --list</code> で確認できます）。実装したものから順に「実装済み」と明記します。</small></p>
     <p style="margin-top:18px"><a class="cta" href="convert.html">ブラウザで変換する（コマンド不要）→</a></p>
     <p class="hint" style="margin-top:8px">作品 JSON を schema.org / C2PA へ変換。逆変換も。ファイルは送信しません。</p>
+    <p class="hint" style="margin-top:6px">作った作品が本物か確かめたいときは <a href="verify.html">検証ツール</a>（指紋・署名・履歴をブラウザで照合）。</p>
   </section>
 
   <footer>
