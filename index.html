@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#fbfbf9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141413" media="(prefers-color-scheme: dark)">
 <title>openformats — 1 作品 = 1 JSON</title>
 <meta name="description" content="あらゆる創作の最小単位を、人間が読める JSON で定義する個人仕様（MIT・公開）。音楽・ラジオ・本・声・動画・製品・場所を同じ語彙で。既存標準を置き換えずハブを目指す実証段階。">
 <meta property="og:type" content="website">
@@ -110,7 +112,7 @@
   .hero .cta-sub { display:block; }
   @media (max-width:820px){ .hero{grid-template-columns:1fr; gap:16px; padding:20px 0 16px;} .hero-art img{max-height:34vh; object-fit:contain;} }
   @media (max-width:600px){ .brand{padding:12px 0 0;} .hero{padding:12px 0 12px;} .hero h1{margin-bottom:10px;} .hero .lede{margin-bottom:18px;}
-    .hero .cta{white-space:nowrap;} .hero .cta-note{display:none;} .hero .cta-sub{display:block;} }
+    .hero .cta{white-space:normal;} .hero .cta-sub{display:block;} }
 
   .cta { display:inline-block; background:var(--cta-bg); color:var(--cta-fg); padding:12px 22px; border-radius:10px;
     font-weight:600; font-size:15px; margin:4px 10px 4px 0; box-shadow:var(--shadow); transition:transform .15s,filter .15s; }
@@ -273,7 +275,7 @@
   <div class="brand">
     <span class="mark" aria-hidden="true">{}</span>
     <span class="name">openformats</span>
-    <span class="tag">— 創作の最小単位を JSON で定義する個人仕様（実証段階）</span>
+    <span class="tag">— 作品をサービスの外へ残す個人プロジェクト（実証段階）</span>
     <span class="ver">v1.0</span>
   </div>
 
