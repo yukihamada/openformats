@@ -381,7 +381,7 @@
 
   <section id="works" aria-labelledby="h-works">
     <h2 id="h-works">本物の作品 — その場で聴けます・観られます</h2>
-    <p class="sub">この仕組みで作った実作品。実ファイルの SHA-256 は JSON の <code>renditions[].sha256</code> と一致します（詳細は <a href="https://github.com/yukihamada/openformats/tree/main/works">works/</a>）。<br><small>実測ログ（2026-11-10）: 7 作品とも <code>of.py verify</code> → <code>content_hash_match: true</code>。うち本体ファイルを持つ 5 作品は <code>renditions[].ok: true</code>、記事と端末の 2 作品は本体ファイルを持たないため <code>renditions</code> は空です（解説動画 mp4 = <code>82915572…</code>、画像 png = <code>54b83b15…</code>）。</small></p>
+    <p class="sub">この仕組みで作った実作品。実ファイルの SHA-256 は JSON の <code>renditions[].sha256</code> と一致します（詳細は <a href="https://github.com/yukihamada/openformats/tree/main/works">works/</a>）。<br><small>実測ログ（2026-11-11）: 9 作品とも <code>of.py verify</code> → <code>content_hash_match: true</code>。うち本体ファイルを持つ 5 作品は <code>renditions[].ok: true</code>、記事・端末・作品集・人物の 4 作品は本体ファイルを持たないため <code>renditions</code> は空です（解説動画 mp4 = <code>82915572…</code>、画像 png = <code>54b83b15…</code>）。</small></p>
     <div class="works">
       <div class="work">
         <div class="cover"><img src="assets/works/moco-news.webp" width="640" height="400" alt="「モコの、ひと息AIニュース」のカバー" loading="lazy" decoding="async"></div>
@@ -448,6 +448,24 @@
           <span class="meta">端末・制作機材 ・ 18コア / 128GB / Metal 4</span>
           <div class="asize">device ・ macOS 26.4.1 ・ 実測スペック</div>
           <div class="dl"><a href="works/macbook-pro-m5-max-2026.device.json">JSON を読む</a></div>
+        </div>
+      </div>
+      <div class="work">
+        <div class="cover"><img src="assets/works/collection-2026.svg" width="640" height="400" alt="作品集『濱田優貴の作品集 2026』のカバー" loading="lazy" decoding="async"></div>
+        <div class="body">
+          <h3 class="work-title">濱田優貴の作品集 2026</h3>
+          <span class="meta">コレクション ・ 6作品を同じ語彙で束ねる ・ series</span>
+          <div class="asize">collection ・ radio / music / movie / article / image</div>
+          <div class="dl"><a href="works/collection-2026.collection.json">JSON を読む</a></div>
+        </div>
+      </div>
+      <div class="work">
+        <div class="cover"><img src="assets/works/yukihamada-person.svg" width="640" height="400" alt="人物『濱田優貴』のカバー" loading="lazy" decoding="async"></div>
+        <div class="body">
+          <h3 class="work-title">濱田優貴</h3>
+          <span class="meta">人物・作者プロフィール ・ author / composer / director / developer</span>
+          <div class="asize">person ・ Sente / KOE / teai を作る</div>
+          <div class="dl"><a href="works/yukihamada.person.json">JSON を読む</a></div>
         </div>
       </div>
     </div>
