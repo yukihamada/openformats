@@ -297,11 +297,11 @@
   <div class="stats" aria-label="このリポジトリの規模">
     <div class="stat"><b>16</b><span>作品の種類（<a href="https://github.com/yukihamada/openformats/blob/main/core/envelope/v1.json">kind 定義</a>・うち8種はブラウザで即生成）</span></div>
     <div class="stat"><b>89</b><span>プロダクト（構想含む・<a href="https://github.com/yukihamada/openformats/tree/main/products">products/</a>）</span></div>
-    <div class="stat"><b>2</b><span>変換の実装（schema.org・C2PA）</span></div>
+    <div class="stat"><b>8</b><span>変換先（schema.org・C2PA・MusicXML・OTIO・EPUB・PDF・Markdown・CSV）</span></div>
     <div class="stat"><b>MIT</b><span>仕様はオープン</span></div>
   </div>
 
-  <p class="hero-badge" style="margin:14px 0 0"><b>作者本人が7作品で実運用中</b>・MIT 公開・個人仕様（外部採用 0 件）</p>
+  <p class="hero-badge" style="margin:14px 0 0"><b>作者本人が9作品で実運用中</b>・MIT 公開・個人仕様（外部採用 0 件）</p>
 
   <details class="status-note" role="note" style="margin:14px 0 0;padding:12px 16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);color:var(--muted);font-size:.9rem;line-height:1.6;box-sizing:border-box">
     <summary style="cursor:pointer;color:var(--fg);font-weight:600;display:flex;align-items:center;min-height:44px">現在の位置づけ（正直に）— 個人仕様・外部採用 0 件</summary>
@@ -505,7 +505,7 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
 .venv/bin/python tools/validate.py --all</code></pre>
       </div>
       <p><small>Git が苦手なら、GitHub の自分のリポジトリ画面に、ダウンロードした JSON と本体ファイルをそのままドラッグ＆ドロップするだけでも残せます。</small></p>
-      <p><small>既存標準へ書き出したいときは <code>python3 tools/export.py schema.org &lt;file&gt;</code>（JSON-LD）と <code>python3 tools/export.py c2pa &lt;file&gt;</code>（C2PA マニフェスト JSON）に変換できます（どちらも実装済み）。C2PA はマニフェスト JSON の書き出しまでで、バイナリへの埋め込み（JUMBF/COSE 署名）は未実装です。MusicXML・OpenTimelineIO・EPUB への書き出しも未実装です。</small></p>
+      <p><small>既存標準へ書き出したいときは <code>python3 tools/export.py &lt;target&gt; &lt;file&gt;</code> で変換できます（<code>--list</code> で一覧）。実装済みは schema.org（往復可）・C2PA マニフェスト・MusicXML・OpenTimelineIO・EPUB 3・PDF・Markdown・CSV の8種です。C2PA はマニフェスト JSON の書き出しと PNG/JPEG へのバイナリ埋め込み（JUMBF）まで対応し、COSE 署名は未対応です。</small></p>
     </details>
     <p class="who">作っているのは <a href="https://github.com/yukihamada">濱田優貴（@yukihamada）</a> です。仕様も実装も GitHub で公開しています。</p>
     <h2 id="h-faq">よくある質問</h2>
@@ -546,9 +546,9 @@ python3 -m venv .venv &amp;&amp; .venv/bin/pip install jsonschema
     <div class="glossary" aria-label="既存標準との対応と実装状況">
       <div><b>schema.org</b>（検索エンジン向けの作品情報の共通形式） — <strong>実装済み</strong>（<code>tools/export.py schema.org</code> で JSON-LD へ）。</div>
       <div><b>C2PA</b>（写真や動画の「本物・改ざんされていない」を証明する仕組み） — 同じことを <code>content_hash</code>／<code>hash_chain</code>／Ed25519 で JSON 内でも行う。<strong>実装済み</strong>（<code>tools/export.py c2pa</code> で C2PA マニフェスト JSON へ書き出し。バイナリ埋め込み JUMBF/COSE は未実装）。</div>
-      <div><b>MusicXML</b>（楽譜の共通形式）<b> / OpenTimelineIO</b>（動画編集のタイムライン形式）<b> / EPUB</b>（電子書籍の共通形式） — 書き出しは未実装（方向性のみ）。</div>
+      <div><b>MusicXML</b>（楽譜の共通形式）<b> / OpenTimelineIO</b>（動画編集のタイムライン形式）<b> / EPUB</b>（電子書籍の共通形式） — <strong>実装済み</strong>（<code>tools/export.py musicxml</code> / <code>otio</code> / <code>epub</code>）。MusicXML は music、OTIO は movie、EPUB/PDF は book・article 作品が対象です。</div>
     </div>
-    <p><small>むずかしい用語が多いと感じたら、ここは読み飛ばして構いません。要点は「既存の共通形式へ変換して橋渡しする」ことだけです。実装済みの変換は schema.org と C2PA の2種です（<code>python3 tools/export.py --list</code> で確認できます）。実装したものから順に「実装済み」と明記します。</small></p>
+    <p><small>むずかしい用語が多いと感じたら、ここは読み飛ばして構いません。要点は「既存の共通形式へ変換して橋渡しする」ことだけです。実装済みの変換は 8 種（schema.org・C2PA・MusicXML・OpenTimelineIO・EPUB・PDF・Markdown・CSV）です（<code>python3 tools/export.py --list</code> で確認できます）。実装したものから順に「実装済み」と明記します。</small></p>
     <p style="margin-top:18px"><a class="cta" href="convert.html">ブラウザで変換する（コマンド不要）→</a></p>
     <p class="hint" style="margin-top:8px">作品 JSON を schema.org / C2PA へ変換。逆変換も。ファイルは送信しません。</p>
     <p class="hint" style="margin-top:6px">作った作品が本物か確かめたいときは <a href="verify.html">検証ツール</a>（指紋・署名・履歴をブラウザで照合）。</p>
