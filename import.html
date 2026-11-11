@@ -18,12 +18,16 @@
 <a class="sr-only" href="#main">本文へスキップ</a>
 <header class="site-nav">
   <nav aria-label="サイト">
-    <a class="name" href="./">openformats</a>
-    <a href="./#builder">ブラウザで作る</a>
-    <a href="./#works">実作品</a>
-    <a href="convert.html">変換ツール</a>
-    <a href="render.html">メディア作成</a>
-    <a href="verify.html">検証ツール</a>
+    <a class="brand" href="./"><span class="mark" aria-hidden="true">{}</span>openformats</a>
+    <div class="links">
+      <a href="./#builder">つくる</a>
+      <a href="./#formats">フォーマット</a>
+      <a href="./#works">実作品</a>
+      <a href="convert.html">変換</a>
+      <a href="import.html" aria-current="page">一括</a>
+      <a href="render.html">メディア</a>
+      <a href="verify.html">検証</a>
+    </div>
     <a class="gh" href="https://github.com/yukihamada/openformats">GitHub ↗</a>
   </nav>
 </header>
@@ -39,12 +43,12 @@
       <input id="file" type="file" multiple hidden>
       <input id="folder" type="file" webkitdirectory directory multiple hidden>
     </div>
-    <div class="row" style="margin-top:16px">
+    <div class="row mt-16">
       <button class="cta ghost" type="button" id="btn-folder">フォルダを選ぶ</button>
       <button class="cta ghost" type="button" id="btn-clear">クリア</button>
-      <span style="flex:1"></span>
+      <span class="spacer"></span>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px" class="meta-grid">
+    <div class="meta-grid">
       <div>
         <label for="i-author">作者名（全作品に適用）</label>
         <input id="i-author" type="text" placeholder="例: 山田 花子" autocomplete="off">
@@ -61,13 +65,13 @@
     <div id="in-status" class="status info" role="status" aria-live="polite" hidden></div>
   </section>
 
-  <section style="margin-top:24px" aria-labelledby="h-list">
-    <h2 id="h-list" style="font-size:1.15rem;margin:0 0 8px">作る作品（<span id="count">0</span> 件）</h2>
+  <section class="mt-24" aria-labelledby="h-list">
+    <h2 id="h-list" class="section-h">作る作品（<span id="count">0</span> 件）</h2>
     <div class="panel">
       <p class="empty" id="placeholder">まだファイルがありません。上の欄にファイルをドロップしてください。</p>
       <table class="list" id="list" hidden>
         <thead>
-          <tr><th style="width:38%">ファイル</th><th style="width:16%">種類</th><th>タイトル</th><th style="width:60px"></th></tr>
+          <tr><th class="th-file">ファイル</th><th class="th-kind">種類</th><th>タイトル</th><th class="th-act"></th></tr>
         </thead>
         <tbody id="tbody"></tbody>
       </table>
@@ -88,7 +92,7 @@
       <li>「JSON をまとめてダウンロード」で保存し、<strong>本体ファイルと同じフォルダ</strong>に置きます。</li>
       <li><a href="verify.html">検証ツール</a> に JSON と本体を入れると、指紋が一致して「合格」になります。</li>
     </ol>
-    <p class="hint" style="margin-top:14px">コマンドで同じことをする場合：<code>python3 tools/of.py hash &lt;file&gt; --write</code> で指紋を書き込み、<code>python3 tools/of.py verify &lt;file&gt;</code> で照合できます。このツールの出力はその形に合わせています。</p>
+    <p class="hint mt-14">コマンドで同じことをする場合：<code>python3 tools/of.py hash &lt;file&gt; --write</code> で指紋を書き込み、<code>python3 tools/of.py verify &lt;file&gt;</code> で照合できます。このツールの出力はその形に合わせています。</p>
   </section>
 
   <footer>
