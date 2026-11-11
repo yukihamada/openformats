@@ -43,6 +43,14 @@
   header.site-nav .name { font-weight:700; color:var(--fg); }
   header.site-nav a { min-height:44px; display:inline-flex; align-items:center; }
   header.site-nav .gh { margin-left:auto; }
+  @media (max-width:600px){
+    header.site-nav nav { flex-wrap:nowrap; overflow-x:auto; gap:0 16px; padding:4px 16px;
+      -webkit-overflow-scrolling:touch; scrollbar-width:none;
+      -webkit-mask-image:linear-gradient(to right,#000 92%,transparent); mask-image:linear-gradient(to right,#000 92%,transparent); }
+    header.site-nav nav::-webkit-scrollbar { display:none; }
+    header.site-nav nav a { white-space:nowrap; padding:10px 2px; }
+    header.site-nav .gh { margin-left:0; }
+  }
   main { max-width:var(--maxw); margin:0 auto; padding:32px 24px 96px; }
   h1 { font-size:clamp(1.6rem,3.4vw,2.2rem); line-height:1.25; letter-spacing:-.02em; margin:0 0 8px; }
   .lede { color:var(--muted); margin:0 0 24px; max-width:60ch; }
