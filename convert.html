@@ -227,8 +227,8 @@
     } catch (e) {
       detect.textContent = "JSON として読めません";
       showStatus(inStatus, "err", "JSON の構文エラー: " + e.message);
-      showStatus(outStatus, "err", "入力にエラーがあるため変換できません。JSON を直してください。");
       clearOutput("— 入力にエラーがあります —");
+      showStatus(outStatus, "err", "入力にエラーがあるため変換できません。JSON を直してください。");
       return false;
     }
     // @graph 配列にも対応
@@ -239,8 +239,8 @@
     if (!parsedKind) {
       detect.textContent = "形式を判別できません";
       showStatus(inStatus, "warn", "openformats 作品 JSON（kind と id を持つ）でも schema.org JSON-LD（@type を持つ）でもないようです。");
-      showStatus(outStatus, "warn", "形式を判別できないため変換できません。");
       clearOutput("— 形式を判別できません —");
+      showStatus(outStatus, "warn", "形式を判別できないため変換できません。");
       return false;
     }
     detect.textContent = parsedKind === "work" ? "作品 JSON を検出" : "schema.org JSON-LD を検出";
@@ -365,7 +365,9 @@
 
   // サンプル / クリア
   $("btn-sample").addEventListener("click", function () {
-    input.value = JSON.stringify(SAMPLE, null, 2);
+    var s = JSON.parse(JSON.stringify(SAMPLE));
+    s.content_hash = OF.contentHash(s);
+    input.value = JSON.stringify(s, null, 2);
     if (tryParse()) { selectTab("schema"); }
   });
   $("btn-clear").addEventListener("click", function () {

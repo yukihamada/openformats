@@ -487,6 +487,123 @@ def test_export_c2pa_manifest():
     assert "assertions" not in minimal or minimal["assertions"] == []
 
 
+def test_export_musicxml_wellformed():
+    sys.path.insert(0, str(ROOT / "tools"))
+    import importlib, xml.etree.ElementTree as ET
+    export = importlib.import_module("export")
+    data = {"kind": "music", "id": "m1", "title": "T", "lang": "ja",
+            "meta": {"bpm": 96, "key": "C major", "time_signature": "4/4"},
+            "sections": [{"name": "verse"}, {"name": "chorus"}],
+            "lyrics": [{"section": "verse",
+                        "lines": ["one", "two", "three", "four"]}]}
+    xml = export.to_musicxml(data)
+    raw = xml.encode("utf-8")
+    root = ET.fromstring(raw)
+    assert root.tag.endswith("score-partwise"), root.tag
+    # セクション数ぶんの小節があり、歌詞行が音符として出る
+    assert raw.count(b"<measure ") >= 2
+    assert raw.count(b"<lyric") >= 4
+
+
+def test_export_otio_structure():
+    sys.path.insert(0, str(ROOT / "tools"))
+    import importlib
+    export = importlib.import_module("export")
+    data = {"kind": "movie", "id": "mv", "title": "T",
+            "format": {"fps": 24},
+            "timeline": [
+                {"id": "v1", "type": "video", "clips": [
+                    {"start_sec": 0, "duration_sec": 2.0, "src": "a.png"},
+                    {"start_sec": 2, "duration_sec": 3.0, "src": "b.png"}]},
+                {"id": "s1", "type": "subtitle", "clips": [
+                    {"start_sec": 0, "duration_sec": 2.0, "text": "hi"}]}]}
+    tl = export.to_otio(data)
+    assert tl["OTIO_SCHEMA"] == "Timeline.1"
+    assert tl["tracks"]["OTIO_SCHEMA"] == "Stack.1"
+    tracks = tl["tracks"]["children"]
+    assert len(tracks) == 2
+    video = tracks[0]
+    assert video["OTIO_SCHEMA"] == "Track.1" and video["kind"] == "Video"
+    assert len(video["children"]) == 2
+    c0 = video["children"][0]
+    assert c0["OTIO_SCHEMA"] == "Clip.2"
+    # 24fps で 2 秒 = 48 フレーム
+    assert c0["source_range"]["duration"]["value"] == 48
+    assert c0["source_range"]["duration"]["rate"] == 24
+    sub = tracks[1]
+    assert sub["kind"] == "Video"
+    assert sub["children"][0]["metadata"]["openformats"]["subtitle_text"] == "hi"
+
+
+def test_export_epub_valid_zip():
+    sys.path.insert(0, str(ROOT / "tools"))
+    import importlib, tempfile, zipfile, xml.etree.ElementTree as ET
+    export = importlib.import_module("export")
+    data = {"kind": "book", "id": "b1", "title": "本", "lang": "ja",
+            "chapters": [{"id": "c1", "title": "第一章",
+                          "blocks": [{"type": "paragraph", "text": "本文です。"}]}]}
+    with tempfile.TemporaryDirectory() as d:
+        out = pathlib.Path(d) / "b.epub"
+        export.to_epub(data, out)
+        z = zipfile.ZipFile(out)
+        names = z.namelist()
+        assert names[0] == "mimetype"
+        assert z.read("mimetype") == b"application/epub+zip"
+        assert "META-INF/container.xml" in names
+        for n in names:
+            if n.endswith((".opf", ".xhtml", ".xml")):
+                ET.fromstring(z.read(n))
+
+
+def test_export_pdf_structure():
+    sys.path.insert(0, str(ROOT / "tools"))
+    import importlib, tempfile
+    export = importlib.import_module("export")
+    data = {"kind": "book", "id": "b1", "title": "本", "lang": "ja",
+            "chapters": [{"id": "c1", "title": "第一章",
+                          "blocks": [{"type": "paragraph", "text": "本文です。"}]}]}
+    with tempfile.TemporaryDirectory() as d:
+        out = pathlib.Path(d) / "b.pdf"
+        # フォント無しでも有効な PDF を生成できる
+        export.to_pdf(data, out)
+        raw = out.read_bytes()
+    assert raw[:5] == b"%PDF-"
+    assert b"%%EOF" in raw
+    assert b"/Type /Catalog" in raw and b"/Type /Page" in raw
+
+
+def test_c2pa_png_and_jpeg_roundtrip():
+    sys.path.insert(0, str(ROOT / "tools"))
+    import importlib, tempfile, struct, zlib
+    export = importlib.import_module("export")
+    man = {"title": "T", "format": "image/png"}
+    jumbf = export.c2pa_jumbf_bytes(man)
+    # 最小の PNG を組み立てる (1x1)
+    def png_bytes():
+        def chunk(ct, body):
+            c = struct.pack(">I", len(body)) + ct + body
+            return c + struct.pack(">I", zlib.crc32(ct + body) & 0xFFFFFFFF)
+        ihdr = struct.pack(">IIBBBBB", 1, 1, 8, 2, 0, 0, 0)
+        idat = zlib.compress(b"\x00\x00\x00\x00")
+        return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", ihdr)
+                + chunk(b"IDAT", idat) + chunk(b"IEND", b""))
+    with tempfile.TemporaryDirectory() as d:
+        p = pathlib.Path(d) / "x.png"
+        p.write_bytes(png_bytes())
+        export.embed_c2pa(p, jumbf)
+        assert export.read_c2pa(p)["title"] == "T"
+        # PNG として再び開ける
+        data = p.read_bytes()
+        assert data[:8] == b"\x89PNG\r\n\x1a\n"
+        assert data[-12:-8] == b"\x00\x00\x00\x00" or b"IEND" in data
+        # JPEG は SOI/EOI を保ったまま埋め込み・読み戻しできる
+        jp = pathlib.Path(d) / "x.jpg"
+        jp.write_bytes(b"\xff\xd8\xff\xd9")  # 最小 JPEG (SOI+EOI)
+        export.embed_c2pa(jp, jumbf)
+        assert jp.read_bytes()[:2] == b"\xff\xd8"
+        assert export.read_c2pa(jp)["title"] == "T"
+
+
 
 def _run():
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]

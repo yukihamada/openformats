@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="人物『濱田優貴』のカバー">
+  <defs>
+    <linearGradient id="pbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a1626"/><stop offset="1" stop-color="#3a2e52"/>
+    </linearGradient>
+    <linearGradient id="pav" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b9a3ff"/><stop offset="1" stop-color="#7a5cf0"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="url(#pbg)"/>
+  <g>
+    <circle cx="500" cy="150" r="52" fill="url(#pav)"/>
+    <path d="M420 300 q80 -90 160 0 z" fill="#8f78e0" opacity="0.85"/>
+  </g>
+  <text x="48" y="120" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" font-size="20" font-weight="700" fill="#c9bbff">PERSON ・ 作者</text>
+  <text x="48" y="182" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" font-size="44" font-weight="800" fill="#ffffff">濱田優貴</text>
+  <text x="48" y="222" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" font-size="16" fill="#d8d0ff">author / composer / director / developer ・ Sente / KOE / teai</text>
+</svg>
