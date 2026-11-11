@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from openformats import core, ed25519  # noqa: E402
 from openformats.canonical import canonicalize, _num_to_es  # noqa: E402
+from openformats.radio import semantic_errors  # noqa: E402
 
 
 def _base():
@@ -615,6 +616,48 @@ def test_export_cli_exit_code_on_kind_mismatch():
     ok = subprocess.run([sys.executable, ex, "musicxml", str(ROOT / "examples/sample.music.json")],
                         capture_output=True, text=True)
     assert ok.returncode == 0, f"正しい kind は exit 0 のはず: {ok.returncode}"
+
+
+def test_radio_semantic_ok():
+    d = {"kind": "radio", "id": "r",
+         "speakers": [{"id": "a", "name": "A"}],
+         "segments": [
+             {"type": "speech", "speaker": "a", "text": "x", "start_sec": 0, "duration_sec": 5},
+             {"type": "marker", "label": "章", "start_sec": 5},
+         ]}
+    assert semantic_errors(d) == [], semantic_errors(d)
+
+
+def test_radio_duplicate_speaker_id():
+    d = {"kind": "radio", "id": "r",
+         "speakers": [{"id": "a", "name": "A"}, {"id": "a", "name": "B"}],
+         "segments": []}
+    errs = semantic_errors(d)
+    assert any("重複" in m for _, m in errs), errs
+
+
+def test_radio_unknown_speaker_ref():
+    d = {"kind": "radio", "id": "r",
+         "speakers": [{"id": "a", "name": "A"}],
+         "segments": [{"type": "speech", "speaker": "ghost", "text": "x", "start_sec": 0}]}
+    errs = semantic_errors(d)
+    assert any("存在しません" in m for _, m in errs), errs
+
+
+def test_radio_timeline_overlap():
+    d = {"kind": "radio", "id": "r",
+         "speakers": [{"id": "a", "name": "A"}],
+         "segments": [
+             {"type": "speech", "speaker": "a", "text": "x", "start_sec": 0, "duration_sec": 5},
+             {"type": "speech", "speaker": "a", "text": "y", "start_sec": 2, "duration_sec": 1},
+         ]}
+    errs = semantic_errors(d)
+    assert any("より前" in m for _, m in errs), errs
+
+
+def test_radio_semantic_ignores_other_kinds():
+    assert semantic_errors({"kind": "music", "id": "m"}) == []
+    assert semantic_errors({"kind": "book", "id": "b"}) == []
 
 
 def _run():

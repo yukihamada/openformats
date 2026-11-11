@@ -52,14 +52,24 @@
           "type": { "type": "string", "enum": ["speech", "pause", "sfx", "music", "silence", "marker"] },
           "speaker": { "type": "string", "description": "speech 用。speakers[].id を参照。" },
           "text": { "type": "string", "description": "speech 用の台本。" },
-          "start_sec": { "type": "number" },
-          "duration_sec": { "type": "number" },
+          "start_sec": { "type": "number", "minimum": 0 },
+          "duration_sec": { "type": "number", "minimum": 0 },
           "src": { "type": "string", "description": "音声クリップ/効果音の参照。" },
           "gain_db": { "type": "number" },
-          "fade_in_sec": { "type": "number" },
-          "fade_out_sec": { "type": "number" },
+          "fade_in_sec": { "type": "number", "minimum": 0 },
+          "fade_out_sec": { "type": "number", "minimum": 0 },
           "label": { "type": "string", "description": "marker 用 (章・CM 等)。" }
         },
+        "allOf": [
+          {
+            "if": { "properties": { "type": { "const": "speech" } }, "required": ["type"] },
+            "then": { "required": ["speaker", "text"] }
+          },
+          {
+            "if": { "properties": { "type": { "const": "marker" } }, "required": ["type"] },
+            "then": { "required": ["label"] }
+          }
+        ],
         "additionalProperties": true
       }
     },
