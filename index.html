@@ -101,8 +101,9 @@
   .who { margin:22px 0 6px; font-size:14px; color:var(--muted); }
   .who a { color:var(--fg); }
   .hero p a.hero-sub { display:inline-flex; align-items:center; min-height:44px; padding:0 8px; margin:4px 0 4px 6px;
-    color:var(--accent); font-weight:600; text-decoration:underline; text-underline-offset:3px; }
+    color:#1f4fd8; font-weight:600; text-decoration:underline; text-underline-offset:3px; }
   .hero p a.hero-sub:hover { text-decoration:underline; }
+  @media (prefers-color-scheme: dark){ .hero p a.hero-sub{ color:#a9c0ff; } }
   .hero-badge { display:inline-flex; align-items:center; gap:6px; margin-top:16px; font-size:13px; color:var(--muted);
     background:var(--card); border:1px solid var(--line); border-radius:999px; padding:6px 12px; line-height:1.4; }
   .hero-badge b { color:var(--fg); font-weight:600; }
@@ -192,7 +193,7 @@
   .stat { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px; }
   .stat b { display:block; font-size:26px; letter-spacing:-.02em; }
   .stat span { color:var(--muted); font-size:14px; }
-  @media (max-width:640px){ .stats{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:640px){ .stats{grid-template-columns:repeat(2,1fr); gap:8px;} .stat{padding:12px 14px;} .stat b{font-size:22px;} .stat span{font-size:13px;} }
 
   /* format grid with icons */
   .formats { display:grid; grid-template-columns:repeat(auto-fill,minmax(215px,1fr)); gap:12px; }
@@ -294,7 +295,7 @@
     <div class="stat"><b>MIT</b><span>仕様はオープン</span></div>
   </div>
 
-  <p class="hero-badge" style="max-width:var(--maxw);margin:14px auto 0;padding:0 var(--pad,20px)"><b>作者本人が7作品で実運用中</b>・MIT 公開・個人仕様（外部採用 0 件）・かんたんに言うと、作品の情報を「設計図（JSON）」1枚にまとめ、音源や画像と一緒に手元へ保存する仕組みです。</p>
+  <p class="hero-badge" style="max-width:var(--maxw);margin:14px auto 0;padding:0 var(--pad,20px)"><b>作者本人が7作品で実運用中</b>・MIT 公開・個人仕様（外部採用 0 件）</p>
 
   <details class="status-note" role="note" style="max-width:var(--maxw);margin:14px auto 0;padding:12px 16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);color:var(--muted);font-size:.9rem;line-height:1.6">
     <summary style="cursor:pointer;color:var(--fg);font-weight:600;display:flex;align-items:center;min-height:44px">現在の位置づけ（正直に）— 個人仕様・外部採用 0 件</summary>
@@ -382,7 +383,7 @@
         <div class="body">
           <h3 class="work-title">モコの、ひと息AIニュース</h3>
           <span class="meta">週次AIニュース・3本 ・ wav ・ 1分19秒</span>
-          <audio controls preload="metadata" aria-label="モコの、ひと息AIニュース（週次AIニュース）" src="works/Moco-News.wav"></audio>
+          <audio controls preload="none" aria-label="モコの、ひと息AIニュース（週次AIニュース）" src="works/Moco-News.wav"></audio>
           <div class="asize">WAV ・ 3.8 MB ・ 1:19</div>
           <div class="dl"><a href="works/Moco-News.wav">wav をダウンロード</a> ・ <a href="works/moco-news-20261009.radio.json">JSON</a></div>
         </div>
