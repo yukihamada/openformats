@@ -278,7 +278,7 @@ openformats は既存標準を置き換えず、それらへの**ハブ**を目�
 | 本 | EPUB / PDF | `book` から書き出す。 | **実装済み**（`tools/export.py epub` / `pdf`） |
 | 文書・表計算 | Markdown / CSV | 作品本文を Markdown、メタデータを CSV へ書き出す。 | **実装済み**（`tools/export.py markdown` / `csv`） |
 
-**現状の限界** — 実装済みの変換は schema.org（往復可）、C2PA マニフェスト JSON、C2PA の PNG/JPEG バイナリ埋め込み（JUMBF。COSE 署名は未対応）、MusicXML・OpenTimelineIO・EPUB 3・PDF・Markdown・CSV への書き出しです（`python3 tools/export.py --list` で確認できる）。PDF の日本語は `--font` で TrueType を渡したときのみ正しく埋め込まれ、未指定なら ASCII のみです。MusicXML はセクション/歌詞からのリードシート生成で、MIDI や詳細な音符列は扱いません。OTIO は絶対開始位置を Gap で保持します。Markdown は本文ブロック、CSV は作品メタデータの1行で、どちらも書き出し専用（逆変換は未対応）です。実装したものからこの表に「実装済み」と明記していきます。
+**現状の限界** — 実装済みの変換は schema.org（往復可）、C2PA マニフェスト JSON、C2PA の PNG/JPEG バイナリ埋め込み（JUMBF。COSE 署名は未対応）、MusicXML・OpenTimelineIO・EPUB 3・PDF・Markdown・CSV への書き出しです（`python3 tools/export.py --list` で確認できる）。PDF の日本語は、日本語を含む本文ならシステムの日本語 TrueType を自動検出して使用グリフだけサブセット埋め込みします（`--font` で明示指定も可。CFF ベースのフォントは非対応）。MusicXML は調に沿った決定的な旋律を生成し、全歌詞行を保持します（詳細な音符列や MIDI は扱いません）。schema.org は article/book に本文 `articleBody` を含めます。OTIO は絶対開始位置を Gap で保持します。Markdown は本文ブロック、CSV は作品メタデータの1行で、どちらも書き出し専用（逆変換は未対応）です。実装したものからこの表に「実装済み」と明記していきます。
 
 ---
 

@@ -72,6 +72,43 @@ def _authors(data):
     return out
 
 
+def _blocks_to_plain(blocks) -> str:
+    """ブロック配列を schema.org の articleBody 用の平文へ。"""
+    parts = []
+    for b in blocks or []:
+        t = b.get("type")
+        if t == "list":
+            parts.append("\n".join(str(it) for it in (b.get("items") or [])))
+        elif t == "table":
+            for row in b.get("rows") or []:
+                parts.append(" | ".join(str(c) for c in row))
+        elif t == "figure":
+            cap = b.get("caption") or b.get("alt")
+            if cap:
+                parts.append(str(cap))
+        elif t == "divider":
+            continue
+        elif b.get("text"):
+            parts.append(str(b.get("text")))
+    return "\n\n".join(p for p in parts if p)
+
+
+def _article_body(data: dict) -> str:
+    """article/book の本文を平文で組み立てる。"""
+    kind = data.get("kind")
+    if kind == "book":
+        chunks = []
+        for ch in data.get("chapters") or []:
+            title = ch.get("title") or ch.get("id")
+            if title:
+                chunks.append(str(title))
+            body = _blocks_to_plain(ch.get("blocks"))
+            if body:
+                chunks.append(body)
+        return "\n\n".join(chunks)
+    return _blocks_to_plain(data.get("blocks"))
+
+
 def to_schema_org(data: dict) -> dict:
     kind = data.get("kind")
     stype = SCHEMA_TYPE.get(kind, "CreativeWork")
@@ -97,6 +134,12 @@ def to_schema_org(data: dict) -> dict:
         ld["dateCreated"] = data["created_at"]
     if data.get("updated_at"):
         ld["dateModified"] = data["updated_at"]
+
+    # 本文を検索エンジン・AI に渡せるように articleBody を入れる
+    if kind in ("article", "book"):
+        body = _article_body(data)
+        if body:
+            ld["articleBody"] = body
 
     lic = data.get("license")
     if lic in LICENSE_URL:
@@ -311,6 +354,56 @@ def _key_to_fifths(key: str):
     return 0, "major"
 
 
+_SEMITONE_TO_NAMES = {
+    0: [("C", 0)], 1: [("C", 1), ("D", -1)], 2: [("D", 0)],
+    3: [("D", 1), ("E", -1)], 4: [("E", 0)], 5: [("F", 0)],
+    6: [("F", 1), ("G", -1)], 7: [("G", 0)], 8: [("G", 1), ("A", -1)],
+    9: [("A", 0)], 10: [("A", 1), ("B", -1)], 11: [("B", 0)],
+}
+_TONIC_SEMITONE = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
+
+
+def _key_scale(key: str):
+    """'F major' 等から 1 オクターブの音階 [(step, alter), ...] を返す。
+
+    調号の向き（シャープ系/フラット系）に合わせて異名同音を選ぶ。
+    未知の調は C major にフォールバックする。
+    """
+    fifths, mode = _key_to_fifths(key)
+    k = (key or "C major").strip().replace("♯", "#").replace("♭", "b")
+    letter = k[0].upper() if k and k[0].upper() in _TONIC_SEMITONE else "C"
+    base = _TONIC_SEMITONE[letter]
+    if len(k) > 1 and k[1] == "#":
+        base = (base + 1) % 12
+    elif len(k) > 1 and k[1] == "b":
+        base = (base - 1) % 12
+    intervals = [0, 2, 3, 5, 7, 8, 10] if mode == "minor" else [0, 2, 4, 5, 7, 9, 11]
+    scale = []
+    for iv in intervals:
+        semis = (base + iv) % 12
+        options = _SEMITONE_TO_NAMES[semis]
+        if len(options) == 1:
+            scale.append(options[0])
+        elif fifths < 0:
+            scale.append(next((o for o in options if o[1] < 0), options[0]))
+        else:
+            scale.append(next((o for o in options if o[1] > 0), options[0]))
+    return scale
+
+
+def _melody_note(scale, seed: int, step_idx: int):
+    """決定的に旋律の 1 音 (step, alter, octave) を選ぶ。
+
+    seed と通し番号から音階上の度数とオクターブを決める。同じ入力なら
+    常に同じ旋律になり、単調な同音連打にはならない。
+    """
+    n = len(scale) or 7
+    deg = (seed + step_idx * 3 + (step_idx * step_idx)) % n
+    octave = 4 + ((seed >> 3) + step_idx // n) % 2  # 4 か 5
+    step, alter = scale[deg]
+    return step, alter, octave
+
+
 def _blocks_to_markdown(blocks) -> str:
     """openformats のブロック配列を Markdown へ。"""
     out = []
@@ -339,10 +432,12 @@ def _blocks_to_markdown(blocks) -> str:
             if rows:
                 def cells(r):
                     return "| " + " | ".join(str(c) for c in r) + " |"
-                out.append(cells(rows[0]))
-                out.append("| " + " | ".join("---" for _ in rows[0]) + " |")
+                # 表は 1 ブロックとして組み立てる（行間に空行を入れない）
+                tbl = [cells(rows[0]),
+                       "| " + " | ".join("---" for _ in rows[0]) + " |"]
                 for r in rows[1:]:
-                    out.append(cells(r))
+                    tbl.append(cells(r))
+                out.append("\n".join(tbl))
         elif t == "figure":
             cap = b.get("caption") or b.get("alt") or ""
             out.append("![%s](%s)" % (str(b.get("alt", "")), str(b.get("src", ""))))
@@ -466,6 +561,13 @@ def to_musicxml(data: dict) -> str:
     for ly in data.get("lyrics") or []:
         lyrics_by_section.setdefault(ly.get("section"), []).extend(ly.get("lines") or [])
 
+    # 旋律の種: content_hash か id から決定的に作る（同じ作品は常に同じ旋律）
+    seed_src = str(data.get("content_hash") or data.get("id") or title)
+    seed = 0
+    for ch in seed_src:
+        seed = (seed * 131 + ord(ch)) & 0xFFFFFFFF
+    scale = _key_scale(meta.get("key") or "C major")
+
     # 声（vocal）トラックを優先、無ければ先頭トラック
     tracks = data.get("tracks") or []
     vocal = next((t for t in tracks if t.get("role") == "vocal"
@@ -492,38 +594,51 @@ def to_musicxml(data: dict) -> str:
     lines.append('  </part-list>')
     lines.append('  <part id="P1">')
 
-    # セクションごとに 1 小節。歌詞があれば歌詞付き四分音符、無ければ全休符。
+    # セクションごとに歌詞を四分音符へ割り当てる。1 小節に収まらない歌詞は
+    # 小節を分けて全行を残す（切り捨てない）。歌詞が無ければ全休符 1 小節。
     if not sections:
         sections = [{"name": "section1"}]
+    measure_no = 0
+    note_idx = 0
     for idx, sec in enumerate(sections):
-        lines.append('    <measure number="%d">' % (idx + 1))
-        if idx == 0:
-            lines.append('      <attributes>')
-            lines.append('        <divisions>1</divisions>')
-            lines.append('        <key><fifths>%d</fifths><mode>%s</mode></key>' % (fifths, mode))
-            lines.append('        <time><beats>%d</beats><beat-type>%d</beat-type></time>' % (beats, beat_type))
-            lines.append('        <clef><sign>G</sign><line>2</line></clef>')
-            lines.append('      </attributes>')
-            lines.append('      <direction placement="above"><direction-type>'
-                         '<metronome><beat-unit>quarter</beat-unit>'
-                         '<per-minute>%d</per-minute></metronome></direction-type>'
-                         '<sound tempo="%d"/></direction>' % (int(bpm), int(bpm)))
         sec_lines = lyrics_by_section.get(sec.get("name")) or []
-        if sec_lines:
-            # 各歌詞行を 1 小節内の四分音符に割り当てる（簡易リードシート）
-            per = max(1, beats)
-            for j, text in enumerate(sec_lines[:per]):
-                lines.append('      <note>')
-                lines.append('        <pitch><step>C</step><octave>4</octave></pitch>')
-                lines.append('        <duration>1</duration>')
-                lines.append('        <type>quarter</type>')
-                lines.append('        <lyric number="1"><text>%s</text></lyric>' % esc(text))
-                lines.append('      </note>')
-            for _ in range(per - min(per, len(sec_lines))):
-                lines.append('      <note><rest/><duration>1</duration><type>quarter</type></note>')
-        else:
-            lines.append('      <note><rest measure="yes"/><duration>%d</duration></note>' % max(1, beats))
-        lines.append('    </measure>')
+        per = max(1, beats)
+        chunks = [sec_lines[i:i + per] for i in range(0, len(sec_lines), per)] or [[]]
+        for ci, chunk in enumerate(chunks):
+            measure_no += 1
+            lines.append('    <measure number="%d">' % measure_no)
+            if idx == 0 and ci == 0:
+                lines.append('      <attributes>')
+                lines.append('        <divisions>1</divisions>')
+                lines.append('        <key><fifths>%d</fifths><mode>%s</mode></key>' % (fifths, mode))
+                lines.append('        <time><beats>%d</beats><beat-type>%d</beat-type></time>' % (beats, beat_type))
+                lines.append('        <clef><sign>G</sign><line>2</line></clef>')
+                lines.append('      </attributes>')
+                lines.append('      <direction placement="above"><direction-type>'
+                             '<metronome><beat-unit>quarter</beat-unit>'
+                             '<per-minute>%d</per-minute></metronome></direction-type>'
+                             '<sound tempo="%d"/></direction>' % (int(bpm), int(bpm)))
+            if chunk:
+                for text in chunk:
+                    step, alter, octave = _melody_note(scale, seed, note_idx)
+                    note_idx += 1
+                    alter_xml = ""
+                    if alter > 0:
+                        alter_xml = "<alter>1</alter>"
+                    elif alter < 0:
+                        alter_xml = "<alter>-1</alter>"
+                    lines.append('      <note>')
+                    lines.append('        <pitch><step>%s</step>%s<octave>%d</octave></pitch>'
+                                 % (step, alter_xml, octave))
+                    lines.append('        <duration>1</duration>')
+                    lines.append('        <type>quarter</type>')
+                    lines.append('        <lyric number="1"><text>%s</text></lyric>' % esc(text))
+                    lines.append('      </note>')
+                for _ in range(per - len(chunk)):
+                    lines.append('      <note><rest/><duration>1</duration><type>quarter</type></note>')
+            else:
+                lines.append('      <note><rest measure="yes"/><duration>%d</duration></note>' % per)
+            lines.append('    </measure>')
     lines.append('  </part>')
     lines.append('</score-partwise>')
     return "\n".join(lines) + "\n"
@@ -787,14 +902,24 @@ def _pdf_escape_text(s: str) -> str:
     return s.replace("\\", r"\\").replace("(", r"\(").replace(")", r"\)")
 
 
+def _ttf_subfont_offset(data: bytes) -> int:
+    """TTC (ttcf) なら先頭サブフォントのオフセット、単体 TTF なら 0。"""
+    if data[:4] == b"ttcf":
+        if len(data) < 16:
+            raise ValueError("bad ttc")
+        return struct.unpack(">I", data[12:16])[0]
+    return 0
+
+
 def _ttf_read_tables(data: bytes):
-    """TrueType のテーブルディレクトリを読む。{tag: (offset, length)}。"""
-    if len(data) < 12:
+    """TrueType/TTC のテーブルディレクトリを読む。{tag: (offset, length)}。"""
+    base = _ttf_subfont_offset(data)
+    if len(data) < base + 12:
         raise ValueError("font too small")
-    num = struct.unpack(">H", data[4:6])[0]
+    num = struct.unpack(">H", data[base + 4:base + 6])[0]
     tables = {}
     for i in range(num):
-        off = 12 + i * 16
+        off = base + 12 + i * 16
         tag = data[off:off + 4].decode("latin-1")
         offset, length = struct.unpack(">II", data[off + 8:off + 16])
         tables[tag] = (offset, length)
@@ -858,6 +983,138 @@ def _ttf_cmap_unicode_to_gid(data: bytes, tables: dict):
             for c in range(sc, ec + 1):
                 mapping[c] = sg + (c - sc)
     return mapping
+
+
+def _ttf_checksum(buf: bytes) -> int:
+    """4 バイト境界にパディングして 32bit チェックサムを返す。"""
+    pad = (4 - len(buf) % 4) % 4
+    padded = buf + b"\x00" * pad
+    total = 0
+    for i in range(0, len(padded), 4):
+        total = (total + struct.unpack(">I", padded[i:i + 4])[0]) & 0xFFFFFFFF
+    return total
+
+
+def _ttf_build(tables_out: dict) -> bytes:
+    """{tag: bytes} から TrueType ファイルを組み立てる。"""
+    tags = sorted(tables_out)
+    num = len(tags)
+    entry_selector = 0
+    while (1 << (entry_selector + 1)) <= num:
+        entry_selector += 1
+    search_range = (1 << entry_selector) * 16
+    range_shift = num * 16 - search_range
+    header = struct.pack(">IHHHH", 0x00010000, num, search_range,
+                         entry_selector, range_shift)
+    offset = 12 + num * 16
+    body = bytearray()
+    entries = []
+    for tag in tags:
+        tdata = tables_out[tag]
+        entries.append((tag, _ttf_checksum(tdata), offset, len(tdata)))
+        body += tdata
+        body += b"\x00" * ((4 - len(tdata) % 4) % 4)
+        offset += len(tdata) + ((4 - len(tdata) % 4) % 4)
+    directory = bytearray()
+    for tag, chk, off, length in entries:
+        directory += tag.encode("latin-1") + struct.pack(">III", chk, off, length)
+    font = bytearray(header) + directory + body
+    # head.checksumAdjustment を確定する
+    head_off = next((off for tag, _, off, _ in entries if tag == "head"), None)
+    if head_off is not None:
+        struct.pack_into(">I", font, head_off + 8, 0)
+        adj = (0xB1B0AFBA - _ttf_checksum(bytes(font))) & 0xFFFFFFFF
+        struct.pack_into(">I", font, head_off + 8, adj)
+    return bytes(font)
+
+
+def _ttf_subset(data: bytes, tables: dict, keep_gids) -> bytes:
+    """TrueType をサブセット化して bytes を返す。
+
+    GID は変えず、未使用グリフのアウトラインを空にする。cmap/hmtx をそのまま
+    残すので、呼び出し側の GID と ToUnicode はそのまま使える。PDF 埋め込みに
+    不要なテーブル (GSUB/GPOS/name/post 等) を落としてサイズを抑える。
+    CFF ベース (glyf 無し) はサブセットせずそのまま返す。
+    """
+    need = {"glyf", "loca", "head", "maxp", "hhea", "hmtx"}
+    if not need.issubset(tables):
+        return data
+    ho, _ = tables["head"]
+    index_to_loc = struct.unpack(">h", data[ho + 50:ho + 52])[0]
+    mo, _ = tables["maxp"]
+    num_glyphs = struct.unpack(">H", data[mo + 4:mo + 6])[0]
+    lo, _ = tables["loca"]
+    go, _ = tables["glyf"]
+    if index_to_loc == 0:
+        loca = [v * 2 for v in struct.unpack(
+            ">%dH" % (num_glyphs + 1), data[lo:lo + (num_glyphs + 1) * 2])]
+    else:
+        loca = list(struct.unpack(
+            ">%dI" % (num_glyphs + 1), data[lo:lo + (num_glyphs + 1) * 4]))
+    keep = set(keep_gids) | {0}
+    new_glyf = bytearray()
+    new_loca = [0] * (num_glyphs + 1)
+    for gid in range(num_glyphs):
+        new_loca[gid] = len(new_glyf)
+        if gid in keep:
+            s, e = loca[gid], loca[gid + 1]
+            if e > s:
+                new_glyf += data[go + s:go + e]
+                while len(new_glyf) % 4:
+                    new_glyf += b"\x00"
+    new_loca[num_glyphs] = len(new_glyf)
+    if len(new_glyf) < 0x20000:
+        loca_fmt = 0
+        loca_bytes = struct.pack(">%dH" % (num_glyphs + 1),
+                                 *[v // 2 for v in new_loca])
+    else:
+        loca_fmt = 1
+        loca_bytes = struct.pack(">%dI" % (num_glyphs + 1), *new_loca)
+    head_bytes = bytearray(data[ho:ho + tables["head"][1]])
+    struct.pack_into(">h", head_bytes, 50, loca_fmt)
+    out = {
+        "head": bytes(head_bytes),
+        "hhea": data[tables["hhea"][0]:tables["hhea"][0] + tables["hhea"][1]],
+        "maxp": data[tables["maxp"][0]:tables["maxp"][0] + tables["maxp"][1]],
+        "hmtx": data[tables["hmtx"][0]:tables["hmtx"][0] + tables["hmtx"][1]],
+        "loca": loca_bytes,
+        "glyf": bytes(new_glyf),
+    }
+    return _ttf_build(out)
+
+
+def _find_japanese_font():
+    """システムにある日本語 TrueType(glyf) フォントを探してパスを返す。
+
+    見つからなければ None。CFF(ヒラギノ等) は CIDFontType2 で埋め込めないため
+    候補から外し、glyf を持つフォントだけを返す。
+    """
+    import glob
+    candidates = [
+        "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+        "/Library/Fonts/Arial Unicode.ttf",
+        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/truetype/fonts-japanese-gothic.ttf",
+        "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    ]
+    candidates += sorted(glob.glob("/System/Library/Fonts/*.ttc"))
+    candidates += sorted(glob.glob("/System/Library/Fonts/Supplemental/*.ttf"))
+    for path in candidates:
+        try:
+            data = pathlib.Path(path).read_bytes()
+            tables = _ttf_read_tables(data)
+        except Exception:
+            continue
+        if "glyf" not in tables:
+            continue
+        try:
+            cmap = _ttf_cmap_unicode_to_gid(data, tables)
+        except Exception:
+            continue
+        if ord("あ") in cmap and ord("漢") in cmap:
+            return path
+    return None
 
 
 def _ttf_width_array(data: bytes, tables: dict, gids) -> str:
@@ -968,8 +1225,10 @@ def _build_pdf(lines, font_path=None, title="document"):
     # フォント関連オブジェクト
     font_ref = "/F1 3 0 R"  # 既定: Helvetica (obj3)
     if font_path:
+        # 使用グリフだけ残してサブセット化（GID は維持）。
+        subset = _ttf_subset(fdata, tables, used_gids)
         # オブジェクト番号を先に確定: ff, cid, type0, tounicode, fontdesc の順
-        ff = add(b"<< /Length %d /Length1 %d >>\nstream\n" % (len(fdata), len(fdata)) + fdata + b"\nendstream")
+        ff = add(b"<< /Length %d /Length1 %d >>\nstream\n" % (len(subset), len(subset)) + subset + b"\nendstream")
         cid_num = len(objects) + 1
         type0_num = cid_num + 1
         touni_num = type0_num + 1
@@ -1111,9 +1370,13 @@ def to_pdf(data: dict, out_path: pathlib.Path, font_path=None) -> dict:
     else:
         lines.extend(blocks_to_lines(data.get("blocks") or data.get("chapters")))
 
+    # 日本語を含むのにフォント未指定なら、システムの日本語 TrueType を自動で使う。
+    if font_path is None and any(ord(ch) > 0x2E80 for ln in lines for ch in ln):
+        font_path = _find_japanese_font()
+
     pdf_bytes = _build_pdf(lines, font_path=font_path, title=title)
     out_path.write_bytes(pdf_bytes)
-    return {"out": str(out_path), "bytes": len(pdf_bytes)}
+    return {"out": str(out_path), "bytes": len(pdf_bytes), "font": font_path}
 
 
 # ---------------------------------------------------------------------------

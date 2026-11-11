@@ -194,6 +194,34 @@
     return out;
   }
 
+  function blocksToPlain(blocks) {
+    var parts = [];
+    (blocks || []).forEach(function (b) {
+      if (!b) return;
+      var t = b.type;
+      if (t === "list") parts.push((b.items || []).join("\n"));
+      else if (t === "table") (b.rows || []).forEach(function (row) { parts.push(row.join(" | ")); });
+      else if (t === "figure") { var cap = b.caption || b.alt; if (cap) parts.push(String(cap)); }
+      else if (t === "divider") return;
+      else if (b.text) parts.push(String(b.text));
+    });
+    return parts.filter(function (p) { return p; }).join("\n\n");
+  }
+
+  function articleBody(data) {
+    if (data.kind === "book") {
+      var chunks = [];
+      (data.chapters || []).forEach(function (ch) {
+        var title = ch.title || ch.id;
+        if (title) chunks.push(String(title));
+        var body = blocksToPlain(ch.blocks);
+        if (body) chunks.push(body);
+      });
+      return chunks.join("\n\n");
+    }
+    return blocksToPlain(data.blocks);
+  }
+
   function toSchemaOrg(data) {
     var kind = data.kind;
     var stype = SCHEMA_TYPE[kind] || "CreativeWork";
@@ -211,6 +239,11 @@
     if (au.length) ld.author = au.length > 1 ? au : au[0];
     if (data.created_at) ld.dateCreated = data.created_at;
     if (data.updated_at) ld.dateModified = data.updated_at;
+
+    if (kind === "article" || kind === "book") {
+      var body = articleBody(data);
+      if (body) ld.articleBody = body;
+    }
 
     var lic = data.license;
     if (LICENSE_URL[lic]) ld.license = LICENSE_URL[lic];
@@ -460,9 +493,10 @@
         var rows = b.rows || [];
         if (rows.length) {
           function cells(r) { return "| " + r.map(String).join(" | ") + " |"; }
-          out.push(cells(rows[0]));
-          out.push("| " + rows[0].map(function () { return "---"; }).join(" | ") + " |");
-          rows.slice(1).forEach(function (r) { out.push(cells(r)); });
+          var tbl = [cells(rows[0]),
+            "| " + rows[0].map(function () { return "---"; }).join(" | ") + " |"];
+          rows.slice(1).forEach(function (r) { tbl.push(cells(r)); });
+          out.push(tbl.join("\n"));
         }
       } else if (t === "figure") {
         out.push("![" + String(b.alt || "") + "](" + String(b.src || "") + ")");
@@ -568,6 +602,42 @@
     return cols.map(cell).join(",") + "\n" + row.map(cell).join(",") + "\n";
   }
 
+  var SEMITONE_TO_NAMES = {
+    0: [["C", 0]], 1: [["C", 1], ["D", -1]], 2: [["D", 0]],
+    3: [["D", 1], ["E", -1]], 4: [["E", 0]], 5: [["F", 0]],
+    6: [["F", 1], ["G", -1]], 7: [["G", 0]], 8: [["G", 1], ["A", -1]],
+    9: [["A", 0]], 10: [["A", 1], ["B", -1]], 11: [["B", 0]]
+  };
+  var TONIC_SEMITONE = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+  function keyScale(key) {
+    var kf = keyToFifths(key);
+    var fifths = kf[0], mode = kf[1];
+    var k = String(key || "C major").trim().replace(/♯/g, "#").replace(/♭/g, "b");
+    var letter = (k && TONIC_SEMITONE[k[0].toUpperCase()] !== undefined) ? k[0].toUpperCase() : "C";
+    var base = TONIC_SEMITONE[letter];
+    if (k.length > 1 && k[1] === "#") base = (base + 1) % 12;
+    else if (k.length > 1 && k[1] === "b") base = (base - 1 + 12) % 12;
+    var intervals = mode === "minor" ? [0, 2, 3, 5, 7, 8, 10] : [0, 2, 4, 5, 7, 9, 11];
+    return intervals.map(function (iv) {
+      var semis = (base + iv) % 12;
+      var options = SEMITONE_TO_NAMES[semis];
+      if (options.length === 1) return options[0];
+      if (fifths < 0) {
+        for (var i = 0; i < options.length; i++) if (options[i][1] < 0) return options[i];
+        return options[0];
+      }
+      for (var j = 0; j < options.length; j++) if (options[j][1] > 0) return options[j];
+      return options[0];
+    });
+  }
+  function melodyNote(scale, seed, stepIdx) {
+    var n = scale.length || 7;
+    var deg = (seed + stepIdx * 3 + (stepIdx * stepIdx)) % n;
+    var octave = 4 + ((Math.floor(seed / 8) + Math.floor(stepIdx / n)) % 2);
+    var st = scale[deg];
+    return [st[0], st[1], octave];
+  }
+
   var KEY_FIFTHS = {
     "C major": 0, "G major": 1, "D major": 2, "A major": 3, "E major": 4,
     "B major": 5, "F# major": 6, "C# major": 7,
@@ -628,6 +698,13 @@
     }
     var partName = String((vocal || tracks[0] || {}).instrument || "Melody");
 
+    var seedSrc = String(data.content_hash || data.id || title);
+    var seed = 0;
+    for (var si = 0; si < seedSrc.length; si++) {
+      seed = (Math.imul(seed, 131) + seedSrc.charCodeAt(si)) >>> 0;
+    }
+    var scale = keyScale(meta.key || "C major");
+
     var L = [];
     L.push('<?xml version="1.0" encoding="UTF-8"?>');
     L.push('<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" ' +
@@ -644,39 +721,48 @@
     L.push('  <part id="P1">');
 
     if (!sections.length) sections = [{ name: "section1" }];
+    var measureNo = 0, noteIdx = 0;
     sections.forEach(function (sec, idx) {
-      L.push('    <measure number="' + (idx + 1) + '">');
-      if (idx === 0) {
-        L.push('      <attributes>');
-        L.push('        <divisions>1</divisions>');
-        L.push('        <key><fifths>' + fifths + '</fifths><mode>' + mode + '</mode></key>');
-        L.push('        <time><beats>' + beats + '</beats><beat-type>' + beatType + '</beat-type></time>');
-        L.push('        <clef><sign>G</sign><line>2</line></clef>');
-        L.push('      </attributes>');
-        L.push('      <direction placement="above"><direction-type>' +
-          '<metronome><beat-unit>quarter</beat-unit>' +
-          '<per-minute>' + Math.trunc(bpm) + '</per-minute></metronome></direction-type>' +
-          '<sound tempo="' + Math.trunc(bpm) + '"/></direction>');
-      }
       var secLines = lyricsBySection[sec.name] || [];
-      if (secLines.length) {
-        var per = Math.max(1, beats);
-        var used = Math.min(per, secLines.length);
-        for (var j = 0; j < used; j++) {
-          L.push('      <note>');
-          L.push('        <pitch><step>C</step><octave>4</octave></pitch>');
-          L.push('        <duration>1</duration>');
-          L.push('        <type>quarter</type>');
-          L.push('        <lyric number="1"><text>' + xmlEscape(secLines[j]) + '</text></lyric>');
-          L.push('      </note>');
+      var per = Math.max(1, beats);
+      var chunks = [];
+      for (var ci = 0; ci < secLines.length; ci += per) chunks.push(secLines.slice(ci, ci + per));
+      if (!chunks.length) chunks.push([]);
+      chunks.forEach(function (chunk, cidx) {
+        measureNo++;
+        L.push('    <measure number="' + measureNo + '">');
+        if (idx === 0 && cidx === 0) {
+          L.push('      <attributes>');
+          L.push('        <divisions>1</divisions>');
+          L.push('        <key><fifths>' + fifths + '</fifths><mode>' + mode + '</mode></key>');
+          L.push('        <time><beats>' + beats + '</beats><beat-type>' + beatType + '</beat-type></time>');
+          L.push('        <clef><sign>G</sign><line>2</line></clef>');
+          L.push('      </attributes>');
+          L.push('      <direction placement="above"><direction-type>' +
+            '<metronome><beat-unit>quarter</beat-unit>' +
+            '<per-minute>' + Math.trunc(bpm) + '</per-minute></metronome></direction-type>' +
+            '<sound tempo="' + Math.trunc(bpm) + '"/></direction>');
         }
-        for (var r = 0; r < per - used; r++) {
-          L.push('      <note><rest/><duration>1</duration><type>quarter</type></note>');
+        if (chunk.length) {
+          chunk.forEach(function (text) {
+            var note = melodyNote(scale, seed, noteIdx);
+            noteIdx++;
+            var alterXml = note[1] > 0 ? "<alter>1</alter>" : (note[1] < 0 ? "<alter>-1</alter>" : "");
+            L.push('      <note>');
+            L.push('        <pitch><step>' + note[0] + '</step>' + alterXml + '<octave>' + note[2] + '</octave></pitch>');
+            L.push('        <duration>1</duration>');
+            L.push('        <type>quarter</type>');
+            L.push('        <lyric number="1"><text>' + xmlEscape(text) + '</text></lyric>');
+            L.push('      </note>');
+          });
+          for (var r = 0; r < per - chunk.length; r++) {
+            L.push('      <note><rest/><duration>1</duration><type>quarter</type></note>');
+          }
+        } else {
+          L.push('      <note><rest measure="yes"/><duration>' + per + '</duration></note>');
         }
-      } else {
-        L.push('      <note><rest measure="yes"/><duration>' + Math.max(1, beats) + '</duration></note>');
-      }
-      L.push('    </measure>');
+        L.push('    </measure>');
+      });
     });
     L.push('  </part>');
     L.push('</score-partwise>');
